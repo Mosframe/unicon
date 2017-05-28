@@ -7,6 +7,11 @@ import * as THREE from 'three';
 //let THREE       = require('../../lib/three.js/build/three');
 let Detector    = require('../../lib/three.js/examples/js/Detector');
 let DatGUI      = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
+var OrbitControls = require('three-orbit-controls')(THREE);
+
+import {Vector3}    from '../../core/vector3';
+import {Scene}      from '../../core/scene';
+import {Behaviour}  from '../../core/behaviour';
 
 let container = document.createElement( 'div' );
 document.body.appendChild( container );
@@ -18,93 +23,21 @@ if( !Detector.webgl ) {
     container.appendChild(warning);
 }
 
-/**
- * Bit mask that controls object destruction, saving and visibility in inspectors.
- *
- * @enum {number}
- */
-enum HideFlags {
-    /**
-     * A normal, visible object. This is the default.
-     */
-    None,
-    /**
-     * The object will not appear in the hierarchy.
-     */
-    HideInHierarchy,
-    /**
-     * It is not possible to view it in the inspector.
-     */
-    HideInInspector,
-    /**
-     * The object will not be saved to the scene in the editor.
-     */
-    DontSaveInEditor,
-    /**
-     * The object is not be editable in the inspector.
-     */
-    NotEditable,
-    /**
-     * The object will not be saved when building a player.
-     */
-    DontSaveInBuild,
-    /**
-     * The object will not be unloaded by Resources.UnloadUnusedAssets.
-     */
-    DontUnloadUnusedAsset,
-    /**
-     * The object will not be saved to the scene. It will not be destroyed when a new scene is loaded. It is a shortcut for HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.DontUnloadUnusedAsset.
-     */
-    DontSave,
-    /**
-     * A combination of not shown in the hierarchy, not saved to to scenes and not unloaded by The object will not be unloaded by Resources.UnloadUnusedAssets.
-     */
-    HideAndDontSave,
-}
 
 // -----------------------------------------------------------------------------
-// Object
+// GameFrame
 // -----------------------------------------------------------------------------
-class Object {
-    hideFlags : HideFlags;
-    name : string;
-
-}
-
-// -----------------------------------------------------------------------------
-// Component
-// -----------------------------------------------------------------------------
-class Component extends Object {
-
-}
-
-// -----------------------------------------------------------------------------
-// Behavior
-// -----------------------------------------------------------------------------
-class Behavior extends Component {
-
-}
-// -----------------------------------------------------------------------------
-// GameObject
-// -----------------------------------------------------------------------------
-class GameObject {
-
-}
-
-
-// -----------------------------------------------------------------------------
-// Scene
-// -----------------------------------------------------------------------------
-class Scene {
+class GameFrame {
     renderer    : THREE.WebGLRenderer;
     scene       : THREE.Scene;
-    cameras     : {[id:string]:THREE.Camera};
-    lights      : {[id:string]:THREE.Light};
+    cameras     : {[id:string]:THREE.Camera}    = {};
+    lights      : {[id:string]:THREE.Light}     = {};
 
     // -------------------------------------------------------------------------
     // constructor
     // -------------------------------------------------------------------------
     constructor() {
+
         // renderer setting
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -115,12 +48,6 @@ class Scene {
         // scene setting
         this.scene = new THREE.Scene();
         // camera setting
-        let cameraOption = {
-            fov     : 45,
-            aspect  : window.innerWidth / window.innerHeight,
-            near    : 0.1,
-            far     : 1000,
-        }
         let camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
         camera.position.set( 40, 40, 40);
         //camera.lookAt( new THREE.Vector3(0,0,0) );
@@ -134,14 +61,14 @@ class Scene {
             light.castShadow = true;
             light.position.set(15,30,50);
             if( light.shadow.camera.type === typeof(THREE.PerspectiveCamera) ) {
-                if( scene.cameras.main.type === typeof(THREE.PerspectiveCamera) ) {
-                    (<THREE.PerspectiveCamera>light.shadow.camera).fov = (<THREE.PerspectiveCamera>scene.cameras.main).fov;
+                if( this.cameras.main.type === typeof(THREE.PerspectiveCamera) ) {
+                    (<THREE.PerspectiveCamera>light.shadow.camera).fov = (<THREE.PerspectiveCamera>this.cameras.main).fov;
                 }
             }
             light.shadow.bias = 0.0001;
             light.shadow.mapSize.width = 2048;
             light.shadow.mapSize.height = 2048;
-            scene.add(light);
+            this.add(light);
         }
     }
 
@@ -154,9 +81,9 @@ class Scene {
         // -------------------------------------------------------------------------
         {
             if( cube.controller ) {
-                cube.rotation.x += cube.controller.rotSpeed.x;
-                cube.rotation.y += cube.controller.rotSpeed.y;
-                cube.rotation.z += cube.controller.rotSpeed.z;
+                cube.mesh.rotation.x += cube.controller.rotSpeed.x;
+                cube.mesh.rotation.y += cube.controller.rotSpeed.y;
+                cube.mesh.rotation.z += cube.controller.rotSpeed.z;
             }
         }
     }
@@ -174,7 +101,7 @@ class Scene {
     // onRender
     // -----------------------------------------------------------------------------
     onRender = (event:any):void => {
-        this.render();
+        this.update();
     }
 
     // -----------------------------------------------------------------------------
@@ -194,8 +121,8 @@ class SceneHelper {
     // -------------------------------------------------------------------------
     // constructor
     // -------------------------------------------------------------------------
-    constructor(scene:Scene) {
-        this.scene = scene.scene;
+    constructor(frame:GameFrame) {
+        this.scene = frame.scene;
         // axis
         {
             let axis = new THREE.AxisHelper(10);
@@ -219,15 +146,16 @@ class SceneHelper {
         }
         // camera controll
         {
-            let cameraControls = new THREE.OrbitControls( scene.cameras.main, scene.renderer.domElement );
-            cameraControls.addEventListener( 'change', scene.render );
+            let cameraControls = new OrbitControls( frame.cameras.main, frame.renderer.domElement );
+            cameraControls.addEventListener( 'change', frame.onRender );
         }
     }
 }
 
 
-let scene       = new Scene();
-let sceneHelper = new SceneHelper(scene);
+
+let frame       = new GameFrame();
+let sceneHelper = new SceneHelper(frame);
 
 
 
@@ -247,35 +175,72 @@ let sceneHelper = new SceneHelper(scene);
     scene.add(line);
 }
 */
+
+
+// -----------------------------------------------------------------------------
+// Component : Controller
+// -----------------------------------------------------------------------------
+class Controller {
+    rotSpeed:Vector3;
+    constructor() {
+        this.rotSpeed = new Vector3();
+        this.rotSpeed.x = 0.1;
+        this.rotSpeed.y = 0.1;
+        this.rotSpeed.z = 0.1;
+    }
+}
 // -----------------------------------------------------------------------------
 // plane
 // -----------------------------------------------------------------------------
-{
-    let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
-    let material    = new THREE.MeshLambertMaterial({color:0xffffff});
-    var mesh        = new THREE.Mesh( geometry, material );
+class Shape extends Behaviour {
+    mesh : THREE.Mesh;
 
-    mesh.rotation.x = -0.5 * Math.PI;
-    mesh.receiveShadow = true;
-
-    scene.add( mesh );
+    constructor() {
+        super();
+    }
 }
+
+class Plane extends Shape {
+
+    constructor() {
+        super();
+
+        let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
+        let material    = new THREE.MeshLambertMaterial({color:0xffffff});
+        this.mesh       = new THREE.Mesh( geometry, material );
+        this.mesh.rotation.x = -0.5 * Math.PI;
+        this.mesh.receiveShadow = true;
+        frame.add( this.mesh );
+    }
+}
+
+let plane = new Plane();
+
 
 // -----------------------------------------------------------------------------
 // cube
 // -----------------------------------------------------------------------------
-var cube:any;
-{
-    let geometry    = new THREE.BoxGeometry( 5, 5, 5 );
-    let material    = new THREE.MeshLambertMaterial({color:0xff3300});
-    var mesh        = new THREE.Mesh( geometry, material );
-    mesh.position.x = 2.5;
-    mesh.position.y = 2.5;
-    mesh.position.z = 2.5;
-    mesh.castShadow = true;
-    scene.add( mesh );
-    cube = mesh;
+class Cube extends Shape {
+
+    controller : Controller;
+
+    constructor() {
+        super();
+
+        let geometry    = new THREE.BoxGeometry( 5, 5, 5 );
+        let material    = new THREE.MeshLambertMaterial({color:0xff3300});
+        this.mesh        = new THREE.Mesh( geometry, material );
+        this.mesh.position.x = 2.5;
+        this.mesh.position.y = 2.5;
+        this.mesh.position.z = 2.5;
+        this.mesh.castShadow = true;
+        frame.add( this.mesh );
+
+        this.controller = new Controller();
+    }
 }
+
+let cube = new Cube();
 
 // -----------------------------------------------------------------------------
 // cube 생성
@@ -296,39 +261,14 @@ var cube:any;
     cube.position.x = 5.5;
     cube.position.y = 2.5;
     cube.position.z = 2.5;
-    scene.add( cube );
+    frame.add( cube );
 }
 */
 
 
 
-scene.render();
+frame.render();
 
-
-// -----------------------------------------------------------------------------
-// Component
-// -----------------------------------------------------------------------------
-class Vector3 {
-    x:number;
-    y:number;
-    z:number;
-}
-interface Component {
-
-}
-// -----------------------------------------------------------------------------
-// Component : Controller
-// -----------------------------------------------------------------------------
-class Controller implements Component {
-    rotSpeed:Vector3;
-    constructor() {
-        this.rotSpeed = new Vector3();
-        this.rotSpeed.x = 0.1;
-        this.rotSpeed.y = 0.1;
-        this.rotSpeed.z = 0.1;
-    }
-}
-cube.controller = new Controller();
 
 // -----------------------------------------------------------------------------
 // GUI
