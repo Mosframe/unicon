@@ -1,0 +1,478 @@
+<meta charset="UTF-8">
+
+
+<!-- 로그인 & 회원가입 -->
+<div id="signPage">
+    Username: <input id="signPageUsername" type="text"></input><br>
+    Password: <input id="signPagePassword" type="password"></input><br>
+    <button id="signPageSignIn">Sign In</button><br>
+    <button id="signPageSignUp">Sign Up</button><br>
+</div>
+
+<!-- 게임뷰 : 초기엔 display를 꺼놓는다.-->
+<div id="gamePage" style="display:none">
+    <!-- 플레이 뷰 -->
+    <div id="playView" style="position:absulute;width:500px;height:500px">
+        <!-- 게임 캔버스 -->
+        <canvas id="gameCanvas" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>
+        <!-- UI 캔버스 -->
+        <canvas id="uiCanvas" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>
+        <!-- UI -->
+        <div di="ui" style = "position:absolute;width:500px;height:500px">
+            <button onclick="changeMap()" style="position:absolute;bottom:0px;left:0px">
+                Change Map
+            </button>
+        </div>
+    </div>
+
+    <!-- 하단 UI 뷰 -->
+    <div id="bottomView" style="position:absolute;margin-top:20px">
+        <!-- 채팅출력창 -->
+        <div id="chatText" style="width:500px;height:100px;overflow-y:scroll">
+            <div>Hello!</div>
+        </div>
+        <!-- 인벤토리 -->
+        <div id="inventory"></div>
+        <!-- 채팅입력창 -->
+        <form id="chatForm">
+            <input id="chatInput" type="text" style="width:500px"></input>
+        </form>
+    </div>
+</div>
+
+<!-- ./node_modules/socket.io-client/dist/에서 복사하여 사용한다.-->
+<script src="./client/socket.io/socket.io.min.js"></script>
+<!-- 인벤토리 -->
+<script src="./client/inventory.js"></script>
+
+<script>
+
+var WIDTH   = 500;
+var HEIGHT  = 500;
+
+// 서버에 접속한다.
+var socket = io();
+
+// -----------------------------------------------------------------------------
+// 로그인 로직
+// -----------------------------------------------------------------------------
+var signPage         = document.getElementById('signPage'         ); //
+var signPageUsername = document.getElementById('signPageUsername' ); //
+var signPagePassword = document.getElementById('signPagePassword' ); //
+var signPageSignIn   = document.getElementById('signPageSignIn'   ); //
+var signPageSignUp   = document.getElementById('signPageSignUp'   ); //
+
+
+// 로그인
+signPageSignIn.onclick = function() {
+    socket.emit('reqSignIn',{
+        username : signPageUsername.value,
+        password : signPagePassword.value,
+    });
+}
+// 로그인 > 인증 결과
+socket.on('resSignIn',function(data){
+    if( data.err ) {
+        console.error( data.err );
+    }
+    if( data.success ) {
+        signPage.style.display = 'none';
+        gamePage.style.display = 'inline-block';
+    } else {
+        alert("로그인 실패!");
+    }
+});
+
+// 회원가입
+signPageSignUp.onclick = function() {
+    socket.emit('reqSignUp',{
+        username : signPageUsername.value,
+        password : signPagePassword.value,
+    });
+}
+// 회원가입 > 결과
+socket.on('resSignUp',function(data){
+    if( data.err ) {
+        console.error( data.err );
+    }
+    if( data.success ) {
+        alert("회원가입 성공!");
+    } else {
+        alert("회원가입 실패!");
+    }
+});
+
+// -----------------------------------------------------------------------------
+// 채팅 로직
+// -----------------------------------------------------------------------------
+var chatText    = document.getElementById('chatText'   ); // 채팅 출력 문자열
+var chatForm    = document.getElementById('chatForm'   ); // 채팅 입력 폼
+var chatInput   = document.getElementById('chatInput'  ); // 채팅 입력 입력창
+
+// 채팅 메시지를 채팅메시지 리스트에 추가한다.
+socket.on('addChat',function(data){
+    chatText.innerHTML += `<div>${data}</div>`;
+});
+
+// 서버로 부터 eval 결과를 수신 받는다.
+socket.on('resEval',function(data){
+    console.log(data);
+});
+
+// 서버에 채팅 메시지를 전송한다.
+chatForm.onsubmit = function(e) {
+    e.preventDefault(); // 이벤트 전파(상위에 테그들에 전달)를 막지 않고 이벤트 실행 취소
+
+    // 서버연산 : 서버측에서 코드 실행을하고 결과를 받는다.
+    if( chatInput.value[0] === '/' )
+        socket.emit( 'reqEval', chatInput.value.slice(1) );
+    // 귓속말 : @username,message
+    else if( chatInput.value[0] === '@' ) {
+        socket.emit('sendWhisper', {
+            username    : chatInput.value.slice(1,chatInput.value.indexOf(',')),
+            message     : chatInput.value.slice(chatInput.value.indexOf(',')+1),
+        });
+    // 채팅
+    } else {
+        socket.emit( 'sendChat', chatInput.value );
+    }
+    chatInput.value = '';
+}
+
+// -----------------------------------------------------------------------------
+// 게임 로직
+// -----------------------------------------------------------------------------
+var gamePage= document.getElementById('gamePage'); //
+var gameCtx = document.getElementById("gameCanvas").getContext("2d"); // 게임 컨텍스트
+var uiCtx   = document.getElementById("uiCanvas").getContext("2d"); // UI 컨텍스트
+gameCtx.font = '20px Arial';
+uiCtx.font = '20px Arial';
+
+// 인벤토리
+var inventory = new Inventory(socket,false);
+socket.on('updateInventory',function(slots){
+    inventory.slots = slots;
+    inventory.refresh();
+});
+
+// UI
+changeMap = function() {
+    socket.emit('changeMap');
+}
+
+// -----------------------------------------------------------------------------
+// 그래픽 리소스들
+var images = {};
+images.player   = new Image();
+images.player.src   = "./client/images/player.png";
+images.bullet   = new Image();
+images.bullet.src   = "./client/images/bullet.png";
+images.maps = {};
+images.maps.field = new Image(),
+images.maps.field.src   = "./client/images/map.png";
+images.maps.forest = new Image(),
+images.maps.forest.src  = "./client/images/map2.png";
+
+// -----------------------------------------------------------------------------
+// entity
+var Entity = function(createPack) {
+    var self    = {
+        id     : createPack.id,
+        x      : createPack.x,
+        y      : createPack.y,
+        width  : createPack.width,
+        height : createPack.height,
+        map    : createPack.map,
+
+        // 현재 프레임에서만 유효한 캐시 변수들
+        cx     : createPack.x, // 현재좌표(x)
+        cy     : createPack.y, // 현재좌표(y)
+    };
+
+    // update
+    self.update = function() {
+        // 플레이어 기준 좌표로 변환
+        self.cx = self.x - myPlayer.x + WIDTH/2;
+        self.cy = self.y - myPlayer.y + HEIGHT/2;
+    }
+
+    return self;
+}
+
+// -----------------------------------------------------------------------------
+// player
+var Player = function(createPack) {
+    var self        = Entity(createPack);
+    self.username   = createPack.username;
+    self.hp         = createPack.hp;
+    self.hpMax      = createPack.hpMax;
+    self.score      = createPack.score;
+
+    self.drawBody = function() {
+        if( myPlayer.map !== self.map ) return;
+        gameCtx.drawImage( images.player,
+            0,0,images.player.width,images.player.height,
+            self.cx-self.width/2, self.cy-self.height/2, self.width, self.height );
+    }
+
+    self.drawHp = function() {
+        if( myPlayer.map !== self.map ) return;
+        var width = 30 * self.hp / self.hpMax;
+        gameCtx.fillRect(self.cx-width/2,self.cy-self.height/2-10, width, 5 );
+    }
+
+    self.drawName = function() {
+        if( myPlayer.map !== self.map ) return;
+        gameCtx.fillText(self.username,self.cx,self.cy-self.height/2-20);
+    }
+
+    Player.list[self.id] = self;
+    return self;
+}
+Player.list = {};
+Player.updates = function() {
+    for( var c in Player.list ) {
+        Player.list[c].update();
+    }
+}
+
+// -----------------------------------------------------------------------------
+// bullet
+var Bullet = function(createPack) {
+    var self = Entity(createPack);
+
+    self.draw = function() {
+        if( myPlayer.map !== self.map ) return;
+
+        gameCtx.drawImage( images.bullet,
+            0, 0, images.bullet.width, images.bullet.height,
+            self.cx-self.width/2, self.cy-self.height/2, self.width, self.height );
+    }
+
+    Bullet.list[self.id] = self;
+    return self;
+}
+Bullet.list = {};
+Bullet.updates = function() {
+    for( var c in Bullet.list ) {
+        Bullet.list[c].update();
+    }
+}
+
+// -----------------------------------------------------------------------------
+// map
+var drawMap = function() {
+    var x = WIDTH/2 - myPlayer.x;
+    var y = HEIGHT/2 - myPlayer.y;
+
+    gameCtx.drawImage(images.maps[myPlayer.map],x,y);
+}
+
+// -----------------------------------------------------------------------------
+// UI
+var lastScore = null;
+var drawScore = function() {
+    if( lastScore === myPlayer.score ) return;
+    lastScore = myPlayer.score;
+
+    uiCtx.save();
+
+    uiCtx.clearRect(0,0,500,500);
+
+    uiCtx.font          = '20px Arial';
+    uiCtx.fillStyle     = 'white';
+    uiCtx.textAlign     = 'left';
+    uiCtx.textBaseline  = 'middle';
+    uiCtx.fillText("SCORE : "+myPlayer.score,0,20);
+
+    uiCtx.restore();
+}
+
+// -----------------------------------------------------------------------------
+// socket
+
+// create entities
+var myPlayer = null;
+socket.on('create', function(data) {
+    //{players:[{id:user01,name:'user01',x:0,y:0,...]},bullets:[...]}
+    for( var c=0; c<data.players.length; ++c ) {
+        new Player(data.players[c]);
+    }
+    for( var c=0; c<data.bullets.length; ++c ) {
+        new Bullet(data.bullets[c]);
+    }
+
+    // 매번 리스트를 변경하므로 myPlayer를 재설정이 필요하다.
+    if( data.myId ) {
+        myId = data.myId;
+        myPlayer = Player.list[data.myId];
+    } else if( myPlayer ) {
+        myPlayer = Player.list[myPlayer.id];
+    }
+});
+
+// update entities
+socket.on('update', function(data) {
+    //{players:[{id:user01,x:0,y:0}],bullets:[...]}
+    for( var c=0; c<data.players.length; ++c ) {
+        var pack = data.players[c];
+        var player = Player.list[pack.id];
+        if(player) {
+            if(pack.x !== undefined )
+                player.x = pack.x;
+            if(pack.y !== undefined )
+                player.y = pack.y;
+            if(pack.hp !== undefined )
+                player.hp = pack.hp;
+            if(pack.score !== undefined )
+                player.score = pack.score;
+            if(pack.map !== undefined )
+                player.map = pack.map;
+        }
+    }
+    for( var c=0; c<data.bullets.length; ++c ) {
+        var pack = data.bullets[c];
+        var bullet = Bullet.list[pack.id];
+        if(bullet) {
+            if(pack.x !== undefined )
+                bullet.x = pack.x;
+            if(pack.y !== undefined )
+                bullet.y = pack.y;
+        }
+    }
+});
+
+// remove entities
+socket.on('remove', function(data) {
+    //{players:[123,456],bullets:[123,1111]}
+    for( var c=0; c<data.players.length; ++c ) {
+        delete Player.list[data.players[c]];
+    }
+    for( var c=0; c<data.bullets.length; ++c ) {
+        delete Bullet.list[data.bullets[c]];
+    }
+});
+
+// -----------------------------------------------------------------------------
+// update & rendering
+
+// updates
+updates = function() {
+    Player.updates();
+    Bullet.updates();
+}
+
+// rendering (game)
+gameRendering = function() {
+    gameCtx.save();
+
+    gameCtx.clearRect(0,0,500,500);
+
+    drawMap();
+
+    gameCtx.fillStyle = 'green';
+    for( var c in Player.list ) {
+        Player.list[c].drawBody();
+    }
+    gameCtx.fillStyle = 'red';
+    for( var c in Player.list ) {
+        Player.list[c].drawHp();
+    }
+
+    gameCtx.font = '16px Arial';
+    gameCtx.fillStyle   = 'yellow';
+    gameCtx.textAlign   = 'center';
+    gameCtx.textBaseline= 'middle';
+    for( var c in Player.list ) {
+        Player.list[c].drawName();
+    }
+
+    gameCtx.fillStyle = 'purple';
+    for( var c in Bullet.list ) {
+        Bullet.list[c].draw();
+    }
+    gameCtx.restore();
+}
+// rendering (UI)
+uiRendering = function() {
+    drawScore();
+}
+
+// rendering
+rendering = function() {
+    gameRendering();
+    uiRendering();
+}
+
+// tick
+setInterval( function() {
+    if( !myPlayer ) return;
+    updates();
+    rendering();
+},40);
+
+
+// -----------------------------------------------------------------------------
+// 키보드 키 다운 이벤트
+document.onkeydown = function( event ) {
+    //console.log(event.keyCode);
+    // 자바스크립트 키코드 표 : http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+    if( event.keyCode === 68 ) {        // d
+        socket.emit('keyPress',{ inputId:'right',state:true });
+    } else if( event.keyCode === 83 ) { // s
+        socket.emit('keyPress',{ inputId:'down',state:true });
+    } else if( event.keyCode === 65 ) { // a
+        socket.emit('keyPress',{ inputId:'left',state:true });
+    } else if( event.keyCode === 87 ) { // w
+        socket.emit('keyPress',{ inputId:'up',state:true });
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 키보드 키 업 이벤트
+document.onkeyup = function( event ) {
+    if( event.keyCode === 68 ) {        // d
+        socket.emit('keyPress',{ inputId:'right',state:false });
+    } else if( event.keyCode === 83 ) { // s
+        socket.emit('keyPress',{ inputId:'down',state:false });
+    } else if( event.keyCode === 65 ) { // a
+        socket.emit('keyPress',{ inputId:'left',state:false });
+    } else if( event.keyCode === 87 ) { // w
+        socket.emit('keyPress',{ inputId:'up',state:false });
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 마우스 좌클릭 다운 이벤트
+document.onmousedown = function( event ) {
+    if(event.which === 1 )
+        socket.emit( 'keyPress', {inputId:'attack',state:true});
+    else
+        socket.emit( 'keyPress', {inputId:'specialAttack',state:true});
+}
+
+// -----------------------------------------------------------------------------
+// 마우스 좌클릭 업 이벤트
+document.onmouseup = function( event ) {
+    if(event.which === 1 )
+        socket.emit( 'keyPress', {inputId:'attack',state:false});
+    else
+        socket.emit( 'keyPress', {inputId:'specialAttack',state:false});
+}
+
+// -----------------------------------------------------------------------------
+// 마우스 좌표 이동 이벤트
+document.onmousemove = function( event ) {
+    var x = -250 + event.clientX - 8;
+    var y = -250 + event.clientY - 8;
+    var angle = Math.atan2(y,x) / Math.PI * 180; // atan2(y,x) : x축에 대한 좌표의 각도를 라디안값으로 얻는다. ( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2 )
+    socket.emit( 'keyPress', {inputId:'attackAngle',state:angle})
+}
+
+// -----------------------------------------------------------------------------
+// 마우스 우클릭 이벤트
+document.oncontextmenu = function( mouse ) {
+    mouse.preventDefault(); // 컨텍스트 메뉴를 제거한다.
+}
+
+</script>

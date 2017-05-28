@@ -1,0 +1,43 @@
+<meta charset="UTF-8">
+
+
+<!-- 로그인 & 회원가입 -->
+<div id="signPage">
+    Username: <input id="signPageUsername" type="text"></input><br>
+    Password: <input id="signPagePassword" type="password"></input><br>
+    <button id="signPageSignIn">Sign In</button><br>
+    <button id="signPageSignUp">Sign Up</button><br>
+</div>
+
+<!-- 게임뷰 : 초기엔 display를 꺼놓는다.-->
+<div id="gamePage" style="display:none">
+    <!-- 플레이 뷰 -->
+    <div id="playView" style="position:absulute;width:500px;height:500px">
+        <!-- 게임 캔버스 -->
+        <canvas id="gameCanvas" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>
+        <!-- UI 캔버스 -->
+        <canvas id="uiCanvas" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>
+        <!-- UI -->
+        <div di="ui" style = "position:absolute;width:500px;height:500px">
+            <button id="changeMapButton" style="position:absolute;bottom:0px;left:0px">
+                Change Map
+            </button>
+        </div>
+    </div>
+
+    <!-- 하단 UI 뷰 -->
+    <div id="bottomView" style="position:absolute;margin-top:20px">
+        <!-- 채팅출력창 -->
+        <div id="chatText" style="width:500px;height:100px;overflow-y:scroll">
+            <div>Hello!</div>
+        </div>
+        <!-- 인벤토리 -->
+        <div id="inventory"></div>
+        <!-- 채팅입력창 -->
+        <form id="chatForm">
+            <input id="chatInput" type="text" style="width:500px"></input>
+        </form>
+    </div>
+</div>
+
+<script src="./client/unicon.js"></script>

@@ -1,0 +1,236 @@
+<!-- DONE : 인벤토리와 아이템 2종류 구현  -->
+
+<meta charset="UTF-8">
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<div id="inventory"></div>
+
+<script src="./js/entities.js"></script>
+<script src="./js/inventory.js"></script>
+<script>
+
+// -----------------------------------------------------------------------------
+// 상수
+var TILE_SIZE   = 32;
+
+var WIDTH       = 500;
+var HEIGHT      = 500;
+
+// -----------------------------------------------------------------------------
+// 전역 객체
+var ctx = document.getElementById("ctx").getContext("2d");
+ctx.font = '30px Arial';
+
+var timeWhenGameStarted = Date.now(); // 게임시작 시간 저장
+var frameCount  = 0;
+var score       = 0;
+
+var paused      = false;
+
+var images = {};
+images.player   = new Image();
+images.player.src   = "images/player.png";
+images.bat      = new Image();
+images.bat.src      = "images/bat.png";
+images.bee      = new Image();
+images.bee.src      = "images/bee.png";
+images.bullet   = new Image();
+images.bullet.src   = "images/bullet.png";
+images.upgrade1 = new Image();
+images.upgrade1.src = "images/upgrade1.png";
+images.upgrade2 = new Image();
+images.upgrade2.src = "images/upgrade2.png";
+
+// -----------------------------------------------------------------------------
+// 맵
+Maps = function(id,imageSrc,grid) {
+    var self = {
+        id      : id,
+        image   : new Image(),
+        width   : grid[0].length * TILE_SIZE,
+        height  : grid.length * TILE_SIZE,
+        grid    : grid,
+    }
+    self.image.src = imageSrc;
+
+    console.log( self.width, self.height );
+
+    // 좌표에 벽이 있는지 검사한다.
+    self.isPositionWall = function(pt) {
+        var gridX = Math.floor(pt.x / TILE_SIZE);
+        var gridY = Math.floor(pt.y / TILE_SIZE);
+        if( gridX < 0 || gridX >= self.grid[0].length )
+            return true;
+        if( gridY < 0 || gridY >= self.grid.length )
+            return true;
+        return self.grid[gridY][gridX];
+    }
+
+    // 그리기
+    self.draw = function() {
+        x = WIDTH/2 - player.x;
+        y = HEIGHT/2 - player.y;
+        ctx.drawImage( self.image, 0, 0, self.image.width, self.image.height, x, y, self.image.width, self.image.height );
+    }
+    return self;
+}
+
+// 타일랩 에디터에서 추출한 1차원 배열 데이터를 2타원배열로 변환
+var array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 766, 766, 766, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 766, 766, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var array2D = [];
+for( var y=0; y<40; ++y ) {
+    array2D[y] = [];
+    for( var x=0; x<40; ++x ) {
+        array2D[y][x] = array[ y*40+x ];
+    }
+}
+console.log( array2D.length, array2D[0].length );
+
+Maps.current = Maps('field', 'images/map.png', array2D );
+
+
+
+// -----------------------------------------------------------------------------
+// 유틸리티
+
+// 박스와 박스 충돌 테스트
+testCollisionRectRect = function( rect1, rect2 ) {
+return rect1.x <= rect2.x+rect2.width
+    && rect2.x <= rect1.x+rect1.width
+    && rect1.y <= rect2.y+rect2.height
+    && rect2.y <= rect1.y+rect1.height;
+}
+// -----------------------------------------------------------------------------
+// 이벤트 리스너
+
+// 마우스 이동 이벤트 처리
+document.onmousemove = function( mouse ) {
+    var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+    var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+
+    mouseX -= WIDTH/2;
+    mouseY -= HEIGHT/2;
+
+    // Math.atan2(y,x) : (y/x)점의 각도를 라디안 단위로 계산하여 반환한다. : 반환범위 (atan -PI/2~PI/2, atan2는 -PI~PI)
+    player.aimAngle = Math.atan2(mouseY,mouseX) / Math.PI * 180;
+}
+
+// 마우스 클릭 다운 이벤트
+document.onmousedown = function( mouse ) {
+    if(mouse.which === 1 ) {
+        player.pressingMouseLeft = true;
+    } else {
+        player.pressingMouseRight = true;
+    }
+}
+// 마우스 클릭 업 이벤트
+document.onmouseup = function( mouse ) {
+    if(mouse.which === 1 ) {
+        player.pressingMouseLeft = false;
+    } else {
+        player.pressingMouseRight = false;
+    }
+}
+
+// 마우스 우클릭
+document.oncontextmenu = function( mouse ) {
+    mouse.preventDefault(); // 컨텍스트 메뉴를 제거한다.
+}
+
+// 키보드 키 다운 이벤트
+document.onkeydown = function( event ) {
+    //console.log(evnet.keyCode);
+    // 자바스크립트 키코드 표 : http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+    if( event.keyCode === 68 ) {        // d
+        player.pressingRight = true;
+    } else if( event.keyCode === 83 ) { // s
+        player.pressingDown = true;
+    } else if( event.keyCode === 65 ) { // a
+        player.pressingLeft = true;
+    } else if( event.keyCode === 87 ) { // w
+        player.pressingUp = true;
+    } else if( event.keyCode === 80 ) { // p
+        paused = !paused;
+    }
+}
+
+// 키보드 키 업 이벤트
+document.onkeyup = function( event ) {
+    if( event.keyCode === 68 ) {        // d
+        player.pressingRight = false;
+    } else if( event.keyCode === 83 ) { // s
+        player.pressingDown = false;
+    } else if( event.keyCode === 65 ) { // a
+        player.pressingLeft = false;
+    } else if( event.keyCode === 87 ) { // w
+        player.pressingUp = false;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 게임 프로세스 함수들
+
+// update
+update = function () {
+
+    if( paused ) {
+        ctx.fillText('Paused', WIDTH/2-50, HEIGHT/2-10 );
+        return;
+    }
+
+    ctx.clearRect(0,0,WIDTH,HEIGHT); // 영역 삭제
+
+    Maps.current.draw(); // 맵 그리기
+
+    ++frameCount;
+    ++score;
+
+    Bullet.update();
+    Upgrade.update();
+    Enemy.update();
+    player.update();
+
+    ctx.fillText(player.hp + " Hp", 0, 30 );
+    ctx.fillText("Score: " + score, 200, 30 );
+}
+
+// 새로운 게임 시작
+startNewGame = function() {
+    player.hp           = 10;
+    frameCount          = 0;
+    score               = 0;
+    Enemy.list          = {};
+    Upgrade.list        = {};
+    Bullet.list         = {};
+    timeWhenGameStarted = Date.now();
+
+    Enemy.randomlyGenerate();
+    Enemy.randomlyGenerate();
+    Enemy.randomlyGenerate();
+}
+
+// -----------------------------------------------------------------------------
+// 메인 프로세스
+
+// 플레이어 생성
+player = Player();
+// 플레이어 인벤토리 생성
+playerInventory = Inventory();
+// 게임 시작
+startNewGame();
+// 메인루프
+setInterval( update, 40 ); // 1000/40=25fps
+
+
+
+// -----------------------------------------------------------------------------
+// 테스트 코드
+playerInventory.addItem("potion",100);
+playerInventory.addItem("enemy",100);
+
+// 브라우저에서 아이템 생성을 테스트하려면 콘솔창에서 아래 코드를 호출한다.
+// > playerInventory.addItem("potion",1)
+// > playerInventory.addItem("enemy",1)
+
+
+
+</script>

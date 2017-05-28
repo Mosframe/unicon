@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "skipLibCheck":true,
+        "target": "es5",
+        "typeRoots":[
+            "./node_modules/@types",
+            "./types"
+        ]
+    },
+    "files": [
+        "server/client/main.ts",
+        "server/main.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
