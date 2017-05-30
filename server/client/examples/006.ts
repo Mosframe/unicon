@@ -4,11 +4,12 @@
 
 import * as THREE         from 'three';
 import {OrbitControls   } from '../../editor/orbit-controls';
-import {MeshRenderer    } from '../../core/mesh-renderer';
-import {Scene           } from '../../core/scene';
-import {Camera          } from '../../core/camera';
 import {Vector3         } from '../../core/vector3';
 import {Behaviour       } from '../../core/behaviour';
+import {MeshRenderer    } from '../../core/mesh-renderer';
+import {Camera          } from '../../core/camera';
+import {Light           } from '../../core/light';
+import {Scene           } from '../../core/scene';
 
 let Detector        = require('../../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
 let DatGUI          = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
@@ -31,8 +32,8 @@ if( !Detector.webgl ) {
 class SceneView {
     renderer    : MeshRenderer;
     scene       : Scene;
-    cameras     : {[id:string]:Camera}          = {};
-    lights      : {[id:string]:THREE.Light}     = {};
+    cameras     : {[id:string]:Camera}  = {};
+    lights      : {[id:string]:Light}   = {};
 
     // -------------------------------------------------------------------------
     // constructor
@@ -44,24 +45,9 @@ class SceneView {
         // scene setting
         this.scene = new Scene();
         // camera setting
-        this.cameras.main = new Camera(this.scene);;
-        // -----------------------------------------------------------------------------
-        // 라이트 설정
-        // -----------------------------------------------------------------------------
-        {
-            let light = new THREE.SpotLight(0xffffff);
-            light.castShadow = true;
-            light.position.set(15,30,50);
-            if( light.shadow.camera.type === typeof(THREE.PerspectiveCamera) ) {
-                if( this.cameras.main instanceof THREE.PerspectiveCamera ) {
-                    (<THREE.PerspectiveCamera>light.shadow.camera).fov = (<THREE.PerspectiveCamera>this.cameras.main.camera).fov;
-                }
-            }
-            light.shadow.bias = 0.0001;
-            light.shadow.mapSize.width = 2048;
-            light.shadow.mapSize.height = 2048;
-            this.add(light);
-        }
+        this.cameras.main = new Camera(this.scene);
+        // light setting
+        this.lights.main = new Light(this.scene,this.cameras.main);
     }
 
     // -----------------------------------------------------------------------------
@@ -141,7 +127,6 @@ class SceneHelper {
             let cameraControls = new OrbitControls( sceneView.cameras.main.camera, sceneView.renderer.renderer.domElement );
             cameraControls.mouseButtons.PAN = THREE.MOUSE.MIDDLE;
             cameraControls.mouseButtons.ZOOM = THREE.MOUSE.RIGHT;
-
             cameraControls.addEventListener( 'change', sceneView.onRender );
         }
     }
