@@ -1,15 +1,12 @@
-/**
- * scriptable-object.ts
- *
- * @author jonghwa lee
- */
-
-import {UObject}    from './object';
-import {GameObject} from './game-object';
-import {Transform}  from './transform';
+// -----------------------------------------------------------------------------
+// scriptable-object.ts
+// -----------------------------------------------------------------------------
+import {UObject} from './object';
 
 /**
  * Component
+ *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Component

@@ -1,11 +1,11 @@
-/**
- * vector3.ts
- *
- * @author jonghwa lee
- */
+// -----------------------------------------------------------------------------
+// vector3.ts
+// -----------------------------------------------------------------------------
 
 /**
+ * Vector3
  *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Behaviour

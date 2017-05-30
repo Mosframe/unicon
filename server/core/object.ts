@@ -1,25 +1,22 @@
-/**
- * object.ts
- *
- * @author jonghwa lee
- */
-
-import * as UUID    from 'node-uuid';
-import {clone}      from './util';
-import {HideFlags}  from './hide-flags';
-import {Vector3}    from './vector3';
-import {Quaternion} from './quaternion';
-import {Transform}  from './transform';
-
-
-var overload = require('operator-overloading');
+// -----------------------------------------------------------------------------
+// object.ts
+// -----------------------------------------------------------------------------
+import * as UUID      from 'node-uuid';
+import {Util        } from './util';
+import {HideFlags   } from './hide-flags';
+import {Quaternion  } from './quaternion';
+import {Transform   } from './transform';
+import {Scene       } from './scene';
 
 
 /**
  * Base class for all objects Unicon can reference.
  * Any public variable you make that derives from Object gets shown in the inspector as a drop target, allowing you to set the value from the GUI.
  *
- * @class Object
+ * @author mosframe / https://github.com/Mosframe
+ *
+ * @export
+ * @class UObject
  */
 export class UObject {
 
@@ -170,7 +167,7 @@ export class UObject {
      * @memberof UObject
      */
     static instantiate (original:UObject) {
-        let instance = <UObject>clone( original );
+        let instance = <UObject>Util.clone( original );
         if( instance ) {
             instance.setInstanceID();
             UObject._instances[instance._instanceID] = instance;

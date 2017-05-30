@@ -1,17 +1,18 @@
 // -----------------------------------------------------------------------------
-// 005 : 에니메이션 컨트롤
+// 006 : Unicon 엔진 클라이언트 첫번째 테스트
 // -----------------------------------------------------------------------------
-////<reference path="../../../node_modules/@types/three/index.d.ts"/>
-import * as THREE from 'three';
 
-//let THREE       = require('../../lib/three.js/build/three');
-let Detector    = require('../../lib/three.js/examples/js/Detector');
-let DatGUI      = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
-var OrbitControls = require('three-orbit-controls')(THREE);
+import * as THREE         from 'three';
+import {OrbitControls   } from '../../editor/orbit-controls';
+import {MeshRenderer    } from '../../core/mesh-renderer';
+import {Scene           } from '../../core/scene';
+import {Camera          } from '../../core/camera';
+import {Vector3         } from '../../core/vector3';
+import {Behaviour       } from '../../core/behaviour';
 
-import {Vector3}    from '../../core/vector3';
-import {Scene}      from '../../core/scene';
-import {Behaviour}  from '../../core/behaviour';
+let Detector        = require('../../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
+let DatGUI          = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
+
 
 let container = document.createElement( 'div' );
 document.body.appendChild( container );
@@ -25,12 +26,12 @@ if( !Detector.webgl ) {
 
 
 // -----------------------------------------------------------------------------
-// GameFrame
+// SceneView
 // -----------------------------------------------------------------------------
-class GameFrame {
-    renderer    : THREE.WebGLRenderer;
-    scene       : THREE.Scene;
-    cameras     : {[id:string]:THREE.Camera}    = {};
+class SceneView {
+    renderer    : MeshRenderer;
+    scene       : Scene;
+    cameras     : {[id:string]:Camera}          = {};
     lights      : {[id:string]:THREE.Light}     = {};
 
     // -------------------------------------------------------------------------
@@ -39,20 +40,11 @@ class GameFrame {
     constructor() {
 
         // renderer setting
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
-        this.renderer.setClearColor(0xdddddd);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFShadowMap;
-        container.appendChild( this.renderer.domElement );
+        this.renderer = new MeshRenderer( container );
         // scene setting
-        this.scene = new THREE.Scene();
+        this.scene = new Scene();
         // camera setting
-        let camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-        camera.position.set( 40, 40, 40);
-        //camera.lookAt( new THREE.Vector3(0,0,0) );
-        camera.lookAt( this.scene.position );
-        this.cameras.main = camera;
+        this.cameras.main = new Camera(this.scene);;
         // -----------------------------------------------------------------------------
         // 라이트 설정
         // -----------------------------------------------------------------------------
@@ -61,8 +53,8 @@ class GameFrame {
             light.castShadow = true;
             light.position.set(15,30,50);
             if( light.shadow.camera.type === typeof(THREE.PerspectiveCamera) ) {
-                if( this.cameras.main.type === typeof(THREE.PerspectiveCamera) ) {
-                    (<THREE.PerspectiveCamera>light.shadow.camera).fov = (<THREE.PerspectiveCamera>this.cameras.main).fov;
+                if( this.cameras.main instanceof THREE.PerspectiveCamera ) {
+                    (<THREE.PerspectiveCamera>light.shadow.camera).fov = (<THREE.PerspectiveCamera>this.cameras.main.camera).fov;
                 }
             }
             light.shadow.bias = 0.0001;
@@ -108,7 +100,7 @@ class GameFrame {
     // add : add object to scene
     // -----------------------------------------------------------------------------
     add = (obj:any):void => {
-        this.scene.add( obj );
+        this.scene.scene.add( obj );
     }
 }
 
@@ -121,8 +113,8 @@ class SceneHelper {
     // -------------------------------------------------------------------------
     // constructor
     // -------------------------------------------------------------------------
-    constructor(frame:GameFrame) {
-        this.scene = frame.scene;
+    constructor(sceneView:SceneView) {
+        this.scene = sceneView.scene.scene;
         // axis
         {
             let axis = new THREE.AxisHelper(10);
@@ -135,27 +127,30 @@ class SceneHelper {
             let grid = new THREE.GridHelper(100,20,0xffff00,0x000000);
             this.scene.add( grid );
             // z
-            //let grid2 = new THREE.GridHelper(100,20,0xffff00,0x000000);
+            //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
             //grid2.rotation.x = -0.5 * Math.PI;
             //this.scene.add( grid2 );
             // x
-            //let grid3 = new THREE.GridHelper(100,20,0xffff00,0x000000);
+            //let grid3 = new GL.GridHelper(100,20,0xffff00,0x000000);
             //grid3.rotation.x = -0.5 * Math.PI;
             //grid3.rotation.z = -0.5 * Math.PI;
             //this.scene.add( grid3 );
         }
         // camera controll
         {
-            let cameraControls = new OrbitControls( frame.cameras.main, frame.renderer.domElement );
-            cameraControls.addEventListener( 'change', frame.onRender );
+            let cameraControls = new OrbitControls( sceneView.cameras.main.camera, sceneView.renderer.renderer.domElement );
+            cameraControls.mouseButtons.PAN = THREE.MOUSE.MIDDLE;
+            cameraControls.mouseButtons.ZOOM = THREE.MOUSE.RIGHT;
+
+            cameraControls.addEventListener( 'change', sceneView.onRender );
         }
     }
 }
 
 
 
-let frame       = new GameFrame();
-let sceneHelper = new SceneHelper(frame);
+let sceneView   = new SceneView();
+let sceneHelper = new SceneHelper(sceneView);
 
 
 
@@ -166,12 +161,12 @@ let sceneHelper = new SceneHelper(frame);
 /*
 {
     // 메터리얼 생성
-    let material = new THREE.LineBasicMaterial( {color:0xff00ff} );
-    let geometry = new THREE.Geometry();
-    geometry.vertices.push( new THREE.Vector3(-10,  0,  0) );
-    geometry.vertices.push( new THREE.Vector3(  0, 10,  0) );
-    geometry.vertices.push( new THREE.Vector3( 10,  0,  0) );
-    var line = new THREE.Line(geometry, material);
+    let material = new GL.LineBasicMaterial( {color:0xff00ff} );
+    let geometry = new GL.Geometry();
+    geometry.vertices.push( new GL.Vector3(-10,  0,  0) );
+    geometry.vertices.push( new GL.Vector3(  0, 10,  0) );
+    geometry.vertices.push( new GL.Vector3( 10,  0,  0) );
+    var line = new GL.Line(geometry, material);
     scene.add(line);
 }
 */
@@ -210,7 +205,7 @@ class Plane extends Shape {
         this.mesh       = new THREE.Mesh( geometry, material );
         this.mesh.rotation.x = -0.5 * Math.PI;
         this.mesh.receiveShadow = true;
-        frame.add( this.mesh );
+        sceneView.add( this.mesh );
     }
 }
 
@@ -229,12 +224,12 @@ class Cube extends Shape {
 
         let geometry    = new THREE.BoxGeometry( 5, 5, 5 );
         let material    = new THREE.MeshLambertMaterial({color:0xff3300});
-        this.mesh        = new THREE.Mesh( geometry, material );
+        this.mesh       = new THREE.Mesh( geometry, material );
         this.mesh.position.x = 2.5;
         this.mesh.position.y = 2.5;
         this.mesh.position.z = 2.5;
         this.mesh.castShadow = true;
-        frame.add( this.mesh );
+        sceneView.add( this.mesh );
 
         this.controller = new Controller();
     }
@@ -247,17 +242,17 @@ let cube = new Cube();
 // -----------------------------------------------------------------------------
 /*
 {
-    let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    let geometry = new GL.BoxGeometry( 1, 1, 1 );
 
-    let texture = new THREE.TextureLoader().load( "./textures/000.jpg" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
+    let texture = new GL.TextureLoader().load( "./textures/000.jpg" );
+    texture.wrapS = GL.RepeatWrapping;
+    texture.wrapT = GL.RepeatWrapping;
     texture.repeat.set( 1, 1 );
 
-    let material = new THREE.MeshLambertMaterial({color:0xff3300});
-    //let material = new THREE.MeshBasicMaterial({color: 0xffffff, map: texture});
+    let material = new GL.MeshLambertMaterial({color:0xff3300});
+    //let material = new GL.MeshBasicMaterial({color: 0xffffff, map: texture});
 
-    var cube = new THREE.Mesh( geometry, material );
+    var cube = new GL.Mesh( geometry, material );
     cube.position.x = 5.5;
     cube.position.y = 2.5;
     cube.position.z = 2.5;
@@ -267,7 +262,7 @@ let cube = new Cube();
 
 
 
-frame.render();
+sceneView.render();
 
 
 // -----------------------------------------------------------------------------

@@ -1,15 +1,14 @@
-/**
- * component.ts
- *
- * @author jonghwa lee
- */
-
-import {UObject}    from './object';
-import {GameObject} from './game-object';
-import {Transform}  from './transform';
+// -----------------------------------------------------------------------------
+// component.ts
+// -----------------------------------------------------------------------------
+import {UObject     } from './object';
+import {GameObject  } from './game-object';
+import {Transform   } from './transform';
 
 /**
  * Component
+ *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Component

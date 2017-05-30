@@ -1,18 +1,16 @@
-/**
- * game-object.ts
- *
- * @author jonghwa lee
- */
-
-import {clone}      from './util';
-import {Vector3}    from './vector3';
-import {Quaternion} from './quaternion';
-import {UObject}    from './object';
-import {Transform}  from './transform';
-import {Scene}      from './scene';
+// -----------------------------------------------------------------------------
+// game-object.ts
+// -----------------------------------------------------------------------------
+import {Vector3     } from './vector3';
+import {Quaternion  } from './quaternion';
+import {UObject     } from './object';
+import {Transform   } from './transform';
+import {Scene       } from './scene';
 
 /**
+ * GameObject
  *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class GameObject

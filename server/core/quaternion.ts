@@ -1,11 +1,10 @@
+// -----------------------------------------------------------------------------
+// quaternion.ts
+// -----------------------------------------------------------------------------
 /**
- * quaternion.ts
+ * Quaternion
  *
- * @author jonghwa lee
- */
-
-/**
- *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Behaviour

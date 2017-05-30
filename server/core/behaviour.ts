@@ -1,13 +1,12 @@
-/**
- * behaviour.ts
- *
- * @author jonghwa lee
- */
-
+// -----------------------------------------------------------------------------
+// behaviour.ts
+// -----------------------------------------------------------------------------
 import {Component} from './component';
 
 /**
  * Behaviour
+ *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Behaviour
@@ -15,6 +14,7 @@ import {Component} from './component';
  */
 export class Behaviour extends Component {
 
+    /*
     enabled             : boolean;
     isActiveAndEnabled  : boolean;
 
@@ -97,5 +97,6 @@ export class Behaviour extends Component {
     onStart() {}//	Start is called on the frame when a script is enabled just before any of the Update methods is called the first time.
     onUpdate() {}//	Update is called every frame, if the MonoBehaviour is enabled.
     // [ private ] --------------------------------------------------------------------------------------------------
+    */
 }
 

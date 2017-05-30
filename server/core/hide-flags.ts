@@ -1,7 +1,11 @@
+// -----------------------------------------------------------------------------
+// hide-flags.ts
+// -----------------------------------------------------------------------------
+
 /**
  * Bit mask that controls object destruction, saving and visibility in inspectors.
  *
- * @author jonghwa lee
+ * @author mosframe / https://github.com/Mosframe
  *
  * @enum {number}
  */

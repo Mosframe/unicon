@@ -1,13 +1,12 @@
-/**
- * transform.ts
- *
- * @author jonghwa lee
- */
-
+// -----------------------------------------------------------------------------
+// transform.ts
+// -----------------------------------------------------------------------------
 import {Component} from './component';
 
 /**
  * Transform
+ *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class Transform

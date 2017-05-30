@@ -1,12 +1,11 @@
-/**
- * serialized-object.ts
- *
- * @author jonghwa lee
- */
-
+// -----------------------------------------------------------------------------
+// serialized-object.ts
+// -----------------------------------------------------------------------------
 
 /**
  * SerializedObject are classes for editing properties on objects in a completely generic way that automatically handles undo and styling UI for prefabs.
+ *
+ * @author mosframe / https://github.com/Mosframe
  *
  * @export
  * @class SerializedProperty
