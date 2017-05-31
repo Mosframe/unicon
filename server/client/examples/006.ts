@@ -86,7 +86,7 @@ class SceneView {
     // add : add object to scene
     // -----------------------------------------------------------------------------
     add = (obj:any):void => {
-        this.scene.scene.add( obj );
+        this.scene.core.add( obj );
     }
 }
 
@@ -100,7 +100,7 @@ class SceneHelper {
     // constructor
     // -------------------------------------------------------------------------
     constructor(sceneView:SceneView) {
-        this.scene = sceneView.scene.scene;
+        this.scene = sceneView.scene.core;
         // axis
         {
             let axis = new THREE.AxisHelper(10);
@@ -124,7 +124,7 @@ class SceneHelper {
         }
         // camera controll
         {
-            let cameraControls = new OrbitControls( sceneView.cameras.main.camera, sceneView.renderer.renderer.domElement );
+            let cameraControls = new OrbitControls( sceneView.cameras.main.core, sceneView.renderer.core.domElement );
             cameraControls.mouseButtons.PAN = THREE.MOUSE.MIDDLE;
             cameraControls.mouseButtons.ZOOM = THREE.MOUSE.RIGHT;
             cameraControls.addEventListener( 'change', sceneView.onRender );

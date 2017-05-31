@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------------
 // mesh-filter.ts
 // -----------------------------------------------------------------------------
-import * as THREE     from 'three';
+import * as GL        from './graphic';
+import {Vector3     } from './vector3';
 import {Component   } from './component';
+import {Mesh        } from './mesh';
 import {Scene       } from './scene';
 
 
@@ -19,14 +21,35 @@ import {Scene       } from './scene';
  */
 export class MeshFilter extends Component {
 
+    // [ Variables ]
 
-    mesh:any; // Returns the instantiated Mesh assigned to the mesh filter.
-    sharedMesh:any;//	Returns the shared mesh of the mesh filter.
+    /**
+     * Returns the instantiated Mesh assigned to the mesh filter.
+     *
+     * @type {Mesh}
+     * @memberof MeshFilter
+     */
+    mesh        : Mesh;
+    /**
+     * Returns the shared mesh of the mesh filter.
+     *
+     * @type {Mesh}
+     * @memberof MeshFilter
+     */
+    sharedMesh  : Mesh;
 
-    constructor() {
+    // [ Constructors ]
+
+    /**
+     * Creates an instance of MeshFilter.
+     * @param {Mesh} mesh
+     *
+     * @memberof MeshFilter
+     */
+    constructor( mesh:Mesh ) {
         super();
-    }
 
-    // [ private ] --------------------------------------------------------------------------------------------------
+        let v = new Vector3(0,0,0);
+    }
 }
 

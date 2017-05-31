@@ -11,6 +11,7 @@
  * @class Util
  */
 export class Util {
+
     /**
      * clone object
      *

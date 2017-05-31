@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // object.ts
 // -----------------------------------------------------------------------------
+import deprecated     from 'deprecated-decorator';
 import * as UUID      from 'node-uuid';
 import {Util        } from './util';
 import {HideFlags   } from './hide-flags';
@@ -20,6 +21,8 @@ import {Scene       } from './scene';
  */
 export class UObject {
 
+    // [ Variables ]
+
     /**
      * Should the object be hidden, saved with the scene or modifiable by the user?
      *
@@ -34,14 +37,20 @@ export class UObject {
      * @memberof Object
      */
     name : string;
+
+    // [ Constructors ]
+
     /**
      * Creates an instance of Object.
      *
      * @memberof Object
      */
     constructor() {
-        this._instanceID = UUID.v4();
+        this._setInstanceID();
     }
+
+    // [ Public Functions ]
+
     /**
      * equal
      *
@@ -57,11 +66,10 @@ export class UObject {
     /**
      * Returns the instance id of the object.
      *
-     * @returns {string}
      *
      * @memberof UObject
      */
-    getInstanceID ():string {
+    getInstanceID = ():string => {
         return this._instanceID;
     }
     /**
@@ -74,6 +82,10 @@ export class UObject {
     toString () {
         return JSON.stringify(this);
     }
+
+    // [ Static Functions ]
+
+
     /**
      *
      * Removes a gameobject, component or asset.
@@ -160,23 +172,20 @@ export class UObject {
      *
      * @static
      * @param {UObject} original An existing object that you want to make a copy of.
-     * @param {Transform} parent Parent that will be assigned to the new object.
-     * @param {Vector3} position Position for the new object.
-     * @param {Quaternion} rotation Orientation of the new object.
      *
      * @memberof UObject
      */
     static instantiate (original:UObject) {
         let instance = <UObject>Util.clone( original );
         if( instance ) {
-            instance.setInstanceID();
+            instance._setInstanceID();
             UObject._instances[instance._instanceID] = instance;
         }
     }
 
 
 
-    // [ private ] --------------------------------------------------------------------------------------------------
+    // [ Private Variables ]
 
     private static  _assets             : {[id:string]:UObject} = {} ; // asset list
     private static  _instances          : {[id:string]:UObject} = {} ; // instance list
@@ -185,8 +194,10 @@ export class UObject {
     private         _instanceID         : string                     ; // instance id
     private         _dontDestroyOnLoad  : boolean                    ; // not be destroyed automatically when loading a new scene.
 
+    // [ Private Functions ]
+
     // create instance ID
-    private setInstanceID = () => {
+    private _setInstanceID = () => {
         this._instanceID = UUID.v4();
     }
     // 파괴 예약한다.
@@ -194,11 +205,12 @@ export class UObject {
         UObject._toBeDestroyed.push(this._instanceID);
     }
     // 씬이 렌더링 후에 호출 한다.
-    private static _runToBeDestroyed () {
+    private static _runToBeDestroyed = () => {
         for( let instanceID of UObject._toBeDestroyed ) {
             delete UObject._instances[instanceID];
         }
         UObject._toBeDestroyed.length = 0;
     }
 }
+
 

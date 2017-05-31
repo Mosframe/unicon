@@ -1,13 +1,17 @@
 // -----------------------------------------------------------------------------
 // game-object.ts
 // -----------------------------------------------------------------------------
-import * as THREE         from 'three';
+import deprecated         from 'deprecated-decorator';
+import * as GL            from './graphic';
 import {PrimitiveType   } from './primitive-type';
 import {Vector3         } from './vector3';
 import {Quaternion      } from './quaternion';
 import {UObject         } from './object';
+import {Geometry        } from './geometry';
 import {Component       } from './component';
 import {Transform       } from './transform';
+import {Mesh            } from './mesh';
+import {MeshFilter      } from './mesh-filter';
 import {Scene           } from './scene';
 
 /**
@@ -21,6 +25,8 @@ import {Scene           } from './scene';
  */
 export class GameObject extends UObject {
 
+    // [ Variables ]
+
     /*
     activeInHierarchy   : boolean;
     activeSelf          : boolean;
@@ -31,7 +37,8 @@ export class GameObject extends UObject {
     */
     transform           : Transform;
 
-    components : {[id:string]:Component}
+
+    // [ Constructors ]
 
     /**
      * Creates an instance of GameObject.
@@ -41,14 +48,24 @@ export class GameObject extends UObject {
     constructor(){
         super();
         this.transform = new Transform();
-        this.components[this.transform.getInstanceID()] = this.transform;
+        this.addComponent( this.transform );
+    }
+
+    // [ Public Functions ]
+
+    /**
+     * Adds a component class named className to the game object.
+     *
+     * @param {Component} component
+     * @returns {Component}
+     *
+     * @memberof GameObject
+     */
+    addComponent(component:Component):Component {
+        return this._components[component.getInstanceID()] = component;
     }
 
     /*
-    addComponent() {
-
-    }
-
     broadcastMessage() {
 
     }
@@ -87,21 +104,17 @@ export class GameObject extends UObject {
     }
     */
 
-    // [ Static Function ] --------------------------------------------------------------------------------------------------
+    // [ Static Functions ]
 
     static createPrimitive( type:PrimitiveType ) : GameObject {
         let gameObject = new GameObject();
 
-        let geometry    = new THREE.PlaneGeometry( 1, 1, 1 );
-        let material    = new THREE.MeshLambertMaterial({color:0xffffff});
-        let mesh        = new THREE.Mesh( geometry, material );
-        this.mesh.rotation.x = -0.5 * Math.PI;
-        this.mesh.receiveShadow = true;
-        sceneView.add( this.mesh );
+        let geometry    = new Geometry( type );
+        let material    = new GL.MeshLambertMaterial({color:0xffffff});
+        let mesh        = new Mesh( geometry, material );
+        let meshFilter  = new MeshFilter(mesh);
 
-        THREE.CubeGeometry()
-        this.components[this.transform.getInstanceID()] = this.transform;
-
+        //gameObject.components[mesh.getInstanceID()] = mesh;
 
         return gameObject;
     }
@@ -118,7 +131,9 @@ export class GameObject extends UObject {
     }
     */
 
-    // [ private ] --------------------------------------------------------------------------------------------------
+    // [ Private Variables ]
+
+    private _components : {[id:string]:Component}
 
 }
 

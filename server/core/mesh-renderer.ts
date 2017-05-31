@@ -14,8 +14,10 @@ import {Renderer} from './renderer';
  */
 export class MeshRenderer extends Renderer {
 
-    additionalVertexStreams:any;//	Vertex attributes in this mesh will override or add attributes of the primary mesh in the MeshRenderer.
+    // [ Variables ]
 
-    // [ private ] --------------------------------------------------------------------------------------------------
+    /*
+    additionalVertexStreams:any;//	Vertex attributes in this mesh will override or add attributes of the primary mesh in the MeshRenderer.
+    */
 }
 

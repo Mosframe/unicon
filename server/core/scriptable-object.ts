@@ -14,13 +14,17 @@ import {UObject} from './object';
  */
 export class ScriptableObject extends UObject {
 
+    // [ Static Functions ]
+
+    /*
     // Creates an instance of a scriptable object.
     static createInstance() {
-
     }
+    */
 
-    // [ messages ] --------------------------------------------------------------------------------------------------
+    // [ Messages ]
 
+    /*
     // This function is called when the ScriptableObject script is started.
     onAwake() {
 
@@ -40,7 +44,6 @@ export class ScriptableObject extends UObject {
     onEnable() {
 
     }
-
-    // [ private ] --------------------------------------------------------------------------------------------------
+    */
 }
 

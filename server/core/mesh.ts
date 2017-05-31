@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 // mesh.ts
 // -----------------------------------------------------------------------------
-import * as THREE     from 'three';
+import * as GL        from './graphic';
 import {UObject     } from './object';
+import {Geometry    } from './geometry';
 
 
 /**
@@ -15,6 +16,16 @@ import {UObject     } from './object';
  * @extends {Component}
  */
 export class Mesh extends UObject {
+
+    // [ Variables ]
+
+    /**
+     * core
+     *
+     * @type {GL.Mesh}
+     * @memberof Mesh
+     */
+    core    : GL.Mesh;
 
     /*
     bindposes:any;//	The bind poses. The bind pose at each index refers to the bone with the same index.
@@ -37,9 +48,25 @@ export class Mesh extends UObject {
     vertices:any;//	Returns a copy of the vertex positions or assigns a new vertex positions array.
     */
 
-    constructor() {
+    // [ Constructors ]
+
+    /**
+     * Creates an instance of Mesh.
+     * @param {GL.Geometry} geometry
+     * @param {GL.Material} material
+     *
+     * @memberof Mesh
+     */
+    constructor( geometry:Geometry, material:GL.Material ) {
         super();
+
+        this.core = new GL.Mesh( geometry.core, material );
+        this.core.rotation.x    = -0.5 * Math.PI;
+        this.core.receiveShadow = true;
     }
+
+    // [ Public Functions ]
+
     /*
     AddBlendShapeFrame(){};//	Adds a new blend shape frame.
     Clear(){};//	Clears all vertex data and all triangle indices.
@@ -77,7 +104,5 @@ export class Mesh extends UObject {
     SetVertices(){};//	Assigns a new vertex positions array.
     UploadMeshData(){};//	Upload previously done Mesh modifications to the graphics API.
     */
-
-    // [ private ] --------------------------------------------------------------------------------------------------
 }
 

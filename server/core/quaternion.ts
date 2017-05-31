@@ -1,19 +1,17 @@
 // -----------------------------------------------------------------------------
 // quaternion.ts
 // -----------------------------------------------------------------------------
+import * as GL        from './graphic';
+
 /**
  * Quaternion
  *
  * @author mosframe / https://github.com/Mosframe
  *
  * @export
- * @class Behaviour
- * @extends {Component}
+ * @class Quaternion
+ * @extends {GL.Quaternion}
  */
-export class Quaternion {
-    x : number;
-    y : number;
-    z : number;
-    w : number;
+export class Quaternion extends GL.Quaternion {
 }
 

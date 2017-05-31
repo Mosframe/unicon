@@ -14,12 +14,16 @@ import {Component} from './component';
  */
 export class Behaviour extends Component {
 
+    // [Variables]
+
     /*
     enabled             : boolean;
     isActiveAndEnabled  : boolean;
 
     runInEditMode       : boolean;
     useGUILayout        : boolean;
+
+    // [Public Functions]
 
     cancelInvoke() {}
     invoke() {}
@@ -31,7 +35,7 @@ export class Behaviour extends Component {
 
     static print() {}
 
-    // [ messages ] --------------------------------------------------------------------------------------------------
+    // [ Messages ]
 
     onAwake(){} //Awake is called when the script instance is being loaded.
     onFixedUpdate() {} //This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
@@ -96,7 +100,6 @@ export class Behaviour extends Component {
     onReset() {}//	Reset to default values.
     onStart() {}//	Start is called on the frame when a script is enabled just before any of the Update methods is called the first time.
     onUpdate() {}//	Update is called every frame, if the MonoBehaviour is enabled.
-    // [ private ] --------------------------------------------------------------------------------------------------
     */
 }
 

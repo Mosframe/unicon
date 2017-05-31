@@ -12,6 +12,7 @@
     "@types/three": "^0.84.8",
     "@types/v8-profiler": "0.0.5",
     "@types/xtend": "^4.0.2",
+    "deprecated-decorator": "^0.1.6",
     "express": "^4.15.2",
     "mongojs": "^2.4.0",
     "node-uuid": "^1.4.8",

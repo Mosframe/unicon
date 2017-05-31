@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // orbit-controls.ts
 // -----------------------------------------------------------------------------
-import * as THREE from 'three';
+import * as GL from '../core/graphic';
 
 const STATE = {
   NONE          :-1,
@@ -38,14 +38,15 @@ const EPS               = 0.000001;
  * @class OrbitControls
  * @extends {THREE.EventDispatcher}
  */
-export class OrbitControls extends THREE.EventDispatcher {
-  object: THREE.Camera;
+export class OrbitControls extends GL.EventDispatcher {
+
+  object: GL.Camera;
   domElement: HTMLElement | HTMLDocument;
   window: Window;
 
   // API
   enabled: boolean;
-  target: THREE.Vector3;
+  target: GL.Vector3;
 
   enableZoom: boolean;
   zoomSpeed: number;
@@ -65,41 +66,41 @@ export class OrbitControls extends THREE.EventDispatcher {
   maxAzimuthAngle: number;
   enableKeys: boolean;
   keys: { LEFT: number; UP: number; RIGHT: number; BOTTOM: number; };
-  mouseButtons: { ORBIT: THREE.MOUSE; ZOOM: THREE.MOUSE; PAN: THREE.MOUSE; };
+  mouseButtons: { ORBIT: GL.MOUSE; ZOOM: GL.MOUSE; PAN: GL.MOUSE; };
   enableDamping: boolean;
   dampingFactor: number;
 
-  private spherical: THREE.Spherical;
-  private sphericalDelta: THREE.Spherical;
+  private spherical: GL.Spherical;
+  private sphericalDelta: GL.Spherical;
   private scale: number;
-  private target0: THREE.Vector3;
-  private position0: THREE.Vector3;
+  private target0: GL.Vector3;
+  private position0: GL.Vector3;
   private zoom0: any;
   private state: number;
-  private panOffset: THREE.Vector3;
+  private panOffset: GL.Vector3;
   private zoomChanged: boolean;
 
-  private rotateStart: THREE.Vector2;
-  private rotateEnd: THREE.Vector2;
-  private rotateDelta: THREE.Vector2
+  private rotateStart: GL.Vector2;
+  private rotateEnd: GL.Vector2;
+  private rotateDelta: GL.Vector2
 
-  private panStart: THREE.Vector2;
-  private panEnd: THREE.Vector2;
-  private panDelta: THREE.Vector2;
+  private panStart: GL.Vector2;
+  private panEnd: GL.Vector2;
+  private panDelta: GL.Vector2;
 
-  private dollyStart: THREE.Vector2;
-  private dollyEnd: THREE.Vector2;
-  private dollyDelta: THREE.Vector2;
+  private dollyStart: GL.Vector2;
+  private dollyEnd: GL.Vector2;
+  private dollyDelta: GL.Vector2;
 
-  private updateLastPosition: THREE.Vector3;
-  private updateOffset: THREE.Vector3;
-  private updateQuat: THREE.Quaternion;
-  private updateLastQuaternion: THREE.Quaternion;
-  private updateQuatInverse: THREE.Quaternion;
+  private updateLastPosition: GL.Vector3;
+  private updateOffset: GL.Vector3;
+  private updateQuat: GL.Quaternion;
+  private updateLastQuaternion: GL.Quaternion;
+  private updateQuatInverse: GL.Quaternion;
 
-  private panLeftV: THREE.Vector3;
-  private panUpV: THREE.Vector3;
-  private panInternalOffset: THREE.Vector3;
+  private panLeftV: GL.Vector3;
+  private panUpV: GL.Vector3;
+  private panInternalOffset: GL.Vector3;
 
   private onContextMenu: EventListener;
   private onMouseUp: EventListener;
@@ -111,7 +112,7 @@ export class OrbitControls extends THREE.EventDispatcher {
   private onTouchMove: EventListener;
   private onKeyDown: EventListener;
 
-  constructor (object: THREE.Camera, domElement?: HTMLElement, domWindow?: Window) {
+  constructor (object: GL.Camera, domElement?: HTMLElement, domWindow?: Window) {
     super();
     this.object = object;
 
@@ -122,7 +123,7 @@ export class OrbitControls extends THREE.EventDispatcher {
     this.enabled = true;
 
     // "target" sets the location of focus, where the object orbits around
-    this.target = new THREE.Vector3();
+    this.target = new GL.Vector3();
 
     // How far you can dolly in and out ( PerspectiveCamera only )
     this.minDistance = 0;
@@ -172,7 +173,7 @@ export class OrbitControls extends THREE.EventDispatcher {
     this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
 
     // Mouse buttons
-    this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
+    this.mouseButtons = { ORBIT: GL.MOUSE.LEFT, ZOOM: GL.MOUSE.MIDDLE, PAN: GL.MOUSE.RIGHT };
 
     // for reset
     this.target0 = this.target.clone();
@@ -180,38 +181,38 @@ export class OrbitControls extends THREE.EventDispatcher {
     this.zoom0 = (this.object as any).zoom;
 
     // for update speedup
-    this.updateOffset = new THREE.Vector3();
+    this.updateOffset = new GL.Vector3();
     // so camera.up is the orbit axis
-    this.updateQuat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+    this.updateQuat = new GL.Quaternion().setFromUnitVectors( object.up, new GL.Vector3( 0, 1, 0 ) );
     this.updateQuatInverse = this.updateQuat.clone().inverse();
-    this.updateLastPosition = new THREE.Vector3();
-    this.updateLastQuaternion = new THREE.Quaternion();
+    this.updateLastPosition = new GL.Vector3();
+    this.updateLastQuaternion = new GL.Quaternion();
 
     this.state = STATE.NONE;
     this.scale = 1;
 
     // current position in spherical coordinates
-    this.spherical = new THREE.Spherical();
-    this.sphericalDelta = new THREE.Spherical();
+    this.spherical = new GL.Spherical();
+    this.sphericalDelta = new GL.Spherical();
 
-    this.panOffset = new THREE.Vector3();
+    this.panOffset = new GL.Vector3();
     this.zoomChanged = false;
 
-    this.rotateStart = new THREE.Vector2();
-    this.rotateEnd = new THREE.Vector2();
-    this.rotateDelta = new THREE.Vector2();
+    this.rotateStart = new GL.Vector2();
+    this.rotateEnd = new GL.Vector2();
+    this.rotateDelta = new GL.Vector2();
 
-    this.panStart = new THREE.Vector2();
-    this.panEnd = new THREE.Vector2();
-    this.panDelta = new THREE.Vector2();
+    this.panStart = new GL.Vector2();
+    this.panEnd = new GL.Vector2();
+    this.panDelta = new GL.Vector2();
 
-    this.dollyStart = new THREE.Vector2();
-    this.dollyEnd = new THREE.Vector2();
-    this.dollyDelta = new THREE.Vector2();
+    this.dollyStart = new GL.Vector2();
+    this.dollyEnd = new GL.Vector2();
+    this.dollyDelta = new GL.Vector2();
 
-    this.panLeftV = new THREE.Vector3();
-    this.panUpV = new THREE.Vector3();
-    this.panInternalOffset = new THREE.Vector3();
+    this.panLeftV = new GL.Vector3();
+    this.panUpV = new GL.Vector3();
+    this.panInternalOffset = new GL.Vector3();
 
     // event handlers - FSM: listen for events and reset state
 
@@ -543,13 +544,13 @@ export class OrbitControls extends THREE.EventDispatcher {
     return false;
   }
 
-  panLeft( distance: number, objectMatrix:THREE.Matrix4 ) {
+  panLeft( distance: number, objectMatrix:GL.Matrix4 ) {
     this.panLeftV.setFromMatrixColumn( objectMatrix, 0 ); // get X column of objectMatrix
     this.panLeftV.multiplyScalar( - distance );
     this.panOffset.add( this.panLeftV );
   }
 
-  panUp( distance: number, objectMatrix:THREE.Matrix4 ) {
+  panUp( distance: number, objectMatrix:GL.Matrix4 ) {
     this.panUpV.setFromMatrixColumn( objectMatrix, 1 ); // get Y column of objectMatrix
     this.panUpV.multiplyScalar( distance );
     this.panOffset.add( this.panUpV );
@@ -559,7 +560,7 @@ export class OrbitControls extends THREE.EventDispatcher {
   pan( deltaX: number, deltaY: number ) {
     const element = this.domElement === document ? this.domElement.body : this.domElement;
 
-    if ( this.object instanceof THREE.PerspectiveCamera ) {
+    if ( this.object instanceof GL.PerspectiveCamera ) {
       // perspective
       const position = this.object.position;
       this.panInternalOffset.copy( position ).sub( this.target );
@@ -571,7 +572,7 @@ export class OrbitControls extends THREE.EventDispatcher {
       // we actually don't use screenWidth, since perspective camera is fixed to screen height
       this.panLeft( 2 * deltaX * targetDistance / (element as any).clientHeight, this.object.matrix );
       this.panUp( 2 * deltaY * targetDistance / (element as any).clientHeight, this.object.matrix );
-    } else if ( this.object instanceof THREE.OrthographicCamera ) {
+    } else if ( this.object instanceof GL.OrthographicCamera ) {
       // orthographic
       this.panLeft( deltaX * ( this.object.right - this.object.left ) / this.object.zoom / (element as any).clientWidth, this.object.matrix );
       this.panUp( deltaY * ( this.object.top - this.object.bottom ) / this.object.zoom / (element as any).clientHeight, this.object.matrix );
@@ -583,9 +584,9 @@ export class OrbitControls extends THREE.EventDispatcher {
   }
 
   dollyIn( dollyScale:number ) {
-    if ( this.object instanceof THREE.PerspectiveCamera ) {
+    if ( this.object instanceof GL.PerspectiveCamera ) {
       this.scale /= dollyScale;
-    } else if ( this.object instanceof THREE.OrthographicCamera ) {
+    } else if ( this.object instanceof GL.OrthographicCamera ) {
       this.object.zoom = Math.max( this.minZoom, Math.min( this.maxZoom, this.object.zoom * dollyScale ) );
       this.object.updateProjectionMatrix();
       this.zoomChanged = true;
@@ -596,9 +597,9 @@ export class OrbitControls extends THREE.EventDispatcher {
   }
 
   dollyOut( dollyScale:number ) {
-    if ( this.object instanceof THREE.PerspectiveCamera ) {
+    if ( this.object instanceof GL.PerspectiveCamera ) {
       this.scale *= dollyScale;
-    } else if ( this.object instanceof THREE.OrthographicCamera ) {
+    } else if ( this.object instanceof GL.OrthographicCamera ) {
       this.object.zoom = Math.max( this.minZoom, Math.min( this.maxZoom, this.object.zoom / dollyScale ) );
       this.object.updateProjectionMatrix();
       this.zoomChanged = true;
@@ -662,7 +663,7 @@ export class OrbitControls extends THREE.EventDispatcher {
   }
 
   // backward compatibility
-  get center(): THREE.Vector3 {
+  get center(): GL.Vector3 {
     console.warn('THREE.OrbitControls: .center has been renamed to .target');
     return this.target;
   }
@@ -681,7 +682,7 @@ interface ThreeEvent extends Event {
   clientX: number;
   clientY: number;
   deltaY: number;
-  button: THREE.MOUSE;
+  button: GL.MOUSE;
   touches: Array<any>;
   keyCode: number;
 }

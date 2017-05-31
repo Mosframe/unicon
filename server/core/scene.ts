@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // scene.ts
 // -----------------------------------------------------------------------------
-import * as THREE   from 'three';
-import {GameObject} from './game-object';
+import * as GL        from './graphic';
+import {GameObject  } from './game-object';
 
 /**
  * Scene
@@ -15,15 +15,15 @@ import {GameObject} from './game-object';
  */
 export class Scene {
 
-    // [ Public Variables ] --------------------------------------------------------------------------------------------------
+    // [ Variables ]
 
     /**
-     * scene
+     * core
      *
-     * @type {THREE.Scene}
+     * @type {GL.Scene}
      * @memberof Scene
      */
-    scene = new THREE.Scene();
+    core : GL.Scene;
 
     /**
      * all the root game objects in the scene.
@@ -33,58 +33,62 @@ export class Scene {
      */
     gameObjects : {[id:string]:GameObject} = {}
 
-
-    constructor() {
-    }
-
-
-    // [ Public Functions ] --------------------------------------------------------------------------------------------------
-
-
-    // [ private ] --------------------------------------------------------------------------------------------------
-
     /**
      * Returns the index of the scene in the Build Settings. Always returns -1 if the scene was loaded through an AssetBundle.
      *
      * @type {number}
      * @memberof Scene
      */
-    buildIndex  : number;
+    //buildIndex  : number;
     /**
      * Returns true if the scene is modifed.
      *
      * @type {boolean}
      * @memberof Scene
      */
-    isDirty     : boolean;
+    //isDirty     : boolean;
     /**
      * Returns true if the scene is loaded.
      *
      * @type {boolean}
      * @memberof Scene
      */
-    isLoaded    : boolean;
+    //isLoaded    : boolean;
     /**
      * Returns the name of the scene.
      *
      * @type {string}
      * @memberof Scene
      */
-    name        : string;
+    //name        : string;
     /**
      * Returns the relative path of the scene. Like: "assets/scenes/start.json".
      *
      * @type {string}
      * @memberof Scene
      */
-    path        : string;
+    //path        : string;
     /**
      * The number of root transforms of this scene.
      *
      *
      * @memberof Scene
      */
-    rootCount : number;
+    //rootCount : number;
+
+    // [ Constructors ]
+
+    /**
+     * Creates an instance of Scene.
+     *
+     * @memberof Scene
+     */
+    constructor() {
+        this.core = new GL.Scene();
+    }
+
+
+    // [ Public Functions ]
 
     /**
      * Whether this is a valid scene. A scene may be invalid if, for example, you tried to open a scene that does not exist. In this case, the scene returned from EditorSceneManager.OpenScene would return False for IsValid.
@@ -93,9 +97,9 @@ export class Scene {
      *
      * @memberof Scene
      */
-    isValid() : boolean {
-        return true;
-    }
+    //isValid() : boolean {
+    //    return true;
+    //}
 
 }
 

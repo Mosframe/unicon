@@ -16,10 +16,15 @@ import {Transform   } from './transform';
  */
 export class Component extends UObject {
 
-    gameObject  : GameObject;
-    tag         : string;
-    transform   : Transform;
+    // [ Variables ]
 
+    //gameObject  : GameObject;
+    //tag         : string;
+    //transform   : Transform;
+
+    // [ Public Functions ]
+
+    /*
     broadcastMessage() {
 
     }
@@ -52,7 +57,6 @@ export class Component extends UObject {
     sendMessageUpwards() {
 
     }
-
-    // [ private ] --------------------------------------------------------------------------------------------------
+    */
 }
 

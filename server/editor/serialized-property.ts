@@ -12,6 +12,9 @@
  */
 export class SerializedProperty {
 
+    // [Variables]
+
+    /*
     animationCurveValue:any//	Value of a animation curve property.
     arrayElementType:any//	Type name of the element in an array property. (Read Only)
     arraySize:any//	The number of elements in the array. If the SerializedObject contains multiple objects it will return the smallest number of elements. So it is always possible to iterate through the SerializedObject and only get properties found in all objects.
@@ -49,7 +52,9 @@ export class SerializedProperty {
     vector2Value:any//	Value of a 2D vector property.
     vector3Value:any//	Value of a 3D vector property.
     vector4Value:any//	Value of a 4D vector property.
+    */
 
+    /*
     clearArray(){}//		Remove all elements from the array.
     copy(){}//		Returns a copy of the SerializedProperty iterator in its current state. This is useful if you want to keep a reference to the current property but continue with the iteration.
     countInProperty(){}//		Count visible children of this property, including this property itself.
@@ -66,9 +71,11 @@ export class SerializedProperty {
     next(){}//		Move to next property.
     nextVisible(){}//		Move to next visible property.
     reset(){}//		Move to first property of the object.
+    */
 
-
+    /*
     static equalContents(){}//	See if contained serialized properties are equal.
+    */
 
     // [ private ] --------------------------------------------------------------------------------------------------
 }
