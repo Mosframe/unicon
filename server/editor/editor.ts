@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // editor.ts
 // -----------------------------------------------------------------------------
-import {ScriptableObject}  from '../core/scriptable-object';
+import {ScriptableObject}  from '../engine/scriptable-object';
 
 /**
  * Base class to derive custom Editors from. Use this to create your own custom inspectors and editors for your objects.

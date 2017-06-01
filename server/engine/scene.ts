@@ -10,28 +10,14 @@ import {GameObject  } from './game-object';
  * @author mosframe / https://github.com/Mosframe
  *
  * @export
- * @class Behaviour
- * @extends {Component}
+ * @class Scene
+ * @extends {GL.Scene}
  */
 export class Scene {
 
-    // [ Variables ]
+    // [ Public Variables ]
 
-    /**
-     * core
-     *
-     * @type {GL.Scene}
-     * @memberof Scene
-     */
-    core : GL.Scene;
-
-    /**
-     * all the root game objects in the scene.
-     *
-     * @type {{[id:string]:GameObject}}
-     * @memberof Scene
-     */
-    gameObjects : {[id:string]:GameObject} = {}
+    core : GL.Scene = new GL.Scene();
 
     /**
      * Returns the index of the scene in the Build Settings. Always returns -1 if the scene was loaded through an AssetBundle.
@@ -84,22 +70,32 @@ export class Scene {
      * @memberof Scene
      */
     constructor() {
-        this.core = new GL.Scene();
+        //this.core = new GL.Scene();
     }
 
 
     // [ Public Functions ]
 
     /**
-     * Whether this is a valid scene. A scene may be invalid if, for example, you tried to open a scene that does not exist. In this case, the scene returned from EditorSceneManager.OpenScene would return False for IsValid.
+     * Returns all the root game objects in the scene.
      *
-     * @returns {boolean}
+     * @returns {GameObject[]}
      *
      * @memberof Scene
      */
-    //isValid() : boolean {
-    //    return true;
-    //}
+    getRootGameObjects() : GameObject[] {
+        let gameObjects : GameObject[] = [];
+        for( let child of this.core.children ) {
+            if( child instanceof GameObject ) {
+                gameObjects.push( child );
+            }
+        }
+        return gameObjects;
+    }
+
+    /*
+    IsValid	Whether this is a valid scene. A scene may be invalid if, for example, you tried to open a scene that does not exist. In this case, the scene returned from EditorSceneManager.OpenScene would return False for IsValid.
+    */
 
 }
 

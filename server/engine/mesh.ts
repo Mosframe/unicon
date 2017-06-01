@@ -4,6 +4,7 @@
 import * as GL        from './graphic';
 import {UObject     } from './object';
 import {Geometry    } from './geometry';
+import {Material    } from './material';
 
 
 /**
@@ -57,10 +58,11 @@ export class Mesh extends UObject {
      *
      * @memberof Mesh
      */
-    constructor( geometry:Geometry, material:GL.Material ) {
+    constructor( geometry:Geometry ) {
         super();
 
-        this.core = new GL.Mesh( geometry.core, material );
+        let material = new Material();
+        this.core = new GL.Mesh( geometry.core, material.core );
         this.core.rotation.x    = -0.5 * Math.PI;
         this.core.receiveShadow = true;
     }

@@ -3,8 +3,9 @@
 // -----------------------------------------------------------------------------
 import * as GL        from './graphic';
 import {Component   } from './component';
+import {Transform   } from './transform';
 import {Camera      } from './camera';
-import {Scene       } from './scene';
+import {SceneManager} from './scene-manager';
 
 
 /**
@@ -21,7 +22,7 @@ export class Light extends Component {
     // [ Variables ]
 
     /**
-     * light
+     * core light
      *
      * @type {GL.Light}
      * @memberof Light
@@ -31,24 +32,31 @@ export class Light extends Component {
     // [ Constructors ]
 
     /**
-     * Creates an instance of Camera.
+     * Creates an instance of Light.
      *
-     * @memberof Camera
+     * @memberof Light
      */
-    constructor( scene:Scene, camera:Camera ) {
+    constructor() {
         super();
+
         this.core = new GL.SpotLight(0xffffff);
         this.core.castShadow = true;
         this.core.position.set(15,30,50);
-        if( this.core.shadow.camera.type === typeof(GL.PerspectiveCamera) ) {
-            if( camera.core instanceof GL.PerspectiveCamera ) {
-                (<GL.PerspectiveCamera>this.core.shadow.camera).fov = (<GL.PerspectiveCamera>camera.core).fov;
-            }
-        }
         this.core.shadow.bias = 0.0001;
         this.core.shadow.mapSize.width = 2048;
         this.core.shadow.mapSize.height = 2048;
-        scene.core.add(this.core);
+        /*
+        if( this.core.shadow.camera.type === typeof(GL.PerspectiveCamera) ) {
+            if( camera instanceof GL.PerspectiveCamera ) {
+                (<GL.PerspectiveCamera>this.core.shadow.camera).fov = (<GL.PerspectiveCamera>camera).fov;
+            }
+        }
+        */
+
+        SceneManager.current.core.add(this.core);
     }
+
+    // [ Static Functions ]
+
 }
 

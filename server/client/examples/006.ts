@@ -2,14 +2,17 @@
 // 006 : Unicon 엔진 클라이언트 첫번째 테스트
 // -----------------------------------------------------------------------------
 
-import * as THREE         from 'three';
+import * as GL            from '../../engine/graphic';
 import {OrbitControls   } from '../../editor/orbit-controls';
-import {Vector3         } from '../../core/vector3';
-import {Behaviour       } from '../../core/behaviour';
-import {MeshRenderer    } from '../../core/mesh-renderer';
-import {Camera          } from '../../core/camera';
-import {Light           } from '../../core/light';
-import {Scene           } from '../../core/scene';
+import {Vector3         } from '../../engine/vector3';
+import {Behaviour       } from '../../engine/behaviour';
+import {MeshRenderer    } from '../../engine/mesh-renderer';
+import {PrimitiveType   } from '../../engine/primitive-type';
+import {Camera          } from '../../engine/camera';
+import {Light           } from '../../engine/light';
+import {GameObject      } from '../../engine/game-object';
+import {Renderer        } from '../../engine/renderer';
+import {Scene           } from '../../engine/scene';
 
 let Detector        = require('../../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
 let DatGUI          = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
@@ -25,29 +28,100 @@ if( !Detector.webgl ) {
     container.appendChild(warning);
 }
 
+/*
+    유니티 구조
+    Scene
+        GameObject
+            transform
+            camera
+            light
+            Renderer
+            mesh
+            component
+            script
+                GameObject
+                    transform
+                    camera
+                    light
+                    Renderer
+                    mesh
+                    component
+
+    Three 구조
+
+    Scene
+        Object3D
+            Object3D
+                Object3D
+
+    Unicon 구조
+
+    Scene : GL.Scene : GL.Object3D
+        GameObject : Transform : GL.Object3D
+            Camera : GL.Camera : GL.Object3D
+            Transform : GL.Object3D
+                Light: GL.Light
+
+
+    Scene : UObject
+        core : GL.Scene : GL.Object3D
+
+        GameObject : UObject
+
+            Transform : Component
+                core = GL.Object3D
+
+            Camera : Component
+                core : GL.Camera : GL.Object3D
+
+            Light : Component
+                core : GL.Light : GL.Object3D
+
+
+    // Camera = GameObject + Transform + Camera
+    // Light  = GameObject + Transform + Light
+    //
+
+    Scene : GL.Scene : GL.Object3D
+
+        Transform : GL.Object3D
+
+        Camera : GL.Camera : GL.Object3D
+            components
+
+        Light : GL.Light : GL.Object3D
+            components
+
+*/
+
 
 // -----------------------------------------------------------------------------
 // SceneView
 // -----------------------------------------------------------------------------
 class SceneView {
-    renderer    : MeshRenderer;
-    scene       : Scene;
-    cameras     : {[id:string]:Camera}  = {};
-    lights      : {[id:string]:Light}   = {};
+    renderer    : Renderer;
+    camera      : Camera;   // editor camera
+    light       : Light;    // editor light
+
+    scene       : Scene;    // current scene
 
     // -------------------------------------------------------------------------
     // constructor
     // -------------------------------------------------------------------------
     constructor() {
 
-        // renderer setting
-        this.renderer = new MeshRenderer( container );
         // scene setting
         this.scene = new Scene();
+
+        // renderer setting
+        this.renderer = new MeshRenderer( container );
         // camera setting
-        this.cameras.main = new Camera(this.scene);
+        this.camera = new Camera(this.scene);
         // light setting
-        this.lights.main = new Light(this.scene,this.cameras.main);
+        this.light = new Light(this.scene,this.camera);
+
+        //
+        GameObject.createPrimitive( PrimitiveType.cube );
     }
 
     // -----------------------------------------------------------------------------
@@ -72,7 +146,7 @@ class SceneView {
     render = () => {
         requestAnimationFrame( this.render );
         this.update();
-        this.renderer.render( this.scene, this.cameras.main );
+        this.renderer.render( this.scene, this.camera );
     }
 
     // -----------------------------------------------------------------------------
@@ -86,7 +160,7 @@ class SceneView {
     // add : add object to scene
     // -----------------------------------------------------------------------------
     add = (obj:any):void => {
-        this.scene.core.add( obj );
+        this.scene.add( obj );
     }
 }
 
@@ -100,17 +174,17 @@ class SceneHelper {
     // constructor
     // -------------------------------------------------------------------------
     constructor(sceneView:SceneView) {
-        this.scene = sceneView.scene.core;
+        this.scene = sceneView.scene;
         // axis
         {
-            let axis = new THREE.AxisHelper(10);
+            let axis = new GL.AxisHelper(10);
             //axis.position.set(-60,0,-60);
             this.scene.add( axis );
         }
         // grids
         {
             // y
-            let grid = new THREE.GridHelper(100,20,0xffff00,0x000000);
+            let grid = new GL.GridHelper(100,20,0xffff00,0x000000);
             this.scene.add( grid );
             // z
             //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
@@ -124,9 +198,9 @@ class SceneHelper {
         }
         // camera controll
         {
-            let cameraControls = new OrbitControls( sceneView.cameras.main.core, sceneView.renderer.core.domElement );
-            cameraControls.mouseButtons.PAN = THREE.MOUSE.MIDDLE;
-            cameraControls.mouseButtons.ZOOM = THREE.MOUSE.RIGHT;
+            let cameraControls = new OrbitControls( sceneView.camera, sceneView.renderer.core.domElement );
+            cameraControls.mouseButtons.PAN = GL.MOUSE.MIDDLE;
+            cameraControls.mouseButtons.ZOOM = GL.MOUSE.RIGHT;
             cameraControls.addEventListener( 'change', sceneView.onRender );
         }
     }
@@ -185,9 +259,9 @@ class Plane extends Shape {
     constructor() {
         super();
 
-        let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
-        let material    = new THREE.MeshLambertMaterial({color:0xffffff});
-        this.mesh       = new THREE.Mesh( geometry, material );
+        let geometry    = new GL.PlaneGeometry( 30, 30, 30 );
+        let material    = new GL.MeshLambertMaterial({color:0xffffff});
+        this.mesh       = new GL.Mesh( geometry, material );
         this.mesh.rotation.x = -0.5 * Math.PI;
         this.mesh.receiveShadow = true;
         sceneView.add( this.mesh );
@@ -207,9 +281,9 @@ class Cube extends Shape {
     constructor() {
         super();
 
-        let geometry    = new THREE.BoxGeometry( 5, 5, 5 );
-        let material    = new THREE.MeshLambertMaterial({color:0xff3300});
-        this.mesh       = new THREE.Mesh( geometry, material );
+        let geometry    = new GL.BoxGeometry( 5, 5, 5 );
+        let material    = new GL.MeshLambertMaterial({color:0xff3300});
+        this.mesh       = new GL.Mesh( geometry, material );
         this.mesh.position.x = 2.5;
         this.mesh.position.y = 2.5;
         this.mesh.position.z = 2.5;

@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // component.ts
 // -----------------------------------------------------------------------------
+import * as GL        from './graphic';
 import {UObject     } from './object';
 import {GameObject  } from './game-object';
 import {Transform   } from './transform';
@@ -18,9 +19,31 @@ export class Component extends UObject {
 
     // [ Variables ]
 
-    //gameObject  : GameObject;
+    /**
+     * GameObject
+     *
+     * @type {GL.Object3D}
+     * @memberof GameObject
+     */
+    gameObject  : GameObject;
+
     //tag         : string;
-    //transform   : Transform;
+
+    /**
+     * Transform
+     *
+     * @type {Transform}
+     * @memberof GameObject
+     */
+    transform   : Transform;
+
+    // [ Constructors ]
+
+    //constructor() {
+    //    super();
+    //    //this.gameObject = gameObject;
+    //    //this.transform = new Transform(gameObject);
+    //}
 
     // [ Public Functions ]
 

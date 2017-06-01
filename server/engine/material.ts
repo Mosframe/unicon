@@ -49,6 +49,7 @@ export class Material extends UObject {
      */
     constructor() {
         super();
+        this.core = new GL.MeshLambertMaterial({color:0xffffff});
     }
 
     // [ Public Functions ]

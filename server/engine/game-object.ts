@@ -7,12 +7,14 @@ import {PrimitiveType   } from './primitive-type';
 import {Vector3         } from './vector3';
 import {Quaternion      } from './quaternion';
 import {UObject         } from './object';
-import {Geometry        } from './geometry';
 import {Component       } from './component';
 import {Transform       } from './transform';
+import {Geometry        } from './geometry';
+import {Material        } from './material';
 import {Mesh            } from './mesh';
 import {MeshFilter      } from './mesh-filter';
 import {Scene           } from './scene';
+
 
 /**
  * GameObject
@@ -21,9 +23,9 @@ import {Scene           } from './scene';
  *
  * @export
  * @class GameObject
- * @extends {Object}
+ * @extends {GL.Object3D}
  */
-export class GameObject extends UObject {
+export class GameObject extends GL.Object3D {
 
     // [ Variables ]
 
@@ -35,8 +37,14 @@ export class GameObject extends UObject {
     scene               : Scene;
     tag                 : string;
     */
-    transform           : Transform;
 
+    /**
+     * Transform
+     *
+     * @type {Transform}
+     * @memberof GameObject
+     */
+    transform   : Transform;
 
     // [ Constructors ]
 
@@ -47,8 +55,8 @@ export class GameObject extends UObject {
      */
     constructor(){
         super();
+
         this.transform = new Transform();
-        this.addComponent( this.transform );
     }
 
     // [ Public Functions ]
@@ -61,7 +69,19 @@ export class GameObject extends UObject {
      *
      * @memberof GameObject
      */
-    addComponent(component:Component):Component {
+    addComponent<T>( componentType:T ):Component {
+        let component = new Component();
+        component.gameObject = this;
+
+        if( this.transform ) {
+            component.transform = this.transform;
+        } else {
+            component.transform = new Transform();
+        }
+
+        // Scene.add()
+        this.core.add( );
+
         return this._components[component.getInstanceID()] = component;
     }
 
@@ -110,8 +130,7 @@ export class GameObject extends UObject {
         let gameObject = new GameObject();
 
         let geometry    = new Geometry( type );
-        let material    = new GL.MeshLambertMaterial({color:0xffffff});
-        let mesh        = new Mesh( geometry, material );
+        let mesh        = new Mesh( geometry );
         let meshFilter  = new MeshFilter(mesh);
 
         //gameObject.components[mesh.getInstanceID()] = mesh;
