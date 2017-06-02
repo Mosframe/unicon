@@ -41,4 +41,12 @@ export class Unicon {
     constructor() {
         this.sceneView = new SceneView( container );
     }
+
+    tick() {
+        requestAnimationFrame( this.tick );
+        this.sceneView.tick();
+    }
 }
+
+let unicon = new Unicon();
+unicon.tick();

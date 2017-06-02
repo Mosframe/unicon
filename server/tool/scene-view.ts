@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // scene-view.ts
 // -----------------------------------------------------------------------------
+import * as GL             from '../engine/graphic';
 import {PrimitiveType   }  from '../engine/primitive-type';
 import {GameObject      }  from '../engine/game-object';
 import {Light           }  from '../engine/light';
@@ -10,6 +11,7 @@ import {MeshRenderer    }  from '../engine/mesh-renderer';
 import {Scene           }  from '../engine/scene';
 import {Tools           }  from '../editor/tools';
 import {ViewTool        }  from '../editor/view-tool';
+import {OrbitControls   }  from '../editor/orbit-controls';
 
 /**
  * Scene View.
@@ -45,10 +47,40 @@ export class SceneView {
         this.camera = new Camera();
         // light setting
         this.light = new Light();
+        // axis
+        {
+            let axis = new GL.AxisHelper(10);
+            //axis.position.set(-60,0,-60);
+            this.scene.core.add( axis );
+        }
+        // grids
+        {
+            // y
+            let grid = new GL.GridHelper(100,20,0xffff00,0x000000);
+            this.scene.core.add( grid );
+            // z
+            //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
+            //grid2.rotation.x = -0.5 * Math.PI;
+            //this.scene.core.add( grid2 );
+            // x
+            //let grid3 = new GL.GridHelper(100,20,0xffff00,0x000000);
+            //grid3.rotation.x = -0.5 * Math.PI;
+            //grid3.rotation.z = -0.5 * Math.PI;
+            //this.scene.core.add( grid3 );
+        }
 
-        // 임시로 큐브 생성
+        // cube (임시)
         GameObject.createPrimitive( PrimitiveType.cube );
+        // Plane (임시)
+        GameObject.createPrimitive( PrimitiveType.plane );
 
+        // camera controll
+        {
+            let cameraControls = new OrbitControls( this.camera.core, this.renderer.core.domElement );
+            cameraControls.mouseButtons.PAN = GL.MOUSE.MIDDLE;
+            cameraControls.mouseButtons.ZOOM = GL.MOUSE.RIGHT;
+            cameraControls.addEventListener( 'change', (event:Event)=>{} );
+        }
     }
 
     // [ Private Functions ]
@@ -59,7 +91,7 @@ export class SceneView {
         for( let object of objects ) {
             let components = object.getComponents();
             for( let component of components ) {
-
+                component.update();
             }
         }
 
@@ -71,6 +103,11 @@ export class SceneView {
                 cube.mesh.rotation.z += cube.controller.rotSpeed.z;
             }
         }
+    }
+
+    tick() {
+        this.update();
+        this.renderer.render( this.scene, this.camera );
     }
 
 }

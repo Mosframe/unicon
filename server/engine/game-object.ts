@@ -160,7 +160,17 @@ export class GameObject extends UObject {
         let mesh        = new Mesh( geometry );
         let meshFilter  = new MeshFilter(mesh);
 
-        //gameObject.components[mesh.getInstanceID()] = mesh;
+        switch(type) {
+        case PrimitiveType.cube:
+            break;
+        case PrimitiveType.plane:
+            mesh.core.rotation.x = -0.5 * Math.PI;
+            mesh.core.receiveShadow = true;
+            break;
+        }
+
+        //gameObject._components.push( meshFilter );
+        gameObject._components[meshFilter.getInstanceID()] = meshFilter;
 
         return gameObject;
     }

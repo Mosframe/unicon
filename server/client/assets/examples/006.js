@@ -1,1 +1,1 @@
-console.error("TypeScript error: server/client/examples/006.ts(119,23): Error TS2346: Supplied parameters do not match any signature of call target.");
+console.error("TypeScript error: server/client/examples/006.ts(99,23): Error TS2304: Cannot find name 'SceneView'.");

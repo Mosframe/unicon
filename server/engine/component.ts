@@ -81,5 +81,9 @@ export class Component extends UObject {
 
     }
     */
+
+    update() : void {
+
+    }
 }
 

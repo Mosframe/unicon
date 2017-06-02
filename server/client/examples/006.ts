@@ -116,9 +116,9 @@ class SceneView {
         // renderer setting
         this.renderer = new MeshRenderer( container );
         // camera setting
-        this.camera = new Camera(this.scene);
+        this.camera = new Camera();
         // light setting
-        this.light = new Light(this.scene,this.camera);
+        this.light = new Light();
 
         //
         GameObject.createPrimitive( PrimitiveType.cube );
@@ -160,7 +160,7 @@ class SceneView {
     // add : add object to scene
     // -----------------------------------------------------------------------------
     add = (obj:any):void => {
-        this.scene.add( obj );
+        this.scene.core.add( obj );
     }
 }
 
@@ -168,7 +168,7 @@ class SceneView {
 // SceneHelper
 // -----------------------------------------------------------------------------
 class SceneHelper {
-    scene : THREE.Scene;
+    scene : Scene;
 
     // -------------------------------------------------------------------------
     // constructor
@@ -179,13 +179,13 @@ class SceneHelper {
         {
             let axis = new GL.AxisHelper(10);
             //axis.position.set(-60,0,-60);
-            this.scene.add( axis );
+            this.scene.core.add( axis );
         }
         // grids
         {
             // y
             let grid = new GL.GridHelper(100,20,0xffff00,0x000000);
-            this.scene.add( grid );
+            this.scene.core.add( grid );
             // z
             //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
             //grid2.rotation.x = -0.5 * Math.PI;
@@ -198,7 +198,7 @@ class SceneHelper {
         }
         // camera controll
         {
-            let cameraControls = new OrbitControls( sceneView.camera, sceneView.renderer.core.domElement );
+            let cameraControls = new OrbitControls( sceneView.camera.core, sceneView.renderer.core.domElement );
             cameraControls.mouseButtons.PAN = GL.MOUSE.MIDDLE;
             cameraControls.mouseButtons.ZOOM = GL.MOUSE.RIGHT;
             cameraControls.addEventListener( 'change', sceneView.onRender );
