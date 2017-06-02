@@ -14,7 +14,10 @@ import {Material        } from './material';
 import {Mesh            } from './mesh';
 import {MeshFilter      } from './mesh-filter';
 import {Scene           } from './scene';
+import {SceneManager    } from './scene-manager';
 
+
+interface IActivatable<T> {new():T;}
 
 /**
  * GameObject
@@ -23,28 +26,38 @@ import {Scene           } from './scene';
  *
  * @export
  * @class GameObject
- * @extends {GL.Object3D}
+ * @extends {UObject}
  */
-export class GameObject extends GL.Object3D {
+export class GameObject extends UObject {
 
-    // [ Variables ]
+    // [ Public Variables ]
 
     /*
-    activeInHierarchy   : boolean;
-    activeSelf          : boolean;
-    isStatic            : boolean;
-    layer               : string;
-    scene               : Scene;
-    tag                 : string;
+    activeInHierarchy	Is the GameObject active in the scene?
+    activeSelf	The local active state of this GameObject. (Read Only)
+    isStatic	Editor only API that specifies if a game object is static.
+    layer	The layer the game object is in. A layer is in the range [0...31].
     */
 
     /**
-     * Transform
+     * Scene that the GameObject is part of.
+     *
+     * @type {Scene}
+     * @memberof GameObject
+     */
+    scene : Scene;
+
+    /*
+    tag  The tag of this game object.
+    */
+
+    /**
+     * The Transform attached to this GameObject.
      *
      * @type {Transform}
      * @memberof GameObject
      */
-    transform   : Transform;
+    transform : Transform;
 
     // [ Constructors ]
 
@@ -55,22 +68,25 @@ export class GameObject extends GL.Object3D {
      */
     constructor(){
         super();
-
-        this.transform = new Transform();
+        this._core = new GL.Object3D();
+        this.transform = this.addComponent<Transform>();
+        this.scene = SceneManager.current;
+        this.scene.core.add( this._core );
     }
 
     // [ Public Functions ]
 
-    /**
-     * Adds a component class named className to the game object.
-     *
-     * @param {Component} component
-     * @returns {Component}
-     *
-     * @memberof GameObject
-     */
-    addComponent<T>( componentType:T ):Component {
-        let component = new Component();
+     /**
+      * Adds a component class named className to the game object.
+      *
+      * @template T
+      * @returns {T}
+      *
+      * @memberof GameObject
+      */
+    addComponent <T extends Component> () : T {
+        let type:{new():T};
+        let component = new type();
         component.gameObject = this;
 
         if( this.transform ) {
@@ -79,49 +95,60 @@ export class GameObject extends GL.Object3D {
             component.transform = new Transform();
         }
 
-        // Scene.add()
-        this.core.add( );
-
+        //this._components.push(component); return component;
         return this._components[component.getInstanceID()] = component;
     }
 
     /*
-    broadcastMessage() {
+    BroadcastMessage	Calls the method named methodName on every MonoBehaviour in this game object or any of its children.
+    CompareTag	Is this game object tagged with tag ?
+    */
 
+    /**
+     * Returns the component of Type type if the game object has one attached, null if it doesn't.
+     *
+     * @template T
+     * @returns {T}
+     *
+     * @memberof GameObject
+     */
+    getComponent<T extends Component>() : T {
+
+        let type:{new():T};
+
+        for( let c in this._components ) {
+            let component = this._components[c];
+            if( component ) {
+                if( component instanceof type ) {
+                    return <T>component;
+                }
+            }
+        }
     }
 
-    compareTag() {
+    /*
+    GetComponentInChildren	Returns the component of Type type in the GameObject or any of its children using depth first search.
+    GetComponentInParent	Returns the component of Type type in the GameObject or any of its parents.
+    */
 
+
+    /**
+     * Returns all components of Type type in the GameObject.
+     *
+     * @returns {Component[]}
+     *
+     * @memberof GameObject
+     */
+    getComponents() : Component[] {
+        return this._components;
     }
 
-    getComponent() {
-
-    }
-    getComponentInChildren() {
-
-    }
-    getComponentInParent() {
-
-    }
-    getComponents() {
-
-    }
-    getComponentsInChildren() {
-
-    }
-    getComponentsInParent() {
-
-    }
-
-    sendMessage () {
-
-    }
-    sendMessageUpwards() {
-
-    }
-    setActive() {
-
-    }
+    /*
+    GetComponentsInChildren	Returns all components of Type type in the GameObject or any of its children.
+    GetComponentsInParent	Returns all components of Type type in the GameObject or any of its parents.
+    SendMessage	Calls the method named methodName on every MonoBehaviour in this game object.
+    SendMessageUpwards	Calls the method named methodName on every MonoBehaviour in this game object and on every ancestor of the behaviour.
+    SetActive	Activates/Deactivates the GameObject.
     */
 
     // [ Static Functions ]
@@ -152,7 +179,8 @@ export class GameObject extends GL.Object3D {
 
     // [ Private Variables ]
 
-    private _components : {[id:string]:Component}
+    private _core : GL.Object3D;
+    private _components : Component[];
 
 }
 

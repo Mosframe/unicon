@@ -55,7 +55,13 @@ export class SceneView {
 
     update() {
 
-        this.scene
+        let objects = this.scene.getRootGameObjects();
+        for( let object of objects ) {
+            let components = object.getComponents();
+            for( let component of components ) {
+
+            }
+        }
 
         // cube animation
         {
