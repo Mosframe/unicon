@@ -7,7 +7,7 @@ import {GameObject  } from './game-object';
 /**
  * Scene
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Scene

@@ -2,7 +2,7 @@
 // mesh.ts
 // -----------------------------------------------------------------------------
 import * as GL        from './graphic';
-import {UObject     } from './object';
+import {Ubject      } from './ubject';
 import {Geometry    } from './geometry';
 import {Material    } from './material';
 
@@ -10,13 +10,13 @@ import {Material    } from './material';
 /**
  * A class that allows creating or modifying meshes from scripts.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class MeshFilter
  * @extends {Component}
  */
-export class Mesh extends UObject {
+export class Mesh extends Ubject {
 
     // [ Variables ]
 

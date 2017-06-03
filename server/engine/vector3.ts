@@ -10,7 +10,7 @@ import * as GL from './graphic';
  *
  * Besides the functions listed below, other classes can be used to manipulate vectors and points as well. For example the Quaternion and the Matrix4x4 classes are useful for rotating or transforming vectors and points.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Vector3

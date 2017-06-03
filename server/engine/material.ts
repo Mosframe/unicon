@@ -3,19 +3,19 @@
 // -----------------------------------------------------------------------------
 import * as GL            from './graphic';
 import {PrimitiveType   } from './primitive-type';
-import {UObject         } from './object';
+import {Ubject          } from './ubject';
 
 
 /**
  * The material class.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Material
  * @extends {Component}
  */
-export class Material extends UObject {
+export class Material extends Ubject {
 
     // [ Variables ]
 

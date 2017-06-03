@@ -63,10 +63,10 @@ if( !Detector.webgl ) {
                 Light: GL.Light
 
 
-    Scene : UObject
+    Scene : Ubject
         core : GL.Scene : GL.Object3D
 
-        GameObject : UObject
+        GameObject : Ubject
 
             Transform : Component
                 core = GL.Object3D

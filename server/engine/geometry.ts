@@ -3,19 +3,19 @@
 // -----------------------------------------------------------------------------
 import * as GL            from './graphic';
 import {PrimitiveType   } from './primitive-type';
-import {UObject         } from './object';
+import {Ubject          } from './ubject';
 
 
 /**
  * Geometry
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Geometry
  * @extends {Component}
  */
-export class Geometry extends UObject {
+export class Geometry extends Ubject {
 
     // [ Variables ]
 

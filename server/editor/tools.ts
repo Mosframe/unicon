@@ -10,7 +10,7 @@ import {ViewTool        }  from './view-tool';
  *
  * The View tool has options for Orbit, Pan, Zoom and FPS, depending on which combination mouse buttons and modifier keys is used. This property reports which option is currently active.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Tools

@@ -1,16 +1,23 @@
 {
+    "allowJs": true,
     "compilerOptions": {
+        "target": "ES5",
         "module": "commonjs",
-        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "alwaysStrict":true,
+        "listEmittedFiles":true,
         "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
         "skipLibCheck":true,
-        "target": "es5",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "allowJs": true,
+        "declaration": true,
+        "pretty":true,
+        "baseUrl": ".",
         "typeRoots":[
             "./node_modules/@types",
             "./types"
@@ -20,7 +27,19 @@
         "server/client/main.ts",
         "server/main.ts"
     ],
+    "include": [
+        "types/typings.d.ts",
+        "typings/index.d.ts"
+    ],
     "exclude": [
-        "node_modules"
-    ]
-}
+        "node_modules",
+        "dist"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "useCache": true,
+        "forkChecker": true,
+        "cacheDirectory": "node_modules/.atl-cache"
+    },
+    "compileOnSave": false,
+    "buildOnSave": false
+   }

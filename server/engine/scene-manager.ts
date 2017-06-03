@@ -8,7 +8,7 @@ import {GameObject  } from './game-object';
 /**
  * Scene management at run-time.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class SceneManager

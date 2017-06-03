@@ -16,7 +16,7 @@ import {OrbitControls   }  from '../editor/orbit-controls';
 /**
  * Scene View.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class SceneView
@@ -25,7 +25,14 @@ export class SceneView {
 
     // [ Public Variables ]
 
-    renderer    : Renderer;
+    /**
+     * renderer
+     *
+     * @type {GL.WebGLRenderer}
+     * @memberof Renderer
+     */
+    renderer    : GL.WebGLRenderer;
+
     camera      : Camera;   // editor camera
     light       : Light;    // editor light
     scene       : Scene;    // current scene
@@ -39,10 +46,17 @@ export class SceneView {
      * @memberof SceneView
      */
     constructor( container:HTMLElement ) {
+
+        // renderer setting
+        this.renderer = new GL.WebGLRenderer();
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.setClearColor(0xdddddd);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = GL.PCFShadowMap;
+        container.appendChild( this.renderer.domElement );
+
         // scene setting
         this.scene = new Scene();
-        // renderer setting
-        this.renderer = new MeshRenderer( container );
         // camera setting
         this.camera = new Camera();
         // light setting
@@ -76,15 +90,30 @@ export class SceneView {
 
         // camera controll
         {
-            let cameraControls = new OrbitControls( this.camera.core, this.renderer.core.domElement );
+            let cameraControls = new OrbitControls( this.camera.core, this.renderer.domElement );
             cameraControls.mouseButtons.PAN = GL.MOUSE.MIDDLE;
             cameraControls.mouseButtons.ZOOM = GL.MOUSE.RIGHT;
             cameraControls.addEventListener( 'change', (event:Event)=>{} );
         }
     }
 
-    // [ Private Functions ]
+    // [ Public Functions ]
 
+    /**
+     * render
+     *
+     * @memberof Renderer
+     */
+    render() {
+        this.renderer.render( this.scene.core, this.camera.core );
+    }
+
+    /**
+     * update
+     *
+     *
+     * @memberof SceneView
+     */
     update() {
 
         let objects = this.scene.getRootGameObjects();
@@ -104,10 +133,4 @@ export class SceneView {
             }
         }
     }
-
-    tick() {
-        this.update();
-        this.renderer.render( this.scene, this.camera );
-    }
-
 }

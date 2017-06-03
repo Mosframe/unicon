@@ -5,7 +5,7 @@
 /**
  * Which tool is active in the editor.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @enum {number}

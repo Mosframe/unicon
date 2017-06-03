@@ -26,7 +26,7 @@ const EPS               = 0.000001;
  * @author WestLangley / http://github.com/WestLangley
  * @author erich666 / http://erichaines.com
  * @author nicolaspanel / http://github.com/nicolaspanel
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * This set of controls performs orbiting, dollying (zooming), and panning.
  * Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).

@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// object.ts
+// ubject.ts
 // -----------------------------------------------------------------------------
 import deprecated     from 'deprecated-decorator';
 import * as UUID      from 'node-uuid';
@@ -14,12 +14,12 @@ import {Scene       } from './scene';
  * Base class for all objects Unicon can reference.
  * Any public variable you make that derives from Object gets shown in the inspector as a drop target, allowing you to set the value from the GUI.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @class UObject
+ * @class Ubject
  */
-export class UObject {
+export class Ubject {
 
     // [ Variables ]
 
@@ -52,24 +52,32 @@ export class UObject {
     // [ Public Functions ]
 
     /**
+     * Returns the asset GUID of the object.
+     *
+     *
+     * @memberof Ubject
+     */
+    get assetGUID () : string {
+        return this._assetGUID;
+    }
+    /**
      * equal
      *
-     * @param {UObject} target
+     * @param {Ubject} target
      * @returns
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
-    equal (target:UObject) {
+    equal (target:Ubject) {
         return ( this.toString() === target.toString() );
     }
-
     /**
      * Returns the instance id of the object.
      *
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
-    getInstanceID = ():string => {
+    getInstanceID = () : string => {
         return this._instanceID;
     }
     /**
@@ -77,7 +85,7 @@ export class UObject {
      *
      * @returns
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
     toString () {
         return JSON.stringify(this);
@@ -95,7 +103,7 @@ export class UObject {
      *
      * @memberof Object
      */
-    static destroy (obj:UObject,delay:number):void {
+    static destroy (obj:Ubject,delay:number):void {
         if(delay>0){
             setTimeout( obj._destroy, delay);
         } else {
@@ -111,11 +119,11 @@ export class UObject {
      *
      * @memberof Object
      */
-    static destroyImmediate (obj:UObject, allowDestroyingAssets:boolean=false) {
-        delete UObject._instances[obj._instanceID];
+    static destroyImmediate (obj:Ubject, allowDestroyingAssets:boolean=false) {
+        delete Ubject._instances[obj._instanceID];
         if( allowDestroyingAssets ) {
-            if( obj._assetID ) {
-                delete UObject._instances[obj._assetID];
+            if( obj._assetGUID ) {
+                delete Ubject._instances[obj._assetGUID];
             }
         }
     }
@@ -127,7 +135,7 @@ export class UObject {
      *
      * @memberof Object
      */
-    static dontDestroyOnLoad (target:UObject) {
+    static dontDestroyOnLoad (target:Ubject) {
         target._dontDestroyOnLoad = true;
     }
     /**
@@ -135,13 +143,13 @@ export class UObject {
      *
      * @static
      * @param {string} type The type of object to find.
-     * @returns UObject An array of objects which matched the specified type, cast as UObject.
+     * @returns Ubject An array of objects which matched the specified type, cast as Ubject.
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
     static findObjectOfType( type:string ) {
-        for( let id in UObject._instances ) {
-            let obj = UObject._instances[id];
+        for( let id in Ubject._instances ) {
+            let obj = Ubject._instances[id];
             if( Object.getPrototypeOf(obj).constructor.name === type ) {
                 return obj;
             }
@@ -155,12 +163,12 @@ export class UObject {
      * @param {string} type The type of object to find.
      * @returns Object[] The array of objects found matching the type specified.
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
     static findObjectsOfType( type:string ) {
-        let list:UObject[] = [];
-        for( let id in UObject._instances ) {
-            let obj = UObject._instances[id];
+        let list:Ubject[] = [];
+        for( let id in Ubject._instances ) {
+            let obj = Ubject._instances[id];
             if( Object.getPrototypeOf(obj).constructor.name === type ) {
                 list.push(obj);
             }
@@ -171,15 +179,15 @@ export class UObject {
      * Clones the object original and returns the clone.
      *
      * @static
-     * @param {UObject} original An existing object that you want to make a copy of.
+     * @param {Ubject} original An existing object that you want to make a copy of.
      *
-     * @memberof UObject
+     * @memberof Ubject
      */
-    static instantiate (original:UObject) {
-        let instance = <UObject>Util.clone( original );
+    static instantiate (original:Ubject) {
+        let instance = <Ubject>Util.clone( original );
         if( instance ) {
             instance._setInstanceID();
-            UObject._instances[instance._instanceID] = instance;
+            Ubject._instances[instance._instanceID] = instance;
         }
     }
 
@@ -187,12 +195,12 @@ export class UObject {
 
     // [ Private Variables ]
 
-    private static  _assets             : {[id:string]:UObject} = {} ; // asset list
-    private static  _instances          : {[id:string]:UObject} = {} ; // instance list
-    private static  _toBeDestroyed      : string[]              = [] ; // destroy list after rendering : 렌더링이 끝난 후 파괴될 오브젝트들
-    private         _assetID            : string                     ; // asset id : 프리팹이나 리소드들
-    private         _instanceID         : string                     ; // instance id
-    private         _dontDestroyOnLoad  : boolean                    ; // not be destroyed automatically when loading a new scene.
+    private static  _assets             : {[id:string]:Ubject} = {} ; // asset list
+    private static  _instances          : {[id:string]:Ubject} = {} ; // instance list
+    private static  _toBeDestroyed      : string[]             = [] ; // destroy list after rendering : 렌더링이 끝난 후 파괴될 오브젝트들
+    private         _assetGUID          : string                    ; // asset GUID : 프리팹이나 리소드들
+    private         _instanceID         : string                    ; // instance id
+    private         _dontDestroyOnLoad  : boolean                   ; // not be destroyed automatically when loading a new scene.
 
     // [ Private Functions ]
 
@@ -202,14 +210,14 @@ export class UObject {
     }
     // 파괴 예약한다.
     private _destroy = () => {
-        UObject._toBeDestroyed.push(this._instanceID);
+        Ubject._toBeDestroyed.push(this._instanceID);
     }
     // 씬이 렌더링 후에 호출 한다.
     private static _runToBeDestroyed = () => {
-        for( let instanceID of UObject._toBeDestroyed ) {
-            delete UObject._instances[instanceID];
+        for( let instanceID of Ubject._toBeDestroyed ) {
+            delete Ubject._instances[instanceID];
         }
-        UObject._toBeDestroyed.length = 0;
+        Ubject._toBeDestroyed.length = 0;
     }
 }
 

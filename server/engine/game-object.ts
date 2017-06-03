@@ -6,13 +6,14 @@ import * as GL            from './graphic';
 import {PrimitiveType   } from './primitive-type';
 import {Vector3         } from './vector3';
 import {Quaternion      } from './quaternion';
-import {UObject         } from './object';
+import {Ubject          } from './ubject';
 import {Component       } from './component';
 import {Transform       } from './transform';
 import {Geometry        } from './geometry';
 import {Material        } from './material';
 import {Mesh            } from './mesh';
 import {MeshFilter      } from './mesh-filter';
+import {MeshRenderer    } from './mesh-renderer';
 import {Scene           } from './scene';
 import {SceneManager    } from './scene-manager';
 
@@ -22,13 +23,13 @@ interface IActivatable<T> {new():T;}
 /**
  * GameObject
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class GameObject
- * @extends {UObject}
+ * @extends {Ubject}
  */
-export class GameObject extends UObject {
+export class GameObject extends Ubject {
 
     // [ Public Variables ]
 
@@ -154,12 +155,15 @@ export class GameObject extends UObject {
     // [ Static Functions ]
 
     static createPrimitive( type:PrimitiveType ) : GameObject {
+
+        // [ GameObject ]
         let gameObject = new GameObject();
 
+        // [ Geometry ]
         let geometry    = new Geometry( type );
-        let mesh        = new Mesh( geometry );
-        let meshFilter  = new MeshFilter(mesh);
 
+        // [ Mesh ]
+        let mesh        = new Mesh( geometry );
         switch(type) {
         case PrimitiveType.cube:
             break;
@@ -169,8 +173,15 @@ export class GameObject extends UObject {
             break;
         }
 
+        // [ MeshFilter ]
+        let meshFilter  = new MeshFilter(mesh);
         //gameObject._components.push( meshFilter );
         gameObject._components[meshFilter.getInstanceID()] = meshFilter;
+
+        // [ MeshRenderer ]
+        let meshRenderer = new MeshRenderer();
+        //gameObject._components.push( meshRenderer );
+        gameObject._components[meshRenderer.getInstanceID()] = meshRenderer;
 
         return gameObject;
     }

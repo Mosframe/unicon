@@ -1,18 +1,19 @@
 // -----------------------------------------------------------------------------
 // serialized-property.ts
 // -----------------------------------------------------------------------------
+import {Ubject} from '../engine/ubject';
 
 /**
  * SerializedProperty are classes for editing properties on objects in a completely generic way that automatically handles undo and styling UI for prefabs.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class SerializedProperty
  */
 export class SerializedProperty {
 
-    // [Variables]
+    // [ Public Variables ]
 
     /*
     animationCurveValue:any//	Value of a animation curve property.
@@ -54,6 +55,8 @@ export class SerializedProperty {
     vector4Value:any//	Value of a 4D vector property.
     */
 
+    // [ Public Functions ]
+
     /*
     clearArray(){}//		Remove all elements from the array.
     copy(){}//		Returns a copy of the SerializedProperty iterator in its current state. This is useful if you want to keep a reference to the current property but continue with the iteration.
@@ -72,6 +75,8 @@ export class SerializedProperty {
     nextVisible(){}//		Move to next visible property.
     reset(){}//		Move to first property of the object.
     */
+
+    // [ Static Public Functions ]
 
     /*
     static equalContents(){}//	See if contained serialized properties are equal.

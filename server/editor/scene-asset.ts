@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // scene-asset.ts
 // -----------------------------------------------------------------------------
-import {UObject         }  from '../engine/object';
-import {Tool            }  from './tool';
-import {ViewTool        }  from './view-tool';
+import {Ubject      }  from '../engine/ubject';
+import {Tool        }  from './tool';
+import {ViewTool    }  from './view-tool';
 
 /**
  * SceneAsset is used to reference scene objects in the Editor.
@@ -12,13 +12,13 @@ import {ViewTool        }  from './view-tool';
  *
  * This example shows how to pick a scene in the editor. The ScenePicker component is placed on a game object in the scene:
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class SceneAsset
- * @extends {UObject}
+ * @extends {Ubject}
  */
-export class SceneAsset extends UObject {
+export class SceneAsset extends Ubject {
 
     // [ Constructors ]
 

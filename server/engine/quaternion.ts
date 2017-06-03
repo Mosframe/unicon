@@ -6,7 +6,7 @@ import * as GL        from './graphic';
 /**
  * Quaternion
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Quaternion

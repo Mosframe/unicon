@@ -5,7 +5,7 @@
 /**
  * Bit mask that controls object destruction, saving and visibility in inspectors.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @enum {number}
  */

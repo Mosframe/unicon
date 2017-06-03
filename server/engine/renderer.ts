@@ -4,7 +4,7 @@
 import * as GL        from './graphic';
 import {Vector3     } from './vector3';
 import {Quaternion  } from './quaternion';
-import {UObject     } from './object';
+import {Ubject      } from './ubject';
 import {Component   } from './component';
 import {Camera      } from './camera';
 import {Scene       } from './scene';
@@ -12,7 +12,7 @@ import {Scene       } from './scene';
 /**
  * Renderer : General functionality for all renderers.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Renderer
@@ -22,15 +22,6 @@ export class Renderer extends Component {
 
     // [ Variables ]
 
-    /**
-     * core
-     *
-     * @type {GL.WebGLRenderer}
-     * @memberof Renderer
-     */
-    core : GL.WebGLRenderer;
-
-    /*
     /*
     bounds:any;//	The bounding volume of the renderer (Read Only).
     enabled:any;//	Makes the rendered 3D object visible if enabled.
@@ -66,34 +57,15 @@ export class Renderer extends Component {
 
     /**
      * Creates an instance of Renderer.
-     * @param {HTMLElement} container
      *
      * @memberof Renderer
      */
-    constructor( container:HTMLElement ) {
+    constructor() {
         super();
-
-        this.core = new GL.WebGLRenderer();
-        this.core.setSize( window.innerWidth, window.innerHeight );
-        this.core.setClearColor(0xdddddd);
-        this.core.shadowMap.enabled = true;
-        this.core.shadowMap.type = GL.PCFShadowMap;
-        container.appendChild( this.core.domElement );
     }
 
     // [ Public Functions ]
 
-    /**
-     * render
-     *
-     * @param {Scene} scene
-     * @param {Camera} camera
-     *
-     * @memberof Renderer
-     */
-    render( scene:Scene, camera:Camera ) {
-        this.core.render( scene.core, camera.core );
-    }
 
     // [ Messages ]
 

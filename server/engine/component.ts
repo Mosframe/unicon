@@ -2,20 +2,20 @@
 // component.ts
 // -----------------------------------------------------------------------------
 import * as GL        from './graphic';
-import {UObject     } from './object';
+import {Ubject      } from './ubject';
 import {GameObject  } from './game-object';
 import {Transform   } from './transform';
 
 /**
  * Component
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Component
- * @extends {UObject}
+ * @extends {Ubject}
  */
-export class Component extends UObject {
+export class Component extends Ubject {
 
     // [ Variables ]
 

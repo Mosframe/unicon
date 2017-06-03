@@ -11,7 +11,7 @@ import {SceneManager} from './scene-manager';
 /**
  * Light
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Light

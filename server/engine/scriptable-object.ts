@@ -1,18 +1,18 @@
 // -----------------------------------------------------------------------------
 // scriptable-object.ts
 // -----------------------------------------------------------------------------
-import {UObject} from './object';
+import {Ubject} from './ubject';
 
 /**
  * Component
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Component
- * @extends {UObject}
+ * @extends {Ubject}
  */
-export class ScriptableObject extends UObject {
+export class ScriptableObject extends Ubject {
 
     // [ Static Functions ]
 

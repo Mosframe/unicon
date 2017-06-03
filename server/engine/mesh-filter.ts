@@ -13,7 +13,7 @@ import {Scene       } from './scene';
  *
  * Use this with a procedural mesh interface. See Also: {Mesh} class.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class MeshFilter

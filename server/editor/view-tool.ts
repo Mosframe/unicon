@@ -5,7 +5,7 @@
 /**
  * Enum for Tools.viewTool.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @enum {number}

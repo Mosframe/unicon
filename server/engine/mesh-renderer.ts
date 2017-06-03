@@ -4,9 +4,9 @@
 import {Renderer} from './renderer';
 
 /**
- * MeshRenderer : Renders meshes inserted by the {MeshFilter} or {TextMesh}.
+ * Renders meshes inserted by the {MeshFilter} or {TextMesh}.
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Component

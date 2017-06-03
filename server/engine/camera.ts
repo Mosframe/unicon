@@ -19,7 +19,7 @@ import {SceneManager} from './scene-manager';
  *
  * A world space point is defined in global coordinates (for example, Transform.position).
  *
- * @author mosframe / https://github.com/Mosframe
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Camera
