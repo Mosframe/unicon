@@ -1,18 +1,25 @@
 // -----------------------------------------------------------------------------
 // inspector.ts
 // -----------------------------------------------------------------------------
-import * as GL             from '../engine/graphic';
-import {PrimitiveType   }  from '../engine/primitive-type';
-import {GameObject      }  from '../engine/game-object';
-import {Light           }  from '../engine/light';
-import {Camera          }  from '../engine/camera';
-import {Renderer        }  from '../engine/renderer';
-import {MeshRenderer    }  from '../engine/mesh-renderer';
-import {Scene           }  from '../engine/scene';
-import {Tools           }  from '../editor/tools';
-import {ViewTool        }  from '../editor/view-tool';
-import {OrbitControls   }  from '../editor/orbit-controls';
-import {Window          }  from './window';
+import * as GL            from '../engine/graphic';
+
+import {Camera          } from '../engine/camera';
+import {GameObject      } from '../engine/game-object';
+import {PrimitiveType   } from '../engine/primitive-type';
+import {Light           } from '../engine/light';
+import {MeshRenderer    } from '../engine/mesh-renderer';
+import {Renderer        } from '../engine/renderer';
+import {Scene           } from '../engine/scene';
+import {Transform       } from '../engine/transform';
+
+import {EditorWindow    } from '../editor/editor-window';
+import {OrbitControls   } from '../editor/orbit-controls';
+import {Selection       } from '../editor/selection';
+import {Tools           } from '../editor/tools';
+import {ViewTool        } from '../editor/view-tool';
+
+import {Window          } from './window';
+
 
 /**
  * inspector window
@@ -21,16 +28,12 @@ import {Window          }  from './window';
  *
  * @export
  * @class Inspector
- * @extends {Window}
+ * @extends {EditorWindow}
  */
 export class Inspector extends Window {
 
     // [ Public Functions ]
 
-    static init() {
-        let window = <Inspector>GetWindow(typeof(Inspector));
-        window.Show();
-    }
     /**
      * open window
      *
@@ -53,7 +56,7 @@ export class Inspector extends Window {
         {
             saveStr += selectionID.toString() + ";";
         }
-        EditorPrefs.SetString("SelectedIDs", saveStr);
+        //EditorPrefs.SetString("SelectedIDs", saveStr);
     }
     /**
      *
@@ -62,14 +65,28 @@ export class Inspector extends Window {
      * @memberof Inspector
      */
     loadSelection(){
-        let strIDs:string[] = EditorPrefs.GetString("_selectionIDs").Split(char.Parse(";"));
+        //let strIDs:string[] = EditorPrefs.GetString("_selectionIDs").Split(char.Parse(";"));
 
-        let ids:number[] = [strIDs.length];
+        //let ids:number[] = [strIDs.length];
+        //
+        //for( let i=0; i < strIDs.length; ++i ) {
+        //   ids[i] = Number.parseInt( strIDs[i] );
+        //}
+        //Selection.instanceIDs = ids;
+    }
 
-        for( let i=0; i < strIDs.length; ++i ) {
-           ids[i] = Number.parseInt( strIDs[i] );
+    onInspectorUpdate() {
+        //super.onInspectorUpdate();
+
+        if( Selection.activeContext )
+        {
+            if( Selection.activeContext instanceof Transform ) {
+                let transform = <Transform>Selection.activeContext;
+                transform.rotation.x += 0.1;
+            }
         }
-        Selection.instanceIDs = ids;
+
+        this.repaint();
     }
 
     /**
@@ -79,18 +96,16 @@ export class Inspector extends Window {
      * @memberof Unicon
      */
     render() {
-        super.render();
     }
 
     onSelectionChange() {
         super.onSelectionChange();
-
         this._selectionIDs = Selection.instanceIDs;
     }
 
     // [ Private Variables ]
 
-    private _selectionIDs : number[];
+    private _selectionIDs : string[] = [];
 
     // [ Private Functions ]
 }

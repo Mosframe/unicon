@@ -1,7 +1,11 @@
 // -----------------------------------------------------------------------------
 // transform.ts
 // -----------------------------------------------------------------------------
-import {Component}      from './component';
+import * as GL        from '../engine/graphic';
+
+import {Component   } from '../engine/component';
+import {Quaternion  } from '../engine/quaternion';
+import {Vector3     } from '../engine/vector3';
 
 
 /**
@@ -20,12 +24,32 @@ export class Transform extends Component {
 
     /*
     childCount	The number of children the Transform has.
-    eulerAngles	The rotation as Euler angles in degrees.
+    */
+    /**
+     * The rotation as Euler angles in degrees.
+     *
+     * @readonly
+     * @type {Vector3}
+     * @memberof Transform
+     */
+    get eulerAngles() : Vector3 { return this._inner.getWorldDirection(); }
+    set eulerAngles( value:Vector3 ) { this._inner.rotation = this._inner.rotation.setFromVector3(this._inner.worldToLocal(value)); }
+    /*
     forward	The blue axis of the transform in world space.
     hasChanged	Has the transform changed since the last time the flag was set to 'false'?
     hierarchyCapacity	The transform capacity of the transform's hierarchy data structure.
     hierarchyCount	The number of transforms in the transform's hierarchy data structure.
-    localEulerAngles	The rotation as Euler angles in degrees relative to the parent transform's rotation.
+    */
+    /**
+     * The rotation as Euler angles in degrees relative to the parent transform's rotation.
+     *
+     * @readonly
+     * @type {Vector3}
+     * @memberof Transform
+     */
+    get localEulerAngles() : Vector3        { return this._inner.rotation.toVector3(); }
+    set localEularAngles( value:Vector3 )   { this._inner.rotation = this._inner.rotation.setFromVector3(value); }
+    /*
     localPosition	Position of the transform relative to the parent transform.
     localRotation	The rotation of the transform relative to the parent transform's rotation.
     localScale	The scale of the transform relative to the parent.
@@ -39,19 +63,34 @@ export class Transform extends Component {
      * @type {Transform}
      * @memberof Transform
      */
-    parent : Transform;
+    parent : Transform = null;
+    /**
+     * The position of the transform in world space.
+     *
+     * @type {Vector3}
+     * @memberof Transform
+     */
+    get position() : Vector3        { return this._inner.localToWorld(this._inner.position); }
+    set position( value:Vector3 )   { this._inner.position = this._inner.worldToLocal(value); }
 
     /*
-    position	The position of the transform in world space.
     right	The red axis of the transform in world space.
     root	Returns the topmost transform in the hierarchy.
-    rotation	The rotation of the transform in world space stored as a Quaternion.
+    */
+    /**
+     * The rotation of the transform in world space stored as a Quaternion.
+     *
+     * @type {Quaternion}
+     * @memberof Transform
+     */
+    get rotation() : Quaternion         { return this._inner.quaternion; }
+    set rotation( value:Quaternion )    { this._inner.quaternion = value; }
+    /*
     up	The green axis of the transform in world space.
     worldToLocalMatrix	Matrix that transforms a point from world space into local space (Read Only).
     */
 
     // [ Constructors ]
-
 
     // [ Public Functions ]
 
@@ -92,5 +131,7 @@ export class Transform extends Component {
     */
 
     // [ Private Variables ]
+
+    protected _inner : GL.Object3D;
 }
 

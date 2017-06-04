@@ -9,6 +9,8 @@ import {Quaternion  } from './quaternion';
 import {Transform   } from './transform';
 import {Scene       } from './scene';
 
+interface IActivatable<T> {new():T;}
+
 
 /**
  * Base class for all objects Unicon can reference.
@@ -120,7 +122,20 @@ export class Ubject {
      * @memberof Object
      */
     static destroyImmediate (obj:Ubject, allowDestroyingAssets:boolean=false) {
+
+        let type = Object.getPrototypeOf(obj).constructor.name;
+        let list = Ubject._instancesOfTypes[type];
+        if( !list ) {
+            let index = list.findIndex( o=>o._instanceID===obj._instanceID );
+            //list.fillter;
+            if( list && list.length === 0 ) {
+                delete Ubject._instancesOfTypes[type];
+            }
+        }
+
         delete Ubject._instances[obj._instanceID];
+
+
         if( allowDestroyingAssets ) {
             if( obj._assetGUID ) {
                 delete Ubject._instances[obj._assetGUID];
@@ -148,14 +163,12 @@ export class Ubject {
      * @memberof Ubject
      */
     static findObjectOfType( type:string ) {
-        for( let id in Ubject._instances ) {
-            let obj = Ubject._instances[id];
-            if( Object.getPrototypeOf(obj).constructor.name === type ) {
-                return obj;
-            }
+        let list = Ubject._instancesOfTypes[type];
+        if( list ) {
+            return list[0];
         }
-        return undefined;
     }
+
     /**
      * Returns a list of all active loaded objects of Type type.
      *
@@ -166,14 +179,7 @@ export class Ubject {
      * @memberof Ubject
      */
     static findObjectsOfType( type:string ) {
-        let list:Ubject[] = [];
-        for( let id in Ubject._instances ) {
-            let obj = Ubject._instances[id];
-            if( Object.getPrototypeOf(obj).constructor.name === type ) {
-                list.push(obj);
-            }
-        }
-        return list;
+        return Ubject._instancesOfTypes[type];
     }
     /**
      * Clones the object original and returns the clone.
@@ -188,19 +194,24 @@ export class Ubject {
         if( instance ) {
             instance._setInstanceID();
             Ubject._instances[instance._instanceID] = instance;
+
+            let type = Object.getPrototypeOf(instance).constructor.name;
+            let list = Ubject._instancesOfTypes[type];
+            if( !list ) {
+                list = Ubject._instancesOfTypes[type] = [];
+            }
+            list.push(instance);
         }
     }
 
-
-
     // [ Private Variables ]
 
-    private static  _assets             : {[id:string]:Ubject} = {} ; // asset list
-    private static  _instances          : {[id:string]:Ubject} = {} ; // instance list
-    private static  _toBeDestroyed      : string[]             = [] ; // destroy list after rendering : 렌더링이 끝난 후 파괴될 오브젝트들
-    private         _assetGUID          : string                    ; // asset GUID : 프리팹이나 리소드들
-    private         _instanceID         : string                    ; // instance id
-    private         _dontDestroyOnLoad  : boolean                   ; // not be destroyed automatically when loading a new scene.
+    protected static _instances          : {[id:string]:Ubject}     = {} ; // instance list
+    protected static _instancesOfTypes   : {[type:string]:Ubject[]} = {} ; // type : instance list
+    protected static _toBeDestroyed      : string[]                 = [] ; // destroy list after rendering : 렌더링이 끝난 후 파괴될 오브젝트들
+    protected        _assetGUID          : string                        ; // asset GUID : 프리팹이나 리소드들
+    protected        _instanceID         : string                        ; // instance id
+    protected        _dontDestroyOnLoad  : boolean                       ; // not be destroyed automatically when loading a new scene.
 
     // [ Private Functions ]
 

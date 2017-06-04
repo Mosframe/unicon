@@ -6,7 +6,7 @@ import {ITableItem } from './shared/model-server';
 import {PlayerController} from './player';
 
 /** 타입 : 아이템 사용 액션 */
-type UseAction = {(player:PlayerController):void};
+export type UseAction = {(player:PlayerController):void};
 
 // -----------------------------------------------------------------------------
 /** 테이블아이템 컨트롤러 */

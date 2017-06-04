@@ -2,23 +2,25 @@
 // game-object.ts
 // -----------------------------------------------------------------------------
 import deprecated         from 'deprecated-decorator';
-import * as GL            from './graphic';
-import {PrimitiveType   } from './primitive-type';
-import {Vector3         } from './vector3';
-import {Quaternion      } from './quaternion';
-import {Ubject          } from './ubject';
-import {Component       } from './component';
-import {Transform       } from './transform';
-import {Geometry        } from './geometry';
-import {Material        } from './material';
-import {Mesh            } from './mesh';
-import {MeshFilter      } from './mesh-filter';
-import {MeshRenderer    } from './mesh-renderer';
-import {Scene           } from './scene';
-import {SceneManager    } from './scene-manager';
 
+import * as GL            from '../engine/graphic';
 
-interface IActivatable<T> {new():T;}
+import {IType           } from '../engine/interfaces/type';
+
+import {PrimitiveType   } from '../engine/primitive-type';
+import {Vector3         } from '../engine/vector3';
+import {Quaternion      } from '../engine/quaternion';
+import {Ubject          } from '../engine/ubject';
+import {Component       } from '../engine/component';
+import {Transform       } from '../engine/transform';
+import {Geometry        } from '../engine/geometry';
+import {Material        } from '../engine/material';
+import {Mesh            } from '../engine/mesh';
+import {MeshFilter      } from '../engine/mesh-filter';
+import {MeshRenderer    } from '../engine/mesh-renderer';
+import {Scene           } from '../engine/scene';
+import {SceneManager    } from '../engine/scene-manager';
+
 
 /**
  * GameObject
@@ -36,6 +38,8 @@ export class GameObject extends Ubject {
     /*
     activeInHierarchy	Is the GameObject active in the scene?
     activeSelf	The local active state of this GameObject. (Read Only)
+    */
+    /*
     isStatic	Editor only API that specifies if a game object is static.
     layer	The layer the game object is in. A layer is in the range [0...31].
     */
@@ -60,6 +64,7 @@ export class GameObject extends Ubject {
      */
     transform : Transform;
 
+
     // [ Constructors ]
 
     /**
@@ -69,10 +74,10 @@ export class GameObject extends Ubject {
      */
     constructor(){
         super();
-        this._core = new GL.Object3D();
+        this._inner = new GL.Object3D();
         this.transform = this.addComponent<Transform>();
         this.scene = SceneManager.current;
-        this.scene.core.add( this._core );
+        this.scene.core.add( this._inner );
     }
 
     // [ Public Functions ]
@@ -86,18 +91,24 @@ export class GameObject extends Ubject {
       * @memberof GameObject
       */
     addComponent <T extends Component> () : T {
-        let type:{new():T};
+        let type:IType<T>;
         let component = new type();
         component.gameObject = this;
 
         if( this.transform ) {
             component.transform = this.transform;
         } else {
-            component.transform = new Transform();
+            class t extends Transform {
+                constructor( inner:GL.Object3D ) {
+                    super();
+                    this._inner = inner;
+                }
+            }
+            component.transform = new t(this._inner);
         }
 
-        //this._components.push(component); return component;
-        return this._components[component.getInstanceID()] = component;
+        this._components.push(component);
+        return component;
     }
 
     /*
@@ -115,7 +126,7 @@ export class GameObject extends Ubject {
      */
     getComponent<T extends Component>() : T {
 
-        let type:{new():T};
+        let type:IType<T>;
 
         for( let c in this._components ) {
             let component = this._components[c];
@@ -175,13 +186,11 @@ export class GameObject extends Ubject {
 
         // [ MeshFilter ]
         let meshFilter  = new MeshFilter(mesh);
-        //gameObject._components.push( meshFilter );
-        gameObject._components[meshFilter.getInstanceID()] = meshFilter;
+        gameObject._components.push( meshFilter );
 
         // [ MeshRenderer ]
         let meshRenderer = new MeshRenderer();
-        //gameObject._components.push( meshRenderer );
-        gameObject._components[meshRenderer.getInstanceID()] = meshRenderer;
+        gameObject._components.push( meshRenderer );
 
         return gameObject;
     }
@@ -200,7 +209,7 @@ export class GameObject extends Ubject {
 
     // [ Private Variables ]
 
-    private _core : GL.Object3D;
+    private _inner : GL.Object3D;
     private _components : Component[];
 
 }

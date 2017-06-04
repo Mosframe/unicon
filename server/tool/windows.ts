@@ -2,18 +2,22 @@
 // scene-view.ts
 // -----------------------------------------------------------------------------
 import * as GL             from '../engine/graphic';
-import {PrimitiveType   }  from '../engine/primitive-type';
-import {GameObject      }  from '../engine/game-object';
-import {Light           }  from '../engine/light';
 import {Camera          }  from '../engine/camera';
-import {Renderer        }  from '../engine/renderer';
+import {GameObject      }  from '../engine/game-object';
+import {PrimitiveType   }  from '../engine/primitive-type';
+import {Light           }  from '../engine/light';
 import {MeshRenderer    }  from '../engine/mesh-renderer';
+import {OrbitControls   }  from '../editor/orbit-controls';
+import {Renderer        }  from '../engine/renderer';
 import {Scene           }  from '../engine/scene';
+
+import {EditorWindow    }  from '../editor/editor-window';
+import {Selection       }  from '../editor/selection';
 import {Tools           }  from '../editor/tools';
 import {ViewTool        }  from '../editor/view-tool';
-import {OrbitControls   }  from '../editor/orbit-controls';
-import {Window          }  from './window';
-import {Inspector       }  from './inspector';
+
+import {Window          }  from '../tool/window';
+import {Inspector       }  from '../tool/inspector';
 
 /**
  * Windows
@@ -82,5 +86,6 @@ export class Windows {
         // if( focusWindow ) {
         //     focusWindow.onSelectionChange();
         // }
+
     }
 }

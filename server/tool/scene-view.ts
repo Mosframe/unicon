@@ -9,9 +9,11 @@ import {Camera          }  from '../engine/camera';
 import {Renderer        }  from '../engine/renderer';
 import {MeshRenderer    }  from '../engine/mesh-renderer';
 import {Scene           }  from '../engine/scene';
+
+import {OrbitControls   }  from '../editor/orbit-controls';
+import {Selection       }  from '../editor/selection';
 import {Tools           }  from '../editor/tools';
 import {ViewTool        }  from '../editor/view-tool';
-import {OrbitControls   }  from '../editor/orbit-controls';
 
 /**
  * Scene View.
@@ -84,9 +86,12 @@ export class SceneView {
         }
 
         // cube (임시)
-        GameObject.createPrimitive( PrimitiveType.cube );
+        let cube = GameObject.createPrimitive( PrimitiveType.cube );
         // Plane (임시)
         GameObject.createPrimitive( PrimitiveType.plane );
+
+        // 오브젝트 선택
+        Selection.setActiveObjectWithContext( cube, cube.transform );
 
         // camera controll
         {
@@ -126,11 +131,11 @@ export class SceneView {
 
         // cube animation
         {
-            if( cube.controller ) {
-                cube.mesh.rotation.x += cube.controller.rotSpeed.x;
-                cube.mesh.rotation.y += cube.controller.rotSpeed.y;
-                cube.mesh.rotation.z += cube.controller.rotSpeed.z;
-            }
+            //if( cube.controller ) {
+            //    cube.mesh.rotation.x += cube.controller.rotSpeed.x;
+            //    cube.mesh.rotation.y += cube.controller.rotSpeed.y;
+            //    cube.mesh.rotation.z += cube.controller.rotSpeed.z;
+            //}
         }
     }
 }

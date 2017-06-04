@@ -39,12 +39,6 @@ export class Component extends Ubject {
 
     // [ Constructors ]
 
-    //constructor() {
-    //    super();
-    //    //this.gameObject = gameObject;
-    //    //this.transform = new Transform(gameObject);
-    //}
-
     // [ Public Functions ]
 
     /*
