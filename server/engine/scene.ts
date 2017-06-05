@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------------
 // scene.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {GameObject  } from './game-object';
+import * as GL        from '../engine/graphic';
+import {Camera      } from '../engine/camera';
+import {Component   } from '../engine/component';
+import {GameObject  } from '../engine/game-object';
 
 /**
  * Scene
@@ -16,8 +18,6 @@ import {GameObject  } from './game-object';
 export class Scene {
 
     // [ Public Variables ]
-
-    core : GL.Scene = new GL.Scene();
 
     /**
      * Returns the index of the scene in the Build Settings. Always returns -1 if the scene was loaded through an AssetBundle.
@@ -76,6 +76,19 @@ export class Scene {
 
     // [ Public Functions ]
 
+    addGameObject( gameObject:GameObject ) {
+        if( gameObject ) {
+            this._gameObjects.push(gameObject);
+        }
+    }
+
+    addCamera( camera:Camera ) {
+        if( camera.gameObject ) {
+            this._gameObjects.push(camera.gameObject);
+            this._core.add(camera.core)
+        }
+    }
+
     /**
      * Returns all the root game objects in the scene.
      *
@@ -84,18 +97,17 @@ export class Scene {
      * @memberof Scene
      */
     getRootGameObjects() : GameObject[] {
-        let gameObjects : GameObject[] = [];
-        for( let child of this.core.children ) {
-            if( child instanceof GameObject ) {
-                gameObjects.push( child );
-            }
-        }
-        return gameObjects;
+        return this._gameObjects;
     }
 
     /*
     IsValid	Whether this is a valid scene. A scene may be invalid if, for example, you tried to open a scene that does not exist. In this case, the scene returned from EditorSceneManager.OpenScene would return False for IsValid.
     */
 
+    // [ Protected Variables ]
+
+    protected _gameObjects : GameObject[] = [];
+
+    protected _core : GL.Scene = new GL.Scene();
 }
 

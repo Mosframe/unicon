@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // async-operation.ts
 // -----------------------------------------------------------------------------
-import {YieldInstruction} from './yield-instruction';
+import {YieldInstruction} from '../engine/yield-instruction';
 
 /**
  * Asynchronous operation coroutine.

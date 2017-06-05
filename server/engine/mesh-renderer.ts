@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // mesh-renderer.ts
 // -----------------------------------------------------------------------------
-import {Renderer} from './renderer';
+import {Renderer} from '../engine/renderer';
 
 /**
  * Renders meshes inserted by the {MeshFilter} or {TextMesh}.

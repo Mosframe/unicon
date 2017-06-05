@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // geometry.ts
 // -----------------------------------------------------------------------------
-import * as GL            from './graphic';
-import {PrimitiveType   } from './primitive-type';
-import {Ubject          } from './ubject';
+import * as GL            from '../engine/graphic';
+import {PrimitiveType   } from '../engine/primitive-type';
+import {Ubject          } from '../engine/ubject';
 
 
 /**

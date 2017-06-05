@@ -1,7 +1,7 @@
 {
     "allowJs": true,
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES6",
         "module": "commonjs",
         "moduleResolution": "node",
         "experimentalDecorators": true,
@@ -9,7 +9,7 @@
         "alwaysStrict":true,
         "listEmittedFiles":true,
         "noImplicitAny": true,
-        "noImplicitThis": true,
+        "noImplicitThis": false,
         "strictNullChecks": true,
         "removeComments": true,
         "preserveConstEnums": true,

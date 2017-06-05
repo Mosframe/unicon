@@ -2,8 +2,8 @@
 // temp.ts
 // -----------------------------------------------------------------------------
 import deprecated         from 'deprecated-decorator';
-import * as GL            from './graphic';
-import {Ubject          } from './ubject';
+import * as GL            from '../engine/graphic';
+import {Ubject          } from '../engine/ubject';
 
 /**
  * Temp

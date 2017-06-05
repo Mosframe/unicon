@@ -2,8 +2,8 @@
 // scene-asset.ts
 // -----------------------------------------------------------------------------
 import {Ubject      }  from '../engine/ubject';
-import {Tool        }  from './tool';
-import {ViewTool    }  from './view-tool';
+import {Tool        }  from '../editor/tool';
+import {ViewTool    }  from '../editor/view-tool';
 
 /**
  * SceneAsset is used to reference scene objects in the Editor.

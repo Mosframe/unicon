@@ -32,8 +32,8 @@ export class Transform extends Component {
      * @type {Vector3}
      * @memberof Transform
      */
-    get eulerAngles() : Vector3 { return this._inner.getWorldDirection(); }
-    set eulerAngles( value:Vector3 ) { this._inner.rotation = this._inner.rotation.setFromVector3(this._inner.worldToLocal(value)); }
+    get eulerAngles() : Vector3         { return this._inner.getWorldDirection(); }
+    set eulerAngles( value:Vector3 )    { this._inner.rotation = this._inner.rotation.setFromVector3(this._inner.worldToLocal(value)); }
     /*
     forward	The blue axis of the transform in world space.
     hasChanged	Has the transform changed since the last time the flag was set to 'false'?
@@ -63,7 +63,7 @@ export class Transform extends Component {
      * @type {Transform}
      * @memberof Transform
      */
-    parent : Transform = null;
+    parent : Transform;
     /**
      * The position of the transform in world space.
      *

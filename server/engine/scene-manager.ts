@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // scene-manager.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Scene       } from './scene';
-import {GameObject  } from './game-object';
+import * as GL        from '../engine/graphic';
+import {Scene       } from '../engine/scene';
+import {GameObject  } from '../engine/game-object';
 
 /**
  * Scene management at run-time.

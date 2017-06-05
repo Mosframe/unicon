@@ -2,8 +2,8 @@
 // tools.ts
 // -----------------------------------------------------------------------------
 import {ScriptableObject}  from '../engine/scriptable-object';
-import {Tool            }  from './tool';
-import {ViewTool        }  from './view-tool';
+import {Tool            }  from '../editor/tool';
+import {ViewTool        }  from '../editor/view-tool';
 
 /**
  * Class used to manipulate the tools used in Unicon's Scene View.

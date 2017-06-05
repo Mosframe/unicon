@@ -30,7 +30,7 @@ import {Inspector       }  from '../tool/inspector';
 export class Windows {
 
     // [ Public Variables ]
-    windows : {[id:string]:Window};
+    windows : {[id:string]:Window} = {};
 
     // [ Constructor ]
 
@@ -58,7 +58,7 @@ export class Windows {
      */
     update() {
 
-        let focusWindow:Window;
+        let focusWindow:Window|null = null;
 
         for( let w in this.windows ) {
             let window = this.windows[w];
@@ -69,17 +69,18 @@ export class Windows {
         }
 
         // focus
-        if( focusWindow != Window.focusedWindow ) {
-            for( let w in this.windows ) {
-                let window = this.windows[w];
-                if( window == focusWindow ) {
-                    window.onFocus();
-                } else {
-                    window.onLostFocus();
+        if( focusWindow ) {
+            if( focusWindow !== Window.focusedWindow ) {
+                for( let w in this.windows ) {
+                    let window = this.windows[w];
+                    if( window == focusWindow ) {
+                        window.onFocus();
+                    } else {
+                        window.onLostFocus();
+                    }
                 }
             }
         }
-
         // 포커스된 윈도우에 메시지 전달
         // mouse & key check
         // Selection 에서처리

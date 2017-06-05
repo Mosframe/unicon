@@ -18,13 +18,11 @@ import {Windows             } from './windows';
 
 import {SceneView           } from './scene-view';
 
-let DatGUI      = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
-let Detector    = require('../../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
-
+let DatGUI      = require('../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
+let Detector    = require('../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
 
 let container = document.createElement( 'div' );
 document.body.appendChild( container );
-
 
 /**
  * unicon

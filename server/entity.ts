@@ -149,7 +149,7 @@ export class EntityManager {
     }
     /** 생성 패키지를 만든다. */
     getCreatePack() {
-        let pack = [];
+        let pack:string[] = [];
         // 모든 엔티티 업데이트 & 업데이트 패킷 생성
         for( let id in this.list ) {
             let entity = this.list[id];

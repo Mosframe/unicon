@@ -6,8 +6,8 @@ import {Resources       }  from '../engine/resources';
 import {ScriptableObject}  from '../engine/scriptable-object';
 import {Ubject          }  from '../engine/ubject';
 
-import {Tool            }  from './tool';
-import {ViewTool        }  from './view-tool';
+import {Tool            }  from '../editor/tool';
+import {ViewTool        }  from '../editor/view-tool';
 
 
 /**
@@ -283,8 +283,8 @@ export class EditorWindow extends ScriptableObject {
 
     // [ Private Static Variables ]
 
-    private static _focusedWindow   : EditorWindow;
-    private static _mouseOverWindow : EditorWindow;
+    private static _focusedWindow   : EditorWindow|null;
+    private static _mouseOverWindow : EditorWindow|null;
 
 
     //private static _getWindow<T extends EditorWindow>( t:IType<T>, utility:boolean, title:string, focus:boolean ) {

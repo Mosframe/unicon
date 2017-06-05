@@ -1,9 +1,10 @@
 // -----------------------------------------------------------------------------
 // editor.ts
 // -----------------------------------------------------------------------------
-import {Ubject         } from '../engine/ubject';
+import {Ubject          } from '../engine/ubject';
 import {ScriptableObject} from '../engine/scriptable-object';
-import {SerializedObject} from './serialized-object';
+
+import {SerializedObject} from '../editor/serialized-object';
 
 let DatGUI = require('../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
 

@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // scriptable-object.ts
 // -----------------------------------------------------------------------------
-import {IType   } from './interfaces/type';
-import {Ubject  } from './ubject';
+import {IType   } from '../engine/interfaces/type';
+import {Ubject  } from '../engine/ubject';
 
 /**
  * Component
@@ -27,12 +27,8 @@ export class ScriptableObject extends Ubject {
      *
      * @memberof ScriptableObject
      */
-    public static createInstance<T extends ScriptableObject>(type?:IType<T>) : ScriptableObject
+    public static createInstance<T extends ScriptableObject>(type:IType<T>) : ScriptableObject
     {
-        if( !type ){
-            let t:IType<T>;
-            type = t;
-        }
         return new type();
     }
     /**
@@ -44,7 +40,7 @@ export class ScriptableObject extends Ubject {
      *
      * @memberof ScriptableObject
      */
-    public static createInstance2( className:string ) : ScriptableObject
+    public static createInstance2( className:string ) : ScriptableObject|null
     {
         let r = eval('new ' + className + '();');
         if( r instanceof ScriptableObject ) {

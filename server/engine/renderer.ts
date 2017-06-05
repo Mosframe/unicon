@@ -1,13 +1,13 @@
 // -----------------------------------------------------------------------------
 // renderer.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Vector3     } from './vector3';
-import {Quaternion  } from './quaternion';
-import {Ubject      } from './ubject';
-import {Component   } from './component';
-import {Camera      } from './camera';
-import {Scene       } from './scene';
+import * as GL        from '../engine/graphic';
+import {Vector3     } from '../engine/vector3';
+import {Quaternion  } from '../engine/quaternion';
+import {Ubject      } from '../engine/ubject';
+import {Component   } from '../engine/component';
+import {Camera      } from '../engine/camera';
+import {Scene       } from '../engine/scene';
 
 /**
  * Renderer : General functionality for all renderers.

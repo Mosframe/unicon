@@ -1,12 +1,12 @@
 // -----------------------------------------------------------------------------
 // camera.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Vector3     } from './vector3';
-import {Behaviour   } from './behaviour';
-import {Transform   } from './transform';
-import {Scene       } from './scene';
-import {SceneManager} from './scene-manager';
+import * as GL        from '../engine/graphic';
+import {Vector3     } from '../engine/vector3';
+import {Behaviour   } from '../engine/behaviour';
+import {Transform   } from '../engine/transform';
+import {Scene       } from '../engine/scene';
+import {SceneManager} from '../engine/scene-manager';
 
 
 
@@ -46,8 +46,6 @@ export class Camera extends Behaviour {
     */
 
     // [ Variables ]
-
-    core : GL.Camera;
 
     /*
     activeTexture	Gets or sets the temporary RenderTexture target for this Camera.
@@ -114,11 +112,11 @@ export class Camera extends Behaviour {
     constructor() {
         super();
 
-        this.core = new GL.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-        this.core.position.set( 40, 40, 40);
-        this.core.lookAt( Vector3.zero );
+        this._core = new GL.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+        this._core.position.set( 40, 40, 40);
+        this._core.lookAt( Vector3.zero );
 
-        SceneManager.current.core.add(this.core);
+        SceneManager.current.core.add(this._core);
     }
 
     // [ Public Functions ]
@@ -168,5 +166,10 @@ export class Camera extends Behaviour {
     OnRenderObject	OnRenderObject is called after camera has rendered the scene.
     OnWillRenderObject	OnWillRenderObject is called for each camera if the object is visible.
     */
+
+    // [ Protected Variables ]
+
+    public _core : GL.Camera;
+
 }
 

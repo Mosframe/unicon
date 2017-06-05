@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // component.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Ubject      } from './ubject';
-import {GameObject  } from './game-object';
-import {Transform   } from './transform';
+import * as GL        from '../engine/graphic';
+import {Ubject      } from '../engine/ubject';
+import {GameObject  } from '../engine/game-object';
+import {Transform   } from '../engine/transform';
 
 /**
  * Component

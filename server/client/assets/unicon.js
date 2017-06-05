@@ -1,1 +1,1 @@
-console.error("TypeScript error: server/editor/editor-window.ts(259,9): Error TS2322: Type 'null' is not assignable to type 'EditorWindow'.");
+console.error("TypeScript error: server/tool/scene-view.ts(70,24): Error TS2339: Property 'core' does not exist on type 'Scene'.");

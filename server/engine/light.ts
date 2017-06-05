@@ -1,11 +1,11 @@
 // -----------------------------------------------------------------------------
 // light.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Component   } from './component';
-import {Transform   } from './transform';
-import {Camera      } from './camera';
-import {SceneManager} from './scene-manager';
+import * as GL        from '../engine/graphic';
+import {Component   } from '../engine/component';
+import {Transform   } from '../engine/transform';
+import {Camera      } from '../engine/camera';
+import {SceneManager} from '../engine/scene-manager';
 
 
 /**
@@ -53,7 +53,7 @@ export class Light extends Component {
         }
         */
 
-        SceneManager.current.core.add(this.core);
+        SceneManager.current._core.add(this.core);
     }
 
     // [ Static Functions ]

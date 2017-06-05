@@ -4,10 +4,10 @@
 import {delegate                } from "../engine/delegate";
 import {ScriptableObject        } from '../engine/scriptable-object';
 import {Rect                    } from '../engine/rect';
-import {SerializedProperty      } from './serialized-property';
-import {GenericMenu             } from './generic-menu';
-import {Tool                    } from './tool';
-import {ViewTool                } from './view-tool';
+import {SerializedProperty      } from '../editor/serialized-property';
+import {GenericMenu             } from '../editor/generic-menu';
+import {Tool                    } from '../editor/tool';
+import {ViewTool                } from '../editor/view-tool';
 
 
 /**

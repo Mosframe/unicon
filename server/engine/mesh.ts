@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // mesh.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Ubject      } from './ubject';
-import {Geometry    } from './geometry';
-import {Material    } from './material';
+import * as GL        from '../engine/graphic';
+import {Ubject      } from '../engine/ubject';
+import {Geometry    } from '../engine/geometry';
+import {Material    } from '../engine/material';
 
 
 /**

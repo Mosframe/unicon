@@ -177,7 +177,7 @@ export class PlayerController extends EntityController {
     /** 이벤트 : 귓속말 입력 */
     private onWhisper = () => {
         this.socket.on('whisper', ( data:{userName:string, message:string} ) => { //{userName,message}
-            let toSocket = null;
+            let toSocket:SocketIO.Socket|null = null;
             for( let id in playerManager.list ) {
                 let controller = playerManager.list[id];
                 if(controller.model.userName.value === data.userName ) {

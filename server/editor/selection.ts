@@ -5,7 +5,7 @@ import {GameObject      } from '../engine/game-object';
 import {Transform       } from '../engine/transform';
 import {Ubject          } from '../engine/ubject';
 
-import {SelectionMode   } from './selection-mode';
+import {SelectionMode   } from '../editor/selection-mode';
 /**
  * Access to the selection in the editor.
  *

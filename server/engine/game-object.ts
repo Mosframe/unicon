@@ -75,9 +75,9 @@ export class GameObject extends Ubject {
     constructor(){
         super();
         this._inner = new GL.Object3D();
-        this.transform = this.addComponent<Transform>();
+        this.transform = this.addComponent(Transform);
         this.scene = SceneManager.current;
-        this.scene.core.add( this._inner );
+        this.scene._core.add( this._inner );
     }
 
     // [ Public Functions ]
@@ -90,8 +90,7 @@ export class GameObject extends Ubject {
       *
       * @memberof GameObject
       */
-    addComponent <T extends Component> () : T {
-        let type:IType<T>;
+    addComponent <T extends Component> (type:IType<T>) : T {
         let component = new type();
         component.gameObject = this;
 
@@ -124,9 +123,7 @@ export class GameObject extends Ubject {
      *
      * @memberof GameObject
      */
-    getComponent<T extends Component>() : T {
-
-        let type:IType<T>;
+    getComponent<T extends Component>( type:IType<T> ) : T|null {
 
         for( let c in this._components ) {
             let component = this._components[c];
@@ -136,6 +133,7 @@ export class GameObject extends Ubject {
                 }
             }
         }
+        return null;
     }
 
     /*

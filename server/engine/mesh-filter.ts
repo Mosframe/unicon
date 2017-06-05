@@ -1,11 +1,11 @@
 // -----------------------------------------------------------------------------
 // mesh-filter.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Vector3     } from './vector3';
-import {Component   } from './component';
-import {Mesh        } from './mesh';
-import {Scene       } from './scene';
+import * as GL        from '../engine/graphic';
+import {Vector3     } from '../engine/vector3';
+import {Component   } from '../engine/component';
+import {Mesh        } from '../engine/mesh';
+import {Scene       } from '../engine/scene';
 
 
 /**

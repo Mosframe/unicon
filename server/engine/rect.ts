@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // rect.ts
 // -----------------------------------------------------------------------------
-import * as GL        from './graphic';
-import {Ubject      } from './ubject';
+import * as GL        from '../engine/graphic';
+import {Ubject      } from '../engine/ubject';
 
 /**
  * Rect

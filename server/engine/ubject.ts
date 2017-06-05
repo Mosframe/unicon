@@ -3,13 +3,12 @@
 // -----------------------------------------------------------------------------
 import deprecated     from 'deprecated-decorator';
 import * as UUID      from 'node-uuid';
-import {Util        } from './util';
-import {HideFlags   } from './hide-flags';
-import {Quaternion  } from './quaternion';
-import {Transform   } from './transform';
-import {Scene       } from './scene';
 
-interface IActivatable<T> {new():T;}
+import {Quaternion  } from '../enginne/quaternion';
+import {HideFlags   } from '../enginne/hide-flags';
+import {Transform   } from '../enginne/transform';
+import {Scene       } from '../enginne/scene';
+import {Util        } from '../enginne/util';
 
 
 /**
@@ -125,10 +124,10 @@ export class Ubject {
 
         let type = Object.getPrototypeOf(obj).constructor.name;
         let list = Ubject._instancesOfTypes[type];
-        if( !list ) {
+        if( list ) {
             let index = list.findIndex( o=>o._instanceID===obj._instanceID );
-            //list.fillter;
-            if( list && list.length === 0 ) {
+            delete list[index];
+            if( list.length === 0 ) {
                 delete Ubject._instancesOfTypes[type];
             }
         }

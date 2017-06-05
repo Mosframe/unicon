@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // resource-request.ts
 // -----------------------------------------------------------------------------
-import {AsyncOperation  } from './async-operation';
-import {IType           } from './interfaces/type';
-import {Resources       } from './resources';
-import {Ubject          } from './ubject';
+import {AsyncOperation  } from '../engine/async-operation';
+import {IType           } from '../engine/interfaces/type';
+import {Resources       } from '../engine/resources';
+import {Ubject          } from '../engine/ubject';
 
 /**
  * Asynchronous load request from the Resources bundle.
@@ -26,9 +26,9 @@ export class ResourceRequest extends AsyncOperation {
      * @type {Ubject}
      * @memberof ResourceRequest
      */
-    public get asset() : Ubject {
-        return Resources.load(this._path, this._type);
-    }
+    //public get asset() : Ubject {
+    //    return Resources.load(this._path, this._type);
+    //}
 
     // [ Constructors ]
 

@@ -15,6 +15,7 @@ import {Selection       }  from '../editor/selection';
 import {Tools           }  from '../editor/tools';
 import {ViewTool        }  from '../editor/view-tool';
 
+
 /**
  * Scene View.
  *
@@ -35,9 +36,9 @@ export class SceneView {
      */
     renderer    : GL.WebGLRenderer;
 
-    camera      : Camera;   // editor camera
-    light       : Light;    // editor light
-    scene       : Scene;    // current scene
+    camera      : Camera; // editor camera
+    light       : Light;  // editor light
+    scene       : Scene;  // current scene
 
     // [ Constructors ]
 
@@ -58,9 +59,9 @@ export class SceneView {
         container.appendChild( this.renderer.domElement );
 
         // scene setting
-        this.scene = new Scene();
+        this.scene = new EditorScene();
         // camera setting
-        this.camera = new Camera();
+        this.camera = new EditorCamera();
         // light setting
         this.light = new Light();
         // axis
@@ -77,12 +78,12 @@ export class SceneView {
             // z
             //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
             //grid2.rotation.x = -0.5 * Math.PI;
-            //this.scene.core.add( grid2 );
+            //this.scene.inner.add( grid2 );
             // x
             //let grid3 = new GL.GridHelper(100,20,0xffff00,0x000000);
             //grid3.rotation.x = -0.5 * Math.PI;
             //grid3.rotation.z = -0.5 * Math.PI;
-            //this.scene.core.add( grid3 );
+            //this.scene.inner.add( grid3 );
         }
 
         // cube (임시)

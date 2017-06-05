@@ -19,7 +19,7 @@ export const runScript = (script:string) : any => {
 
 /** 모델리스트를 JSON으로 변환 */
 const modelListToJson = (list:any):string[] => {
-    let result = [];
+    let result:string[] = [];
     for( let id in list ) {
         let e = list[id];
         if( e ) {
@@ -36,7 +36,7 @@ let players = ():string[] => {
 
 /** 플레이어 정보 얻기 */
 let player = (id:string,member:string):string[] => {
-    let result = [];
+    let result:string[] = [];
     result.push( JSON.stringify( (<any>playerManager.list[id])[member] ) );
     return result;
 }
@@ -48,7 +48,7 @@ let bullets = ():string[] => {
 
 /** 총알 정보 얻기 */
 let bullet = (id:string,member:string):string[] => {
-    let result = [];
+    let result:string[] = [];
     result.push( JSON.stringify( (<any>bulletManager.list[id])[member] ) );
     return result;
 }
@@ -59,7 +59,7 @@ let tableItems = ():string[] =>{
 }
 /** 테이블아이템 정보 얻기 */
 let tableItem = (id:string,member:string):string[] => {
-    let result = [];
+    let result:string[] = [];
     result.push( JSON.stringify( (<any>tableItemManager.list[id])[member] ) );
     return result;
 }
