@@ -74,10 +74,11 @@ export class GameObject extends Ubject {
      */
     constructor(){
         super();
-        this._inner = new GL.Object3D();
+        this._core = new GL.Object3D();
         this.transform = this.addComponent(Transform);
         this.scene = SceneManager.current;
-        this.scene._core.add( this._inner );
+        this.scene._core.add(this._core);
+        this.scene._gameObjects.push(this);
     }
 
     // [ Public Functions ]
@@ -103,7 +104,7 @@ export class GameObject extends Ubject {
                     this._inner = inner;
                 }
             }
-            component.transform = new t(this._inner);
+            component.transform = new t(this._core);
         }
 
         this._components.push(component);
@@ -207,8 +208,8 @@ export class GameObject extends Ubject {
 
     // [ Private Variables ]
 
-    private _inner : GL.Object3D;
-    private _components : Component[];
+    public _core : GL.Object3D;
+    public _components : Component[];
 
 }
 

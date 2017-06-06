@@ -34,10 +34,13 @@ export class EditorScene extends Scene {
         this._core.add( axis );
     }
 
-    addGridHelper( size?:number, divisions?:number, color1?:number, color2?:number ) {
+    addGridHelper( size:number, divisions:number, color1?:number|GL.Color, color2?:number|GL.Color ) {
+
         // y
         let grid = new GL.GridHelper(size,divisions,color1,color2);
-        this._core.add( grid );
+        if( grid ) {
+            this._core.add( grid );
+        }
         // z
         //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
         //grid2.rotation.x = -0.5 * Math.PI;
@@ -48,6 +51,4 @@ export class EditorScene extends Scene {
         //grid3.rotation.z = -0.5 * Math.PI;
         //this.scene.inner.add( grid3 );
     }
-
-    get core() { return this._core; }
 }

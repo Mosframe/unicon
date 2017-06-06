@@ -80,6 +80,7 @@ export class Scene {
     addGameObject( gameObject:GameObject ) {
         if( gameObject ) {
             this._gameObjects.push(gameObject);
+            this._core.add(gameObject._core);
         }
     }
 
@@ -114,8 +115,8 @@ export class Scene {
 
     // [ Protected Variables ]
 
-    protected _gameObjects : GameObject[] = [];
+    public _gameObjects : GameObject[] = [];
 
-    protected _core : GL.Scene = new GL.Scene();
+    public _core : GL.Scene = new GL.Scene();
 }
 

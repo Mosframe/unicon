@@ -96,7 +96,7 @@ export class SceneView {
      * @memberof Renderer
      */
     render() {
-        this.renderer.render( this.scene.core, this.camera._core );
+        this.renderer.render( this.scene._core, this.camera._core );
     }
 
     /**

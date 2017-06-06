@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import deprecated         from 'deprecated-decorator';
 import * as GL            from '../engine/graphic';
+import {Ubject          } from '../engine/ubject';
 
 /**
  * Temp
@@ -13,7 +14,7 @@ import * as GL            from '../engine/graphic';
  * @class Temp
  * @extends {Ubject}
  */
-export class Temp {
+export class Temp extends Ubject {
 
     // [ Public Variables ]
 

@@ -55,9 +55,9 @@ export class Mesh extends Ubject {
         super();
 
         let material = new Material();
-        this._core = new GL.Mesh( geometry._core, material._core );
-        this._core.rotation.x    = -0.5 * Math.PI;
-        this._core.receiveShadow = true;
+        this.core = new GL.Mesh( geometry._core, material._core );
+        this.core.rotation.x    = -0.5 * Math.PI;
+        this.core.receiveShadow = true;
     }
 
     // [ Public Functions ]
@@ -106,7 +106,7 @@ export class Mesh extends Ubject {
      * @type {GL.Mesh}
      * @memberof Mesh
      */
-    _core    : GL.Mesh;
+    core    : GL.Mesh;
 
 }
 

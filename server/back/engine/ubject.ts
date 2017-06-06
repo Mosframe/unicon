@@ -4,11 +4,11 @@
 import deprecated     from 'deprecated-decorator';
 import * as UUID      from 'node-uuid';
 
-import {Quaternion  } from '../enginne/quaternion';
-import {HideFlags   } from '../enginne/hide-flags';
-import {Transform   } from '../enginne/transform';
-import {Scene       } from '../enginne/scene';
-import {Util        } from '../enginne/util';
+import {Quaternion  } from '../engine/quaternion';
+import {HideFlags   } from '../engine/hide-flags';
+import {Transform   } from '../engine/transform';
+import {Scene       } from '../engine/scene';
+import {Util        } from '../engine/util';
 
 
 /**
