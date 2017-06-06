@@ -19,14 +19,6 @@ export class Material extends Ubject {
 
     // [ Variables ]
 
-    /**
-     * core
-     *
-     * @type {GL.Material}
-     * @memberof Material
-     */
-    core : GL.Material;
-
     /*
     color	The main material's color.
     enableInstancing	Gets and sets whether GPU instancing is enabled for this material.
@@ -49,7 +41,7 @@ export class Material extends Ubject {
      */
     constructor() {
         super();
-        this.core = new GL.MeshLambertMaterial({color:0xffffff});
+        this._core = new GL.MeshLambertMaterial({color:0xffffff});
     }
 
     // [ Public Functions ]
@@ -94,5 +86,13 @@ export class Material extends Ubject {
     SetVector	Sets a named vector value.
     SetVectorArray	Sets a vector array property.
     */
+
+    /**
+     * core
+     *
+     * @type {GL.Material}
+     * @memberof Material
+     */
+    _core : GL.Material;
 }
 

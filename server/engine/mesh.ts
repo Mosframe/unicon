@@ -20,13 +20,6 @@ export class Mesh extends Ubject {
 
     // [ Variables ]
 
-    /**
-     * core
-     *
-     * @type {GL.Mesh}
-     * @memberof Mesh
-     */
-    core    : GL.Mesh;
 
     /*
     bindposes:any;//	The bind poses. The bind pose at each index refers to the bone with the same index.
@@ -62,9 +55,9 @@ export class Mesh extends Ubject {
         super();
 
         let material = new Material();
-        this.core = new GL.Mesh( geometry.core, material.core );
-        this.core.rotation.x    = -0.5 * Math.PI;
-        this.core.receiveShadow = true;
+        this._core = new GL.Mesh( geometry._core, material._core );
+        this._core.rotation.x    = -0.5 * Math.PI;
+        this._core.receiveShadow = true;
     }
 
     // [ Public Functions ]
@@ -106,5 +99,14 @@ export class Mesh extends Ubject {
     SetVertices(){};//	Assigns a new vertex positions array.
     UploadMeshData(){};//	Upload previously done Mesh modifications to the graphics API.
     */
+
+    /**
+     * core
+     *
+     * @type {GL.Mesh}
+     * @memberof Mesh
+     */
+    _core    : GL.Mesh;
+
 }
 

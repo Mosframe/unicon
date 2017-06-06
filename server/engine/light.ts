@@ -21,14 +21,6 @@ export class Light extends Component {
 
     // [ Variables ]
 
-    /**
-     * core light
-     *
-     * @type {GL.Light}
-     * @memberof Light
-     */
-    core : GL.Light;
-
     // [ Constructors ]
 
     /**
@@ -39,12 +31,12 @@ export class Light extends Component {
     constructor() {
         super();
 
-        this.core = new GL.SpotLight(0xffffff);
-        this.core.castShadow = true;
-        this.core.position.set(15,30,50);
-        this.core.shadow.bias = 0.0001;
-        this.core.shadow.mapSize.width = 2048;
-        this.core.shadow.mapSize.height = 2048;
+        this._core = new GL.SpotLight(0xffffff);
+        this._core.castShadow = true;
+        this._core.position.set(15,30,50);
+        this._core.shadow.bias = 0.0001;
+        this._core.shadow.mapSize.width = 2048;
+        this._core.shadow.mapSize.height = 2048;
         /*
         if( this.core.shadow.camera.type === typeof(GL.PerspectiveCamera) ) {
             if( camera instanceof GL.PerspectiveCamera ) {
@@ -53,10 +45,17 @@ export class Light extends Component {
         }
         */
 
-        SceneManager.current._core.add(this.core);
+        SceneManager.current.addLight(this);
     }
 
     // [ Static Functions ]
 
+    /**
+     * core light
+     *
+     * @type {GL.Light}
+     * @memberof Light
+     */
+    _core : GL.Light;
 }
 

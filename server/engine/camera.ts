@@ -116,7 +116,7 @@ export class Camera extends Behaviour {
         this._core.position.set( 40, 40, 40);
         this._core.lookAt( Vector3.zero );
 
-        SceneManager.current.core.add(this._core);
+        SceneManager.current._core.add(this._core);
     }
 
     // [ Public Functions ]

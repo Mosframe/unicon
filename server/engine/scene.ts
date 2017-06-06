@@ -5,6 +5,7 @@ import * as GL        from '../engine/graphic';
 import {Camera      } from '../engine/camera';
 import {Component   } from '../engine/component';
 import {GameObject  } from '../engine/game-object';
+import {Light       } from '../engine/light';
 
 /**
  * Scene
@@ -85,7 +86,14 @@ export class Scene {
     addCamera( camera:Camera ) {
         if( camera.gameObject ) {
             this._gameObjects.push(camera.gameObject);
-            this._core.add(camera.core)
+            this._core.add(camera._core)
+        }
+    }
+
+    addLight( light:Light ) {
+        if( light.gameObject ) {
+            this._gameObjects.push(light.gameObject);
+            this._core.add(light._core)
         }
     }
 

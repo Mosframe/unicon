@@ -19,14 +19,6 @@ export class Geometry extends Ubject {
 
     // [ Variables ]
 
-    /**
-     * core
-     *
-     * @type {GL.Geometry}
-     * @memberof Geometry
-     */
-    core : GL.Geometry;
-
     // [ Constructors ]
 
     /**
@@ -40,12 +32,21 @@ export class Geometry extends Ubject {
 
         switch(type) {
         case PrimitiveType.cube:
-            this.core = new GL.CubeGeometry( 1, 1, 1, 1, 1, 1 ); //w,h,d,sw,sh,sd
+            this._core = new GL.CubeGeometry( 1, 1, 1, 1, 1, 1 ); //w,h,d,sw,sh,sd
             break;
         case PrimitiveType.plane:
-            this.core = new GL.PlaneGeometry( 1, 1, 1, 1 ); // w,h,sw,sh
+            this._core = new GL.PlaneGeometry( 1, 1, 1, 1 ); // w,h,sw,sh
             break;
         }
     }
+
+
+    /**
+     * core
+     *
+     * @type {GL.Geometry}
+     * @memberof Geometry
+     */
+    _core : GL.Geometry;
 }
 
