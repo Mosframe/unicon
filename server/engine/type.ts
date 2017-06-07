@@ -3,14 +3,14 @@
 // -----------------------------------------------------------------------------
 
 /**
- * IType
+ * Type
  *
  * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @interface IType
+ * @interface Type
  * @template T
  */
-export interface IType<T> {
+export interface Type<T> {
     new():T;
 }

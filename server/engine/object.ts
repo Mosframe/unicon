@@ -18,10 +18,17 @@ export class Ubject {
 
     /*
     hideFlags	Should the object be hidden, saved with the scene or modifiable by the user?
-    name	The name of the object.
     */
+    /**
+     * The name of the object.
+     *
+     * @type {string}
+     * @memberof Ubject
+     */
+    name : string;
 
     // [ Constructors ]
+
 
     // [ Public Functions ]
 

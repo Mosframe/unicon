@@ -2,6 +2,7 @@
 // scene-view.ts
 // -----------------------------------------------------------------------------
 import deprecated     from 'deprecated-decorator';
+import {GameObject  } from '../engine/game-object';
 import * as GL        from '../engine/graphic';
 import {EditorWindow} from '../editor/editor-window';
 
@@ -51,6 +52,9 @@ export class SceneView extends EditorWindow {
 
     protected scene : GL.Scene;
     protected camera : GL.Camera;
+
+    protected plane : GameObject;
+    protected cube  : GameObject;
 
 
     // [ Protected Functions ]
