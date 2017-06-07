@@ -1,19 +1,19 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// scriptable-object.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import * as GL          from '../engine/graphic';
+import {Ubject}         from '../engine/object';
 
 /**
- * Temp
+ * A class you can derive from if you want to create objects that don't need to be attached to game objects.
  *
  * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class ScriptableObject
+ * @extends {UObject}
  */
-export class Temp {
+export class ScriptableObject extends Ubject {
 
     // [ Public Variables ]
 
@@ -24,8 +24,6 @@ export class Temp {
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]
-
-    // [ Public Operators ]
 
     // [ Protected Variables ]
 

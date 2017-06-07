@@ -1,19 +1,20 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// inspector-window.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import deprecated     from 'deprecated-decorator';
+import * as GL        from '../engine/graphic';
+import {EditorWindow} from '../editor/editor-window';
 
 /**
- * Temp
+ * The Inspector Window allows you to view and edit all the properties of the currently selected object.
+ * Because different types of objects have different sets of properties, the layout and contents of the inspector window will vary.
  *
  * @author mosframe / https://github.com/mosframe
- *
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class InspectorWindow
+ * @extends {EditorWindow}
  */
-export class Temp {
+export class InspectorWindow extends EditorWindow {
 
     // [ Public Variables ]
 
@@ -24,8 +25,6 @@ export class Temp {
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]
-
-    // [ Public Operators ]
 
     // [ Protected Variables ]
 

@@ -1,19 +1,20 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// editor-window.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import deprecated         from 'deprecated-decorator';
+import * as GL            from '../engine/graphic';
+import {ScriptableObject} from '../engine/scriptable-object';
 
 /**
- * Temp
+ * Derive from this class to create an editor window.
  *
  * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class EditorWindow
+ * @extends {ScriptableObject}
  */
-export class Temp {
+export class EditorWindow extends ScriptableObject {
 
     // [ Public Variables ]
 
@@ -24,8 +25,6 @@ export class Temp {
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]
-
-    // [ Public Operators ]
 
     // [ Protected Variables ]
 

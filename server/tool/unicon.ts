@@ -16,7 +16,12 @@ import * as GL                from '../engine/graphic';
 //import {Vector3             } from '../engine/vector3';
 //import {Windows             } from './windows';
 //
-//import {SceneView           } from './scene-view';
+import {GameView        } from './game-view';
+import {HierarchyWindow } from './hierarchy-window';
+import {InspectorWindow } from './inspector-window';
+import {ProjectWindow   } from './project-window';
+import {SceneView       } from './scene-view';
+import {Toolbar         } from './toolbar';
 
 let DatGUI      = require('../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
 let Detector    = require('../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
@@ -48,34 +53,41 @@ export class Unicon {
 
     // [ Public Functions ]
 
+    // [ Public Static Variables ]
 
-    /**
-     * render
-     *
-     *
-     * @memberof Unicon
-     */
-    render() {
-    }
+    // [ Public Static Functions ]
+
     /**
      * tick
      *
      *
      * @memberof Unicon
      */
-    tick() {
-        //Time._tick();
-        this.update();
-        this.render();
+    public tick() {
+        this._update();
+        this._render();
     }
-    /**
-     * update
-     *
-     *
-     * @memberof Unicon
-     */
-    update() {
+
+    // [ Protected Variables ]
+
+    protected _gameView         : GameView
+    protected _hierarchyWindow  : HierarchyWindow
+    protected _inspectorWindow  : InspectorWindow
+    protected _projectWindow    : ProjectWindow
+    protected _sceneView        : SceneView
+    protected _toolbar          : Toolbar
+
+    // [ Protected Functions ]
+
+    protected _render() {
     }
+
+    protected _update() {
+    }
+
+    // [ Protected Static Variables ]
+
+    // [ Protected Static Functions ]
 }
 
 let unicon = new Unicon();

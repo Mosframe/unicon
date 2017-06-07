@@ -1,19 +1,20 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// scene-view.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import deprecated     from 'deprecated-decorator';
+import * as GL        from '../engine/graphic';
+import {EditorWindow} from '../editor/editor-window';
 
 /**
- * Temp
+ * The Project Window displays your library of assets that are available to use in your project.
+ * When you import assets into your project, they appear here.
  *
  * @author mosframe / https://github.com/mosframe
- *
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class ProjectWindow
+ * @extends {EditorWindow}
  */
-export class Temp {
+export class ProjectWindow extends EditorWindow {
 
     // [ Public Variables ]
 
@@ -24,8 +25,6 @@ export class Temp {
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]
-
-    // [ Public Operators ]
 
     // [ Protected Variables ]
 
