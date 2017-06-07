@@ -22,6 +22,14 @@ export class EditorWindow extends ScriptableObject {
 
     // [ Public Functions ]
 
+    render() {
+
+    }
+
+    update() {
+
+    }
+
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]

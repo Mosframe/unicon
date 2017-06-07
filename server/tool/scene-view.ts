@@ -22,13 +22,36 @@ export class SceneView extends EditorWindow {
 
     // [ Constructors ]
 
+    constructor() {
+        super();
+
+        this.scene = new GL.Scene();
+        this.camera = new GL.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        this.scene.add( this.camera );
+
+
+    }
+
     // [ Public Functions ]
+
+    render() {
+        super.render();
+    }
+
+    update() {
+        super.update();
+    }
+
 
     // [ Public Static Variables ]
 
     // [ Public Static Functions ]
 
     // [ Protected Variables ]
+
+    protected scene : GL.Scene;
+    protected camera : GL.Camera;
+
 
     // [ Protected Functions ]
 

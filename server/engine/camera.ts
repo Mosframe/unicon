@@ -1,19 +1,19 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// camera.ts
 // -----------------------------------------------------------------------------
 import * as GL  from '../engine/graphic';
 import {Ubject} from '../engine/object';
 
 /**
- * Temp
+ * Camera
  *
  * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @class Temp
+ * @class Camera
  * @extends {Ubject}
  */
-export class Temp {
+export class Camera : {
 
     // [ Public Variables ]
 
@@ -26,8 +26,6 @@ export class Temp {
     // [ Public Static Functions ]
 
     // [ Public Operators ]
-
-    // [ Public Events ]
 
     // [ Protected Variables ]
 

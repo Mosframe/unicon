@@ -80,9 +80,21 @@ export class Unicon {
     // [ Protected Functions ]
 
     protected _render() {
+        this._gameView.render();
+        this._sceneView.render();
+        this._hierarchyWindow.render();
+        this._inspectorWindow.render();
+        this._projectWindow.render();
+        this._toolbar.render();
     }
 
     protected _update() {
+        this._gameView.update();
+        this._sceneView.update();
+        this._hierarchyWindow.update();
+        this._inspectorWindow.update();
+        this._projectWindow.update();
+        this._toolbar.update();
     }
 
     // [ Protected Static Variables ]
