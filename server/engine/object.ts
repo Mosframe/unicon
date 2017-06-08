@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 // object.ts
 // -----------------------------------------------------------------------------
-import deprecated         from 'deprecated-decorator';
-import * as GL            from '../engine/graphic';
+import deprecated   from 'deprecated-decorator';
+import * as GL      from '../engine/graphic';
+import {Util}       from '../engine/util';
 
 /**
  * Base class for all objects Unicon can reference.
@@ -29,6 +30,13 @@ export class Ubject {
 
     // [ Constructors ]
 
+    /**
+     * Creates an instance of Ubject.
+     *
+     * @memberof Ubject
+     */
+    constructor() {
+    }
 
     // [ Public Functions ]
 
@@ -42,13 +50,24 @@ export class Ubject {
     // [ Public Static Functions ]
 
     /*
-    Destroy	Removes a gameobject, component or asset.
-    DestroyImmediate	Destroys the object obj immediately. You are strongly recommended to use Destroy instead.
-    DontDestroyOnLoad	Makes the object target not be destroyed automatically when loading a new scene.
-    FindObjectOfType	Returns the first active loaded object of Type type.
-    FindObjectsOfType	Returns a list of all active loaded objects of Type type.
-    Instantiate	Clones the object original and returns the clone.
+    static Destroy	Removes a gameobject, component or asset.
+    static DestroyImmediate	Destroys the object obj immediately. You are strongly recommended to use Destroy instead.
+    static DontDestroyOnLoad	Makes the object target not be destroyed automatically when loading a new scene.
+    static FindObjectOfType	Returns the first active loaded object of Type type.
+    static FindObjectsOfType	Returns a list of all active loaded objects of Type type.
     */
+
+    /**
+     * Clones the object original and returns the clone.
+     *
+     * @static
+     * @param {Ubject} original
+     *
+     * @memberof Ubject
+     */
+    static instantiate( original : Ubject ) : Ubject {
+        return <Ubject>Util.clone( original );
+    }
 
     // [ Public Operators ]
 

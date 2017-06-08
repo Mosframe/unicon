@@ -2,7 +2,11 @@
 // game-object.ts
 // -----------------------------------------------------------------------------
 import {Component       } from '../engine/component';
+import {Geometry        } from '../engine/geometry';
 import * as GL            from '../engine/graphic';
+import {Mesh            } from '../engine/mesh';
+import {MeshFilter      } from '../engine/mesh-filter';
+import {MeshRenderer    } from '../engine/mesh-renderer';
 import {PrimitiveType   } from '../engine/primitive-type';
 import {Type            } from '../engine/type';
 import {Ubject          } from '../engine/object';
@@ -114,30 +118,46 @@ export class GameObject extends Ubject {
     //Creates a game object with a primitive mesh renderer and appropriate collider.
     static createPrimitive( type:PrimitiveType ) : GameObject {
 
+        /*
+        let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
+        let material    = new THREE.MeshLambertMaterial({color:0xffffff});
+        var mesh        = new THREE.Mesh( geometry, material );
+
+        mesh.rotation.x = -0.5 * Math.PI;
+        mesh.receiveShadow = true;
+        */
+
+
         // [ GameObject ]
-        let gameObject = new GameObject( type.toString() );
+        let gameObject  = new GameObject( type.toString() );
 
         // [ Geometry ]
-        let geometry    = new GL.Geometry();
-        let mesh : GL.Mesh;
+        let geometry    = new Geometry(type);
 
         // [ Mesh ]
-        let mesh        = new Mesh( geometry );
+        let mesh        = new Mesh();
+
         switch(type) {
         case PrimitiveType.cube:
             break;
         case PrimitiveType.plane:
+
+
+        scene.add( mesh );
+
             mesh.core.rotation.x = -0.5 * Math.PI;
             mesh.core.receiveShadow = true;
             break;
         }
 
         // [ MeshFilter ]
-        let meshFilter  = new MeshFilter(mesh);
+        let meshFilter  = new MeshFilter();
+        meshFilter.mesh = mesh;
         gameObject._components.push( meshFilter );
 
         // [ MeshRenderer ]
         let meshRenderer = new MeshRenderer();
+        meshRenderer.material =
         gameObject._components.push( meshRenderer );
 
         return gameObject;

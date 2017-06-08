@@ -1,23 +1,36 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// mesh-renderer.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import * as GL        from '../engine/graphic';
+import {Renderer    } from '../engine/renderer';
 
 /**
- * Temp
+ * Renders meshes inserted by the MeshFilter or TextMesh.
  *
  * @author mosframe / https://github.com/mosframe
  *
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class MeshRenderer
+ * @extends {Renderer}
  */
-export class Temp {
+export class MeshRenderer extends Renderer {
 
     // [ Public Variables ]
 
+    /*
+    additionalVertexStreams	Vertex attributes in this mesh will override or add attributes of the primary mesh in the MeshRenderer.
+    */
+
     // [ Constructors ]
+
+    /**
+     * Creates an instance of MeshRenderer.
+     *
+     * @memberof MeshRenderer
+     */
+    constructor() {
+        super();
+    }
 
     // [ Public Functions ]
 

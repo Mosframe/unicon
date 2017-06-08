@@ -29,6 +29,15 @@ export class Component extends Ubject {
 
     // [ Constructors ]
 
+    /**
+     * Creates an instance of Component.
+     *
+     * @memberof Component
+     */
+    constructor() {
+        super();
+    }
+
     // [ Public Functions ]
 
     /*

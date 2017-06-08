@@ -1,1 +1,1 @@
-console.error("TypeScript error: server/engine/game-object.ts(122,13): Error TS2451: Cannot redeclare block-scoped variable 'mesh'.");
+console.error("TypeScript error: server/engine/game-object.ts(133,18): Error TS2445: Property 'core' is protected and only accessible within class 'Mesh' and its subclasses.");
