@@ -4,6 +4,7 @@
 import {Component       } from '../engine/component';
 import {Geometry        } from '../engine/geometry';
 import * as GL            from '../engine/graphic';
+import {Material        } from '../engine/material';
 import {Mesh            } from '../engine/mesh';
 import {MeshFilter      } from '../engine/mesh-filter';
 import {MeshRenderer    } from '../engine/mesh-renderer';
@@ -157,7 +158,7 @@ export class GameObject extends Ubject {
 
         // [ MeshRenderer ]
         let meshRenderer = new MeshRenderer();
-        meshRenderer.material =
+        meshRenderer.material = new Material();
         gameObject._components.push( meshRenderer );
 
         return gameObject;

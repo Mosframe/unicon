@@ -8,22 +8,21 @@ import {Ubject} from '../engine/object';
  * Temp
  *
  * @author mosframe / https://github.com/mosframe
- *
  * @export
  * @class Temp
  * @extends {Ubject}
  */
 export class Temp {
 
+    // [ Public Static Variables ]
+
     // [ Public Variables ]
 
     // [ Constructors ]
 
-    // [ Public Functions ]
-
-    // [ Public Static Variables ]
-
     // [ Public Static Functions ]
+
+    // [ Public Functions ]
 
     // [ Public Operators ]
 
@@ -33,9 +32,9 @@ export class Temp {
 
     // [ Protected Variables ]
 
-    // [ Protected Functions ]
-
     // [ Protected Static Variables ]
+
+    // [ Protected Functions ]
 
     // [ Protected Static Functions ]
 }

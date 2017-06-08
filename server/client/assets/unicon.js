@@ -1,1 +1,1 @@
-console.error("TypeScript error: server/engine/game-object.ts(133,18): Error TS2445: Property 'core' is protected and only accessible within class 'Mesh' and its subclasses.");
+console.error("TypeScript error: server/engine/game-object.ts(147,9): Error TS2304: Cannot find name 'scene'.");
