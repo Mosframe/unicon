@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 // component.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import * as GL        from '../engine/graphic';
+import {GameObject  } from '../engine/game-object';
+import {Ubject      } from '../engine/object';
 
 /**
  * Base class for everything attached to GameObjects.
@@ -21,8 +22,14 @@ export class Component extends Ubject {
 
     // [ Public Variables ]
 
+    /**
+     * The game object this component is attached to. A component is always attached to a game object.
+     *
+     * @type {GameObject}
+     * @memberof Component
+     */
+    gameObject : GameObject;
     /*
-    gameObject	The game object this component is attached to. A component is always attached to a game object.
     tag	The tag of this game object.
     transform	The Transform attached to this GameObject.
     */
@@ -31,11 +38,13 @@ export class Component extends Ubject {
 
     /**
      * Creates an instance of Component.
+     * @param {GameObject} gameObject
      *
      * @memberof Component
      */
-    constructor() {
+    constructor( gameObject:GameObject ) {
         super();
+        this.gameObject = gameObject;
     }
 
     // [ Public Functions ]

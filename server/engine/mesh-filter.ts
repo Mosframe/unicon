@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // mesh-filter.ts
 // -----------------------------------------------------------------------------
-import * as GL    from '../engine/graphic';
-import {Mesh    } from '../engine/mesh';
-import {Ubject  } from '../engine/object';
+import * as GL        from '../engine/graphic';
+import {Mesh        } from '../engine/mesh';
+import {Component   } from '../engine/component';
 
 /**
  * A class to access the Mesh of the mesh filter.
@@ -12,9 +12,9 @@ import {Ubject  } from '../engine/object';
  *
  * @export
  * @class MeshFilter
- * @extends {Ubject}
+ * @extends {Component}
  */
-export class MeshFilter extends Ubject {
+export class MeshFilter extends Component {
 
     // [ Public Variables ]
 
@@ -25,7 +25,7 @@ export class MeshFilter extends Ubject {
      * @memberof MeshFilter
      */
     get mesh() : Mesh {
-        return <Mesh>Ubject.instantiate( this.sharedMesh );
+        return <Mesh>Component.instantiate( this.sharedMesh );
     }
     set mesh( value : Mesh ) {
         this.sharedMesh = value;

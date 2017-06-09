@@ -9,9 +9,14 @@ import {Mesh            } from '../engine/mesh';
 import {MeshFilter      } from '../engine/mesh-filter';
 import {MeshRenderer    } from '../engine/mesh-renderer';
 import {PrimitiveType   } from '../engine/primitive-type';
+import {ShaderType      } from '../engine/shader-type';
 import {Type            } from '../engine/type';
 import {Ubject          } from '../engine/object';
 
+
+export interface ComponentType<T> {
+    new(gameObject:GameObject):T;
+}
 
 
 /**
@@ -48,11 +53,11 @@ export class GameObject extends Ubject {
      * Finally, the third version allows the name to be specified but also components to be passed in as an array.
      *
      * @param {string} [name]
-     * @param {...typeof Component[]} components
+     * @param {...string[]} componentNames
      *
      * @memberof GameObject
      */
-    constructor( name?:string, ...components : typeof Component[] ) {
+    constructor( name?:string, ...componentNames : string[] ) {
         super();
 
         if( name ) {
@@ -61,9 +66,9 @@ export class GameObject extends Ubject {
             this.name = 'GameObject';
         }
 
-        for( let component of components ) {
-            if(component) {
-                this.addComponent( component );
+        for( let componentName of componentNames ) {
+            if(componentName) {
+                this.addComponent2( componentName );
             }
         }
     }
@@ -73,19 +78,50 @@ export class GameObject extends Ubject {
     /**
      * Adds a component class of type componentType to the game object.
      *
-     * @param {typeof Component} componentType
+     * @template T
+     * @param {ComponentType<T>} type
+     * @returns {T}
+     *
+     * @memberof GameObject
+     */
+    addComponent<T extends Component>( type:ComponentType<T> ) : T {
+        let instance = new type(this);
+        this._components.push( instance );
+
+        let tc = this._typeComponents[type.toString()];
+        if( !tc ) {
+            tc = this._typeComponents[type.toString()] = [];
+        }
+        tc.push( instance );
+
+        return <T>instance;
+    }
+    /**
+     * Adds a component class of type componentType to the game object.
+     *
+     * @param {string} componentName
      * @returns {Component}
      *
      * @memberof GameObject
      */
-    addComponent( componentType : typeof Component ) : Component {
-        let instance = new componentType();
+    addComponent2( componentName:string ) : Component {
+        let instance = <Component>new window[componentName](this);
         this._components.push( instance );
+
+        let tc = this._typeComponents[componentName];
+        if( !tc ) {
+            tc = this._typeComponents[componentName] = [];
+        }
+        tc.push( instance );
+
         return instance;
     }
+    /*
+    BroadcastMessage	Calls the method named methodName on every MonoBehaviour in this game object or any of its children.
+    CompareTag	Is this game object tagged with tag ?
+    */
     /**
-     * Adds a component class of type componentType to the game object.
-     * Generic version.
+     * Returns the component of Type type if the game object has one attached, null if it doesn't.
      *
      * @template T
      * @param {Type<T>} type
@@ -93,15 +129,27 @@ export class GameObject extends Ubject {
      *
      * @memberof GameObject
      */
-    addComponentT<T extends Component>( type:Type<T> ) : T {
-        let instance = new type();
-        this._components.push( instance );
-        return <T>instance;
+    getComponent<T extends Component>( type:Type<T> ) : T {
+        let components = this._typeComponents[type.toString()];
+        if( components ) {
+            return <T>components[0];
+        }
+    }
+    /**
+     * Returns the component of Type type if the game object has one attached, null if it doesn't.
+     *
+     * @param {string} componentName
+     * @returns {Component}
+     *
+     * @memberof GameObject
+     */
+    getComponent2( componentName:string ) : Component {
+        let components = this._typeComponents[componentName];
+        if( components ) {
+            return components[0];
+        }
     }
     /*
-    BroadcastMessage	Calls the method named methodName on every MonoBehaviour in this game object or any of its children.
-    CompareTag	Is this game object tagged with tag ?
-    GetComponent	Returns the component of Type type if the game object has one attached, null if it doesn't.
     GetComponentInChildren	Returns the component of Type type in the GameObject or any of its children using depth first search.
     GetComponentInParent	Returns the component of Type type in the GameObject or any of its parents.
     GetComponents	Returns all components of Type type in the GameObject.
@@ -142,24 +190,19 @@ export class GameObject extends Ubject {
         case PrimitiveType.cube:
             break;
         case PrimitiveType.plane:
-
-
-        scene.add( mesh );
-
-            mesh.core.rotation.x = -0.5 * Math.PI;
-            mesh.core.receiveShadow = true;
             break;
         }
 
-        // [ MeshFilter ]
-        let meshFilter  = new MeshFilter();
-        meshFilter.mesh = mesh;
-        gameObject._components.push( meshFilter );
+        //scene.add( mesh );
+        //
+        //    mesh.core.rotation.x = -0.5 * Math.PI;
+        //    mesh.core.receiveShadow = true;
+        //    break;
+        //}
 
         // [ MeshRenderer ]
-        let meshRenderer = new MeshRenderer();
-        meshRenderer.material = new Material();
-        gameObject._components.push( meshRenderer );
+        let renderer = gameObject.addComponent( MeshRenderer );
+        //renderer.getComponent
 
         return gameObject;
     }
@@ -176,7 +219,8 @@ export class GameObject extends Ubject {
 
     // [ Protected Variables ]
 
-    protected _components : Component[] = [];
+    protected _components       : Component[] = [];
+    protected _typeComponents   : {[type:string]:Component[]} = {};
 
     // [ Protected Functions ]
 
