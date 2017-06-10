@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // mesh-filter.ts
 // -----------------------------------------------------------------------------
+import {GameObject  } from '../engine/game-object';
 import * as GL        from '../engine/graphic';
 import {Mesh        } from '../engine/mesh';
 import {Component   } from '../engine/component';
@@ -24,11 +25,10 @@ export class MeshFilter extends Component {
      * @type {Mesh}
      * @memberof MeshFilter
      */
-    get mesh() : Mesh {
-        return <Mesh>Component.instantiate( this.sharedMesh );
-    }
-    set mesh( value : Mesh ) {
+    get mesh() : Mesh       { return <Mesh>Component.instantiate( this.sharedMesh ); }
+    set mesh( value:Mesh )  {
         this.sharedMesh = value;
+        this.gameObject.core = this._core = value.core;
     }
     /**
      * Returns the shared mesh of the mesh filter.
@@ -39,15 +39,6 @@ export class MeshFilter extends Component {
     sharedMesh : Mesh;
 
     // [ Constructors ]
-
-    /**
-     * Creates an instance of MeshFilter.
-     *
-     * @memberof MeshFilter
-     */
-    constructor() {
-        super();
-    }
 
     // [ Public Functions ]
 

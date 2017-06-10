@@ -2,7 +2,7 @@
 // scriptable-object.ts
 // -----------------------------------------------------------------------------
 import * as GL          from '../engine/graphic';
-import {Ubject}         from '../engine/object';
+import {Ubject}         from '../engine/ubject';
 
 /**
  * A class you can derive from if you want to create objects that don't need to be attached to game objects.

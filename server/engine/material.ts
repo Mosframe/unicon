@@ -3,7 +3,7 @@
 // -----------------------------------------------------------------------------
 import * as GL                from '../engine/graphic';
 import {ShaderType          } from '../engine/shader-type';
-import {Ubject              } from '../engine/object';
+import {Ubject              } from '../engine/ubject';
 
 /**
  * The material class.
@@ -21,6 +21,15 @@ import {Ubject              } from '../engine/object';
 export class Material extends Ubject {
 
     // [ Public Variables ]
+
+    /**
+     * get GL.Material
+     *
+     * @readonly
+     *
+     * @memberof Material
+     */
+    get core() : GL.Material { return this._core; }
 
     /*
     color	The main material's color.
@@ -47,11 +56,13 @@ export class Material extends Ubject {
         super();
 
         switch( shaderType ) {
-            case ShaderType.MeshLambert:
-                this._core = new GL.MeshLambertMaterial({color:0xffffff});
-                break;
+        case ShaderType.MeshLambert:
+            this._core = new GL.MeshLambertMaterial({color:0xffffff});
+            break;
+        default :
+            this._core = new GL.Material();
+            break;
         }
-        this._core = new GL.Material();
     }
 
     // [ Public Functions ]

@@ -6,6 +6,7 @@ import {Component   } from '../engine/component';
 import {Material    } from '../engine/material';
 import {ShaderType  } from '../engine/shader-type';
 
+
 /**
  * General functionality for all renderers.
  * A renderer is what makes an object appear on the screen.
@@ -106,15 +107,6 @@ export class Renderer extends Component {
     */
 
     // [ Constructors ]
-
-    /**
-     * Creates an instance of Renderer.
-     *
-     * @memberof Renderer
-     */
-    constructor() {
-        super();
-    }
 
     // [ Public Functions ]
 

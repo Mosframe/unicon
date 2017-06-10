@@ -1,67 +1,64 @@
 // -----------------------------------------------------------------------------
 // vector3.ts
 // -----------------------------------------------------------------------------
-import * as GL from './graphic';
+import * as GL  from '../engine/graphic';
+import {Ubject} from '../engine/ubject';
 
 /**
- * Representation of 3D vectors and points.
- *
- * This structure is used throughout Unity to pass 3D positions and directions around. It also contains functions for doing common vector operations.
- *
- * Besides the functions listed below, other classes can be used to manipulate vectors and points as well. For example the Quaternion and the Matrix4x4 classes are useful for rotating or transforming vectors and points.
+ * Vector3
  *
  * @author mosframe / https://github.com/mosframe
- *
  * @export
  * @class Vector3
- * @extends {GL.Quaternion}
+ * @extends {GL.Vector3}
  */
 export class Vector3 extends GL.Vector3 {
 
-    // [ Static Variables ]
+    // [ Public Delegates ]
+
+    // [ Public Static Variables ]
 
     /*
-    static back	    Shorthand for writing Vector3(0, 0, -1).
-    static down	    Shorthand for writing Vector3(0, -1, 0).
+    static back	Shorthand for writing Vector3(0, 0, -1).
+    static down	Shorthand for writing Vector3(0, -1, 0).
     static forward	Shorthand for writing Vector3(0, 0, 1).
-    static left	    Shorthand for writing Vector3(-1, 0, 0).
-    static one	    Shorthand for writing Vector3(1, 1, 1).
+    static left	Shorthand for writing Vector3(-1, 0, 0).
+    static negativeInfinity	Shorthand for writing Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity).
+    static one	Shorthand for writing Vector3(1, 1, 1).
+    static positiveInfinity	Shorthand for writing Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity).
     static right	Shorthand for writing Vector3(1, 0, 0).
-    static up	    Shorthand for writing Vector3(0, 1, 0).
     */
+
+    /**
+     * Shorthand for writing Vector3(0, 1, 0).
+     *
+     * @readonly
+     * @type {Vector3}
+     * @memberof Vector3
+     */
+    static get up() : Vector3 { return new Vector3(0,1,0); }
 
     /**
      * Shorthand for writing Vector3(0, 0, 0).
      *
+     * @readonly
+     * @static
      * @type {Vector3}
      * @memberof Vector3
      */
-    static get zero() : Vector3{ return new Vector3(0,0,0); }
+    static get zero() : Vector3 { return new Vector3(0,0,0); }
 
     // [ Public Variables ]
 
-    /*
-    magnitude	    Returns the length of this vector (Read Only).
-    normalized	    Returns this vector with a magnitude of 1 (Read Only).
-    sqrMagnitude	Returns the squared length of this vector (Read Only).
-    this[int]	    Access the x, y, z components using [0], [1], [2] respectively.
-    */
+    //magnitude	//Returns the length of this vector (Read Only).
+    //normalized 	//Returns this vector with a magnitude of 1 (Read Only).
+    //sqrMagnitude	//Returns the squared length of this vector (Read Only).
+    //this[int]	//Access the x, y, z components using [0], [1], [2] respectively.
 
-    /*
-    x: number; // super
-    y: number; // super
-    z: number; // super
-    */
 
-    // [ Public Functions ]
+    // [ Constructors ]
 
-    /*
-    Equals	    Returns true if the given vector is exactly equal to this vector.
-    Set	        Set x, y and z components of an existing Vector3.
-    ToString	Returns a nicely formatted string for this vector.
-    */
-
-    // [ Static Functions ]
+    // [ Public Static Functions ]
 
     /*
     static Angle	Returns the angle in degrees between from and to.
@@ -81,20 +78,35 @@ export class Vector3 extends GL.Vector3 {
     static Reflect	Reflects a vector off the plane defined by a normal.
     static RotateTowards	Rotates a vector current towards target.
     static Scale	Multiplies two vectors component-wise.
+    static SignedAngle	Returns the signed angle in degrees between from and to.
     static Slerp	Spherically interpolates between two vectors.
     static SlerpUnclamped	Spherically interpolates between two vectors.
     static SmoothDamp	Gradually changes a vector towards a desired goal over time.
     */
 
-    // [ Operators ]
+    // [ Public Functions ]
+
+    // [ Public Operators ]
 
     /*
     operator -	Subtracts one vector from another.
+    operator !=	Returns true if vectors different.
     operator *	Multiplies a vector by a number.
     operator /	Divides a vector by a number.
     operator +	Adds two vectors.
     operator ==	Returns true if two vectors are approximately equal.
     */
 
-}
 
+    // [ Public Events ]
+
+    // [ Public Messages ]
+
+    // [ Protected Variables ]
+
+    // [ Protected Static Variables ]
+
+    // [ Protected Functions ]
+
+    // [ Protected Static Functions ]
+}

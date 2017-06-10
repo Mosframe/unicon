@@ -2,7 +2,7 @@
 // scene.ts
 // -----------------------------------------------------------------------------
 import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import {Ubject} from '../engine/ubject';
 
 /**
  * Run-time data structure for *.unity file.
@@ -16,6 +16,15 @@ export class Scene {
 
     // [ Public Variables ]
 
+    /**
+     * get GL.Scene
+     *
+     * @readonly
+     * @type {GL.Scene}
+     * @memberof Scene
+     */
+    get core() : GL.Scene { return this._core; }
+
     /*
     buildIndex	Returns the index of the scene in the Build Settings. Always returns -1 if the scene was loaded through an AssetBundle.
     isDirty	Returns true if the scene is modifed.
@@ -26,6 +35,10 @@ export class Scene {
     */
 
     // [ Constructors ]
+
+    constructor() {
+        this._core = new GL.Scene();
+    }
 
     // [ Public Functions ]
 
@@ -48,6 +61,8 @@ export class Scene {
     // [ Protected Variables ]
 
     // [ Protected Functions ]
+
+    protected _core : GL.Scene;
 
     // [ Protected Static Variables ]
 

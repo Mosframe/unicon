@@ -1,10 +1,17 @@
 // -----------------------------------------------------------------------------
 // scene-view.ts
 // -----------------------------------------------------------------------------
-import deprecated     from 'deprecated-decorator';
-import {GameObject  } from '../engine/game-object';
-import * as GL        from '../engine/graphic';
-import {EditorWindow} from '../editor/editor-window';
+import deprecated         from 'deprecated-decorator';
+import * as GL            from '../engine/graphic';
+import {EditorWindow    } from '../editor/editor-window';
+import {Camera          } from '../engine/camera';
+import {GameObject      } from '../engine/game-object';
+import {PrimitiveType   } from '../engine/primitive-type';
+import {MeshRenderer    } from '../engine/mesh-renderer';
+import {Scene           } from '../engine/scene';
+import {SceneManager    } from '../engine/scene-manager';
+
+
 
 /**
  * The Scene View is your interactive view into the world you are creating.
@@ -23,20 +30,52 @@ export class SceneView extends EditorWindow {
 
     // [ Constructors ]
 
-    constructor() {
+    constructor( container:HTMLDivElement ) {
         super();
 
-        this.scene = new GL.Scene();
-        this.camera = new GL.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-        this.scene.add( this.camera );
+        this._renderer = new GL.WebGLRenderer();
+        this._renderer.setSize( window.innerWidth, window.innerHeight );
+        this._renderer.setClearColor(0xdddddd);
+        this._renderer.shadowMap.enabled = true;
+        container.appendChild( this._renderer.domElement );
+
+        this._scene = new Scene();
+        SceneManager.loadScene2( this._scene );
+
+        let go = new GameObject();
+        this._camera = go.addComponent( Camera );
+        let trans = this._camera.transform;
+        if( trans ) trans.lookAt2( this._scene.core.position );
+
+        this._light = new GL.SpotLight(0xffffff);
+        this._light.castShadow = true;
+        this._light.position.set(15,30,50);
+        this._scene.core.add( this._light );
 
 
+        /*
+        {
+            let geometry    = new GL.BoxGeometry( 5, 5, 5 );
+            let material    = new GL.MeshLambertMaterial({color:0xff3300});
+            var mesh        = new GL.Mesh( geometry, material );
+            mesh.position.x = 2.5;
+            mesh.position.y = 2.5;
+            mesh.position.z = 2.5;
+            mesh.castShadow = true;
+            this._scene.core.add( mesh );
+        }
+        */
+
+        //this._plane = GameObject.createPrimitive( PrimitiveType.plane );
+        this._cube  = GameObject.createPrimitive( PrimitiveType.cube );
     }
 
     // [ Public Functions ]
 
     render() {
         super.render();
+
+        this._renderer.render( this._scene.core, this._camera.core );
     }
 
     update() {
@@ -50,11 +89,12 @@ export class SceneView extends EditorWindow {
 
     // [ Protected Variables ]
 
-    protected scene : GL.Scene;
-    protected camera : GL.Camera;
-
-    protected plane : GameObject;
-    protected cube  : GameObject;
+    protected _renderer : GL.WebGLRenderer;
+    protected _scene    : Scene;
+    protected _camera   : Camera;
+    protected _light    : GL.Light;
+    protected _plane    : GameObject;
+    protected _cube     : GameObject;
 
 
     // [ Protected Functions ]

@@ -1,7 +1,10 @@
 // -----------------------------------------------------------------------------
 // game-object.ts
 // -----------------------------------------------------------------------------
+//import {Type            } from 'typescript-dotnet-es6/System/Types';
+
 import {Component       } from '../engine/component';
+import {ComponentType   } from '../engine/component';
 import {Geometry        } from '../engine/geometry';
 import * as GL            from '../engine/graphic';
 import {Material        } from '../engine/material';
@@ -9,15 +12,11 @@ import {Mesh            } from '../engine/mesh';
 import {MeshFilter      } from '../engine/mesh-filter';
 import {MeshRenderer    } from '../engine/mesh-renderer';
 import {PrimitiveType   } from '../engine/primitive-type';
+import {Scene           } from '../engine/scene';
+import {SceneManager    } from '../engine/scene-manager';
 import {ShaderType      } from '../engine/shader-type';
 import {Type            } from '../engine/type';
-import {Ubject          } from '../engine/object';
-
-
-export interface ComponentType<T> {
-    new(gameObject:GameObject):T;
-}
-
+import {Ubject          } from '../engine/ubject';
 
 /**
  * Base class for all entities in Unicon scenes.
@@ -32,12 +31,37 @@ export class GameObject extends Ubject {
 
     // [ Public Variables ]
 
+    /**
+     * get GL.Object3D
+     *
+     * @readonly
+     * @type {GL.Object3D}
+     * @memberof GameObject
+     */
+    get core() : GL.Object3D        { return this._core; }
+    set core( value:GL.Object3D )   {
+        if( this._scene ) {
+            this._scene.core.remove( this._core );
+            this._scene.core.add( value );
+        }
+        this._core = value;
+    }
+
     /*
     activeInHierarchy	Is the GameObject active in the scene?
     activeSelf	The local active state of this GameObject. (Read Only)
     isStatic	Editor only API that specifies if a game object is static.
     layer	The layer the game object is in. A layer is in the range [0...31].
-    scene	Scene that the GameObject is part of.
+    */
+    /**
+     * Scene that the GameObject is part of.
+     *
+     * @readonly
+     * @type {Scene}
+     * @memberof GameObject
+     */
+    get scene() : Scene { return this._scene; }
+    /*
     tag	The tag of this game object.
     transform	The Transform attached to this GameObject.
     */
@@ -53,11 +77,11 @@ export class GameObject extends Ubject {
      * Finally, the third version allows the name to be specified but also components to be passed in as an array.
      *
      * @param {string} [name]
-     * @param {...string[]} componentNames
+     * @param {GL.Object3D} [core]
      *
      * @memberof GameObject
      */
-    constructor( name?:string, ...componentNames : string[] ) {
+    constructor( name?:string, core?:GL.Object3D ) {
         super();
 
         if( name ) {
@@ -66,11 +90,11 @@ export class GameObject extends Ubject {
             this.name = 'GameObject';
         }
 
-        for( let componentName of componentNames ) {
-            if(componentName) {
-                this.addComponent2( componentName );
-            }
-        }
+        if(core) this._core = core;
+        else     this._core = new GL.Object3D();
+
+        this._scene = SceneManager.getActiveScene();
+        this._scene.core.add( this._core );
     }
 
     // [ Public Functions ]
@@ -94,27 +118,10 @@ export class GameObject extends Ubject {
         }
         tc.push( instance );
 
+        instance.gameObject = this;
+        this._core = instance.core;
+
         return <T>instance;
-    }
-    /**
-     * Adds a component class of type componentType to the game object.
-     *
-     * @param {string} componentName
-     * @returns {Component}
-     *
-     * @memberof GameObject
-     */
-    addComponent2( componentName:string ) : Component {
-        let instance = <Component>new window[componentName](this);
-        this._components.push( instance );
-
-        let tc = this._typeComponents[componentName];
-        if( !tc ) {
-            tc = this._typeComponents[componentName] = [];
-        }
-        tc.push( instance );
-
-        return instance;
     }
     /*
     BroadcastMessage	Calls the method named methodName on every MonoBehaviour in this game object or any of its children.
@@ -124,12 +131,12 @@ export class GameObject extends Ubject {
      * Returns the component of Type type if the game object has one attached, null if it doesn't.
      *
      * @template T
-     * @param {Type<T>} type
+     * @param {ComponentType<T>} type
      * @returns {T}
      *
      * @memberof GameObject
      */
-    getComponent<T extends Component>( type:Type<T> ) : T {
+    getComponent<T extends Component>( type:ComponentType<T> ) : T|undefined {
         let components = this._typeComponents[type.toString()];
         if( components ) {
             return <T>components[0];
@@ -143,7 +150,7 @@ export class GameObject extends Ubject {
      *
      * @memberof GameObject
      */
-    getComponent2( componentName:string ) : Component {
+    getComponent2( componentName:string ) : Component|undefined {
         let components = this._typeComponents[componentName];
         if( components ) {
             return components[0];
@@ -164,45 +171,33 @@ export class GameObject extends Ubject {
 
     // [ Public Static Functions ]
 
-    //Creates a game object with a primitive mesh renderer and appropriate collider.
+    /**
+     * Creates a game object with a primitive mesh renderer and appropriate collider.
+     *
+     * @static
+     * @param {PrimitiveType} type
+     * @returns {GameObject}
+     *
+     * @memberof GameObject
+     */
     static createPrimitive( type:PrimitiveType ) : GameObject {
 
-        /*
-        let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
-        let material    = new THREE.MeshLambertMaterial({color:0xffffff});
-        var mesh        = new THREE.Mesh( geometry, material );
+        let gameObject  = new GameObject( PrimitiveType[type] );
+        let geometry    = new Geometry( type );
+        let material    = new Material( ShaderType.MeshLambert );
+        let mesh        = new Mesh( geometry, material );
 
-        mesh.rotation.x = -0.5 * Math.PI;
-        mesh.receiveShadow = true;
-        */
+        console.log( mesh );
 
-
-        // [ GameObject ]
-        let gameObject  = new GameObject( type.toString() );
-
-        // [ Geometry ]
-        let geometry    = new Geometry(type);
-
-        // [ Mesh ]
-        let mesh        = new Mesh();
-
-        switch(type) {
-        case PrimitiveType.cube:
-            break;
-        case PrimitiveType.plane:
-            break;
+        // Y축이 위로 향하도록 축을 회전
+        if( type === PrimitiveType.plane ) {
+            mesh.core.rotation.x = -0.5 * Math.PI;
+            mesh.core.receiveShadow = true;
         }
 
-        //scene.add( mesh );
-        //
-        //    mesh.core.rotation.x = -0.5 * Math.PI;
-        //    mesh.core.receiveShadow = true;
-        //    break;
-        //}
-
-        // [ MeshRenderer ]
+        let meshFiler = gameObject.addComponent( MeshFilter );
+        meshFiler.mesh = mesh;
         let renderer = gameObject.addComponent( MeshRenderer );
-        //renderer.getComponent
 
         return gameObject;
     }
@@ -217,10 +212,14 @@ export class GameObject extends Ubject {
 
     // [ Public Events ]
 
+    // [ public Messages ]
+
     // [ Protected Variables ]
 
     protected _components       : Component[] = [];
     protected _typeComponents   : {[type:string]:Component[]} = {};
+    protected _scene            : Scene;
+    protected _core             : GL.Object3D;
 
     // [ Protected Functions ]
 

@@ -3,7 +3,7 @@
 // -----------------------------------------------------------------------------
 import * as GL            from '../engine/graphic';
 import {PrimitiveType   } from '../engine/primitive-type';
-import {Ubject          } from '../engine/object';
+import {Ubject          } from '../engine/ubject';
 
 /**
  * Geometry

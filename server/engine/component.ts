@@ -3,7 +3,20 @@
 // -----------------------------------------------------------------------------
 import * as GL        from '../engine/graphic';
 import {GameObject  } from '../engine/game-object';
-import {Ubject      } from '../engine/object';
+import {Transform   } from '../engine/transform';
+import {Ubject      } from '../engine/ubject';
+
+/**
+ * Component type
+ *
+ * @author mosframe / https://github.com/mosframe
+ * @export
+ * @interface ComponentType
+ * @template T
+ */
+export interface ComponentType<T> {
+    new(gameObject:GameObject):T;
+}
 
 /**
  * Base class for everything attached to GameObjects.
@@ -23,6 +36,14 @@ export class Component extends Ubject {
     // [ Public Variables ]
 
     /**
+     * get GL.Object3D
+     *
+     * @readonly
+     * @type {GL.Object3D}
+     * @memberof Transform
+     */
+    get core() : GL.Object3D { return this._core; }
+    /**
      * The game object this component is attached to. A component is always attached to a game object.
      *
      * @type {GameObject}
@@ -31,20 +52,17 @@ export class Component extends Ubject {
     gameObject : GameObject;
     /*
     tag	The tag of this game object.
-    transform	The Transform attached to this GameObject.
     */
 
     // [ Constructors ]
 
     /**
      * Creates an instance of Component.
-     * @param {GameObject} gameObject
      *
      * @memberof Component
      */
-    constructor( gameObject:GameObject ) {
+    constructor() {
         super();
-        this.gameObject = gameObject;
     }
 
     // [ Public Functions ]
@@ -52,7 +70,12 @@ export class Component extends Ubject {
     /*
     BroadcastMessage	Calls the method named methodName on every MonoBehaviour in this game object or any of its children.
     CompareTag	Is this game object tagged with tag ?
-    GetComponent	Returns the component of Type type if the game object has one attached, null if it doesn't.
+    */
+    getComponent<T extends Component>( type:ComponentType<T> ) : T|undefined {
+        return this.gameObject.getComponent( type );
+    }
+    //	Returns the component of Type type if the game object has one attached, null if it doesn't.
+    /*
     GetComponentInChildren	Returns the component of Type type in the GameObject or any of its children using depth first search.
     GetComponentInParent	Returns the component of Type type in the GameObject or any of its parents.
     GetComponents	Returns all components of Type type in the GameObject.
@@ -70,7 +93,11 @@ export class Component extends Ubject {
 
     // [ Public Events ]
 
+    // [ public Messages ]
+
     // [ Protected Variables ]
+
+    protected _core : GL.Object3D;
 
     // [ Protected Functions ]
 

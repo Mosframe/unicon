@@ -3,7 +3,7 @@
 // -----------------------------------------------------------------------------
 import * as GL        from '../engine/graphic';
 import {ShaderType  } from '../engine/shader-type';
-import {Ubject      } from '../engine/object';
+import {Ubject      } from '../engine/ubject';
 
 /**
  * Shader scripts used for all rendering.

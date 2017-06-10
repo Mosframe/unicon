@@ -2,9 +2,11 @@
 // mesh-renderer.ts
 // -----------------------------------------------------------------------------
 import * as GL        from '../engine/graphic';
+import {GameObject  } from '../engine/game-object';
+import {Geometry    } from '../engine/geometry';
+import {Material    } from '../engine/material';
 import {Mesh        } from '../engine/mesh';
 import {MeshFilter  } from '../engine/mesh-filter';
-import {Material    } from '../engine/material';
 import {Renderer    } from '../engine/renderer';
 import {ShaderType  } from '../engine/shader-type';
 
@@ -26,23 +28,6 @@ export class MeshRenderer extends Renderer {
     */
 
     // [ Constructors ]
-
-    /**
-     * Creates an instance of MeshRenderer.
-     *
-     * @memberof MeshRenderer
-     */
-    constructor() {
-        super();
-
-        // [ Mesh ]
-        let meshFilter  = this.gameObject.getComponent( MeshFilter );
-        if( !meshFilter ) meshFilter = this.gameObject.addComponent( MeshFilter );
-        let mesh        = new Mesh();
-        this.material   = new Material( ShaderType.MeshLambert );
-
-        meshFilter.mesh = mesh;
-    }
 
     // [ Public Functions ]
 

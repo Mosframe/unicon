@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------------
 // mesh.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import {Geometry    } from '../engine/geometry';
+import * as GL        from '../engine/graphic';
+import {Material    } from '../engine/material';
+import {Ubject      } from '../engine/ubject';
 
 /**
  * A class that allows creating or modifying meshes from scripts.
@@ -16,6 +18,15 @@ import {Ubject} from '../engine/object';
 export class Mesh extends Ubject {
 
     // [ Public Variables ]
+
+    /**
+     * get GL.Math
+     *
+     * @readonly
+     *
+     * @memberof Mesh
+     */
+    get core() : GL.Mesh { return this._core; }
 
     /*
     bindposes	The bind poses. The bind pose at each index refers to the bone with the same index.
@@ -42,13 +53,15 @@ export class Mesh extends Ubject {
 
     /**
      * Creates an instance of Mesh.
+     * @param {Geometry} geometry
+     * @param {Material} material
      *
      * @memberof Mesh
      */
-    constructor() {
+    constructor( geometry:Geometry, material:Material ) {
         super();
 
-        this.core = new GL.Mesh();
+        this._core = new GL.Mesh( geometry.core, material.core );
     }
 
     // [ Public Functions ]
@@ -101,7 +114,7 @@ export class Mesh extends Ubject {
 
     // [ Protected Variables ]
 
-    protected core : GL.Mesh;
+    protected _core : GL.Mesh;
 
     // [ Protected Functions ]
 

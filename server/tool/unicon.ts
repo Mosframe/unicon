@@ -49,6 +49,12 @@ export class Unicon {
      * @memberof Unicon
      */
     constructor() {
+        this._gameView        = new GameView();
+        this._hierarchyWindow = new HierarchyWindow();
+        this._inspectorWindow = new InspectorWindow();
+        this._projectWindow   = new ProjectWindow();
+        this._sceneView       = new SceneView( container );
+        this._toolbar         = new Toolbar();
     }
 
     // [ Public Functions ]
@@ -63,7 +69,7 @@ export class Unicon {
      *
      * @memberof Unicon
      */
-    public tick() {
+    public tick() : void {
         this._update();
         this._render();
     }
@@ -79,7 +85,7 @@ export class Unicon {
 
     // [ Protected Functions ]
 
-    protected _render() {
+    protected _render() : void {
         this._gameView.render();
         this._sceneView.render();
         this._hierarchyWindow.render();
@@ -88,7 +94,7 @@ export class Unicon {
         this._toolbar.render();
     }
 
-    protected _update() {
+    protected _update() : void {
         this._gameView.update();
         this._sceneView.update();
         this._hierarchyWindow.update();
@@ -103,4 +109,4 @@ export class Unicon {
 }
 
 let unicon = new Unicon();
-let interval = setInterval( unicon.tick, 1000/30 );
+let interval = setInterval( unicon.tick(), 1000/30 );

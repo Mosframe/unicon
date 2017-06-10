@@ -2,7 +2,7 @@
 // temp.ts
 // -----------------------------------------------------------------------------
 import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/object';
+import {Ubject} from '../engine/ubject';
 
 /**
  * Temp
@@ -12,11 +12,22 @@ import {Ubject} from '../engine/object';
  * @class Temp
  * @extends {Ubject}
  */
-export class Temp {
+export class Temp extends Ubject {
+
+    // [ Public Delegates ]
 
     // [ Public Static Variables ]
 
     // [ Public Variables ]
+
+    /**
+     * get GL.Object3D
+     *
+     * @readonly
+     * @type {GL.Object3D}
+     * @memberof Transform
+     */
+    get core() : GL.Object3D { return this._core; }
 
     // [ Constructors ]
 
@@ -31,6 +42,8 @@ export class Temp {
     // [ Public Messages ]
 
     // [ Protected Variables ]
+
+    protected _core : GL.Object3D;
 
     // [ Protected Static Variables ]
 

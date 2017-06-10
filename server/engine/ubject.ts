@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// object.ts
+// uobject.ts
 // -----------------------------------------------------------------------------
 import deprecated   from 'deprecated-decorator';
 import * as GL      from '../engine/graphic';
@@ -85,3 +85,4 @@ export class Ubject {
 
     // [ Protected Static Functions ]
 }
+
