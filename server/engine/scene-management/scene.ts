@@ -1,13 +1,12 @@
 // -----------------------------------------------------------------------------
 // scene.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/ubject';
+import * as GL  from '../../engine/graphic';
 
 /**
  * Run-time data structure for *.unity file.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class Scene

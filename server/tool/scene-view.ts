@@ -1,15 +1,20 @@
 // -----------------------------------------------------------------------------
 // scene-view.ts
 // -----------------------------------------------------------------------------
-import deprecated         from 'deprecated-decorator';
-import * as GL            from '../engine/graphic';
-import {EditorWindow    } from '../editor/editor-window';
-import {Camera          } from '../engine/camera';
-import {GameObject      } from '../engine/game-object';
-import {PrimitiveType   } from '../engine/primitive-type';
-import {MeshRenderer    } from '../engine/mesh-renderer';
-import {Scene           } from '../engine/scene';
-import {SceneManager    } from '../engine/scene-manager';
+import deprecated             from 'deprecated-decorator';
+import * as GL                from '../engine/graphic';
+import {EditorWindow        } from '../editor/editor-window';
+import {Camera              } from '../engine/camera';
+import {Color               } from '../engine/color';
+import {GameObject          } from '../engine/game-object';
+import {PrimitiveType       } from '../engine/primitive-type';
+import {Light               } from '../engine/light';
+import {MeshRenderer        } from '../engine/mesh-renderer';
+import {Renderer            } from '../engine/renderer';
+import {ShadowCastingMode   } from '../engine/rendering/shadow-casting-mode';
+import {Scene               } from '../engine/scene-management/scene';
+import {SceneManager        } from '../engine/scene-management/scene-manager';
+import {Vector3             } from '../engine/vector3';
 
 
 
@@ -18,7 +23,7 @@ import {SceneManager    } from '../engine/scene-manager';
  * You will use the Scene View to select and position scenery, characters, cameras, lights, and all other types of Game Object.
  * Being able to Select, manipulate and modify objects in the Scene View are some of the first skills you must learn to begin working in Unicon.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class SceneView
@@ -42,15 +47,18 @@ export class SceneView extends EditorWindow {
         this._scene = new Scene();
         SceneManager.loadScene2( this._scene );
 
-        let go = new GameObject();
-        this._camera = go.addComponent( Camera );
-        let trans = this._camera.transform;
-        if( trans ) trans.lookAt2( this._scene.core.position );
+        {
+            let go = new GameObject();
+            this._camera = go.addComponent( Camera );
+            this._camera.transform.lookAt2( this._scene.core.position );
+        }
 
-        this._light = new GL.SpotLight(0xffffff);
-        this._light.castShadow = true;
-        this._light.position.set(15,30,50);
-        this._scene.core.add( this._light );
+        {
+            let go = new GameObject();
+            this._light = go.addComponent( Light );
+            console.log( go.transform );
+            go.transform.position.set( 15, 30, 50 );
+        }
 
 
         /*
@@ -66,8 +74,26 @@ export class SceneView extends EditorWindow {
         }
         */
 
-        //this._plane = GameObject.createPrimitive( PrimitiveType.plane );
+        this._plane = GameObject.createPrimitive( PrimitiveType.plane );
         this._cube  = GameObject.createPrimitive( PrimitiveType.cube );
+
+        this._cube.transform.localScale = new Vector3(5,5,5);
+        this._cube.transform.position.y += 6;
+        this._plane.transform.localScale = new Vector3(5,5,5);
+
+        let cubeRenderer = this._cube.getComponent(Renderer);
+        if( cubeRenderer ) {
+            cubeRenderer.receiveShadows = true;
+            cubeRenderer.shadowCastingMode = ShadowCastingMode.on;
+            cubeRenderer.material.color = new Color(1,0,0,1);
+        }
+
+        let planeRenderer = this._plane.getComponent(Renderer);
+        if( planeRenderer ) {
+            planeRenderer.receiveShadows = true;
+            planeRenderer.shadowCastingMode = ShadowCastingMode.on;
+        }
+
     }
 
     // [ Public Functions ]
@@ -92,7 +118,7 @@ export class SceneView extends EditorWindow {
     protected _renderer : GL.WebGLRenderer;
     protected _scene    : Scene;
     protected _camera   : Camera;
-    protected _light    : GL.Light;
+    protected _light    : Light;
     protected _plane    : GameObject;
     protected _cube     : GameObject;
 

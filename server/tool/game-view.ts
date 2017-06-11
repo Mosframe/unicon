@@ -11,7 +11,7 @@ import {EditorWindow} from '../editor/editor-window';
  * You will need to use one or more Cameras to control what the player actually sees when they are playing your game.
  * For more information about Cameras, please view the Camera Component page.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class GameView
  * @extends {EditorWindow}

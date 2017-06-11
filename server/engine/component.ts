@@ -9,7 +9,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * Component type
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @interface ComponentType
  * @template T
@@ -25,7 +25,7 @@ export interface ComponentType<T> {
  * Instead, you write script code, and attach the script to a GameObject.
  * See Also: ScriptableObject as a way to create scripts that do not attach to any GameObject.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class Temp
@@ -40,9 +40,9 @@ export class Component extends Ubject {
      *
      * @readonly
      * @type {GL.Object3D}
-     * @memberof Transform
+     * @memberof Component
      */
-    get core() : GL.Object3D { return this._core; }
+    get core() : GL.Object3D { return this.gameObject.core; }
     /**
      * The game object this component is attached to. A component is always attached to a game object.
      *
@@ -58,11 +58,13 @@ export class Component extends Ubject {
 
     /**
      * Creates an instance of Component.
+     * @param {GameObject} gameObject
      *
      * @memberof Component
      */
-    constructor() {
+    constructor( gameObject:GameObject ) {
         super();
+        this.gameObject = gameObject;
     }
 
     // [ Public Functions ]
@@ -96,8 +98,6 @@ export class Component extends Ubject {
     // [ public Messages ]
 
     // [ Protected Variables ]
-
-    protected _core : GL.Object3D;
 
     // [ Protected Functions ]
 

@@ -1,14 +1,14 @@
 // -----------------------------------------------------------------------------
 // scene-manager.ts
 // -----------------------------------------------------------------------------
-import * as GL    from '../engine/graphic';
-import {Scene   } from '../engine/scene';
-import {Ubject  } from '../engine/ubject';
+import * as GL    from '../../engine/graphic';
+import {Scene   } from '../../engine/scene-management/scene';
+import {Ubject  } from '../../engine/ubject';
 
 /**
  * Scene management at run-time.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class SceneManager
  */

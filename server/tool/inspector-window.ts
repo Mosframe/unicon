@@ -9,7 +9,7 @@ import {EditorWindow} from '../editor/editor-window';
  * The Inspector Window allows you to view and edit all the properties of the currently selected object.
  * Because different types of objects have different sets of properties, the layout and contents of the inspector window will vary.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class InspectorWindow
  * @extends {EditorWindow}

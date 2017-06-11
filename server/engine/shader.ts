@@ -10,7 +10,7 @@ import {Ubject      } from '../engine/ubject';
  * Most of the advanced rendering is controlled via Material class.
  * Shader class is mostly used just to check whether a shader can run on the user's hardware (isSupported property), setting up global shader properties and keywords, and finding shaders by name (Find method).
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Shader
  * @extends {Ubject}

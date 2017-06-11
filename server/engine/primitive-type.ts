@@ -5,7 +5,7 @@
 /**
  * The various primitives that can be created using the GameObject.CreatePrimitive function.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @enum {number}
  */

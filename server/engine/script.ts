@@ -10,7 +10,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * Script is the base class from which every Unicon script derives.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Script
  * @extends {Behaviour}

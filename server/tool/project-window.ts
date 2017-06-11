@@ -9,7 +9,7 @@ import {EditorWindow} from '../editor/editor-window';
  * The Project Window displays your library of assets that are available to use in your project.
  * When you import assets into your project, they appear here.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class ProjectWindow
  * @extends {EditorWindow}

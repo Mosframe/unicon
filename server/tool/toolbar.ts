@@ -12,7 +12,7 @@ import {EditorWindow} from '../editor/editor-window';
  * The buttons to the right give you access to your Unicon Cloud Services and your Unicon Account, followed by a layer visibility menu, and finally the editor layout menu (which provides some alternate layouts for the editor windows, and allows you to save your own custom layouts).
  * The toolbar is not a window, and is the only part of the Unicon interface that you can’t rearrange.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Toolbar
  * @extends {EditorWindow}

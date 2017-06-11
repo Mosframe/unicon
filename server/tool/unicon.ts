@@ -32,7 +32,7 @@ document.body.appendChild( container );
 /**
  * unicon
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class Unicon

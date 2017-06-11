@@ -5,10 +5,12 @@ import deprecated   from 'deprecated-decorator';
 import * as GL      from '../engine/graphic';
 import {Util}       from '../engine/util';
 
+
+
 /**
  * Base class for all objects Unicon can reference.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class UObject

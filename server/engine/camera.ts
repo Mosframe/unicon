@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import * as GL        from '../engine/graphic';
 import {Behaviour   } from '../engine/behaviour';
+import {GameObject  } from '../engine/game-Object';
 import {Vector3     } from '../engine/vector3';
 
 
@@ -15,7 +16,7 @@ import {Vector3     } from '../engine/vector3';
  *
  * A world space point is defined in global coordinates (for example, Transform.position).
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Camera
  * @extends {Behaviour}
@@ -42,7 +43,14 @@ export class Camera extends Behaviour {
 
     // [ Public Variables ]
 
-    get core() : GL.Camera { return <GL.Camera>this._core; }
+    /**
+     * get GL.Camera
+     *
+     * @readonly
+     * @type {GL.Camera}
+     * @memberof Camera
+     */
+    get core() : GL.Camera { return <GL.Camera>this.gameObject.core; }
 
     /*
     activeTexture	Gets or sets the temporary RenderTexture target for this Camera.
@@ -97,12 +105,18 @@ export class Camera extends Behaviour {
 
     // [ Constructors ]
 
-    constructor() {
-        super();
+    /**
+     * Creates an instance of Camera.
+     * @param {GameObject} gameObject
+     *
+     * @memberof Camera
+     */
+    constructor( gameObject:GameObject ) {
+        super( gameObject );
 
-        this._core = new GL.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-        this._core.position.set( 40, 40, 40);
-        this._core.lookAt( Vector3.zero );
+        this.gameObject.core = new GL.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        this.gameObject.core.position.set( 40, 40, 40);
+        this.gameObject.core.lookAt( Vector3.zero );
     }
 
     // [ Public Static Functions ]

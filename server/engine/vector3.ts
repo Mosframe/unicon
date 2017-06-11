@@ -7,7 +7,7 @@ import {Ubject} from '../engine/ubject';
 /**
  * Vector3
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Vector3
  * @extends {GL.Vector3}

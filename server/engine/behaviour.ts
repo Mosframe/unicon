@@ -10,7 +10,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * Behaviours are Components that can be enabled or disabled.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Behaviour
  * @extends {Component}
@@ -30,18 +30,9 @@ export class Behaviour extends Component {
      * @type {Transform}
      * @memberof Component
      */
-    get transform() : Transform|undefined { return this.getComponent( Transform ); }
+    get transform() : Transform { return this.gameObject.transform; }
 
     // [ Constructors ]
-
-    /**
-     * Creates an instance of Component.
-     *
-     * @memberof Component
-     */
-    constructor() {
-        super();
-    }
 
     // [ Public Functions ]
 

@@ -13,7 +13,7 @@ import {ShaderType  } from '../engine/shader-type';
 /**
  * Renders meshes inserted by the MeshFilter or TextMesh.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class MeshRenderer
@@ -22,6 +22,8 @@ import {ShaderType  } from '../engine/shader-type';
 export class MeshRenderer extends Renderer {
 
     // [ Public Variables ]
+
+    get core() : GL.Mesh { return <GL.Mesh>this.gameObject.core; }
 
     /*
     additionalVertexStreams	Vertex attributes in this mesh will override or add attributes of the primary mesh in the MeshRenderer.

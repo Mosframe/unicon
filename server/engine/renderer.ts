@@ -1,10 +1,14 @@
 // -----------------------------------------------------------------------------
 // renderer.ts
 // -----------------------------------------------------------------------------
-import * as GL        from '../engine/graphic';
-import {Component   } from '../engine/component';
-import {Material    } from '../engine/material';
-import {ShaderType  } from '../engine/shader-type';
+import * as GL                from '../engine/graphic';
+import {Component           } from '../engine/component';
+import {GameObject          } from '../engine/game-object';
+import {Material            } from '../engine/material';
+import {MeshLambertMaterial } from '../engine/mesh-lambert-material';
+import {MeshFilter          } from '../engine/mesh-filter';
+import {ShadowCastingMode   } from '../engine/rendering/shadow-casting-mode';
+import {ShaderType          } from '../engine/shader-type';
 
 
 /**
@@ -13,7 +17,7 @@ import {ShaderType  } from '../engine/shader-type';
  * Use this class to access the renderer of any object, mesh or particle system.
  * Renderers can be disabled to make objects invisible (see enabled), and the materials can be accessed and modified through them (see material).
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class Renderer
@@ -22,6 +26,8 @@ import {ShaderType  } from '../engine/shader-type';
 export class Renderer extends Component {
 
     // [ Public Variables ]
+
+    get core() : GL.Mesh { return <GL.Mesh>this.gameObject.core; }
 
     /*
     bounds	The bounding volume of the renderer (Read Only).
@@ -44,7 +50,7 @@ export class Renderer extends Component {
      */
     get material() : Material {
         if( this.materials.length === 0 ) {
-            let mtrl = new Material( ShaderType.MeshLambert );
+            let mtrl = new MeshLambertMaterial();
             this.materials.push(mtrl);
         }
         return this.materials[0];
@@ -55,6 +61,7 @@ export class Renderer extends Component {
         } else {
             this.materials[0] = value;
         }
+        this.core.material = value.core;
     }
     /**
      * Returns all the instantiated materials of this object.
@@ -68,10 +75,34 @@ export class Renderer extends Component {
     probeAnchor	If set, Renderer will use this Transform's position to find the light or reflection probe.
     realtimeLightmapIndex	The index of the realtime lightmap applied to this renderer.
     realtimeLightmapScaleOffset	The UV scale & offset used for a realtime lightmap.
-    receiveShadows	Does this object receive shadows?
-    reflectionProbeUsage	Should reflection probes be used for this Renderer?
-    shadowCastingMode	Does this object cast shadows?
     */
+    /**
+     * Does this object receive shadows?
+     *
+     * @readonly
+     * @type {boolean}
+     * @memberof Renderer
+     */
+    get receiveShadows() : boolean      { return this.core.receiveShadow; }
+    set receiveShadows( value:boolean ) { this.core.receiveShadow = value; }
+    /*
+    reflectionProbeUsage	Should reflection probes be used for this Renderer?
+    */
+    /**
+     * Does this object cast shadows?
+     *
+     * @readonly
+     * @type {ShadowCastingMode}
+     * @memberof Renderer
+     */
+    get shadowCastingMode() : ShadowCastingMode      { return this._shadowCastingMode; }
+    set shadowCastingMode( value:ShadowCastingMode ) {
+        this._shadowCastingMode = value;
+        this.core.castShadow = (value !== ShadowCastingMode.off);
+        // TODO : Light 타입에 따라서 그림자 모드를 설정해야 한다.
+    }
+
+
     /**
      * The shared material of this object.
      *
@@ -80,7 +111,7 @@ export class Renderer extends Component {
      */
     get sharedMaterial() : Material {
         if( this.sharedMaterials.length === 0 ) {
-            let mtrl = new Material( ShaderType.MeshLambert );
+            let mtrl = new MeshLambertMaterial();
             this.sharedMaterials.push(mtrl);
         }
         return this.sharedMaterials[0];
@@ -98,7 +129,7 @@ export class Renderer extends Component {
      * @type {Material[]}
      * @memberof Renderer
      */
-    sharedMaterials : Material[];
+    sharedMaterials : Material[] = [];
     /*
     sortingLayerID	Unique ID of the Renderer's sorting layer.
     sortingLayerName	Name of the Renderer's sorting layer.
@@ -107,6 +138,18 @@ export class Renderer extends Component {
     */
 
     // [ Constructors ]
+
+    /**
+     * Creates an instance of Renderer.
+     * @param {GameObject} gameObject
+     *
+     * @memberof Renderer
+     */
+    constructor( gameObject:GameObject ) {
+        super(gameObject);
+
+        //let meshFilter = this.gameObject.getComponent( MeshFilter );
+    }
 
     // [ Public Functions ]
 
@@ -132,6 +175,8 @@ export class Renderer extends Component {
     */
 
     // [ Protected Variables ]
+
+    protected _shadowCastingMode : ShadowCastingMode;
 
     // [ Protected Functions ]
 

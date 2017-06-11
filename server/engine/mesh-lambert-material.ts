@@ -1,25 +1,22 @@
 // -----------------------------------------------------------------------------
-// material.ts
+// mesh-lambert-material.ts
 // -----------------------------------------------------------------------------
 import * as GL                from '../engine/graphic';
+import {Material            } from '../engine/material';
 import {Color               } from '../engine/color';
 import {ShaderType          } from '../engine/shader-type';
 import {Ubject              } from '../engine/ubject';
 
 /**
- * The material class.
- * This class exposes all properties from a material, allowing you to animate them.
- * You can also use it to set custom shader properties that can't be accessed through the inspector (e.g. matrices).
- *
- * In order to get the material used by an object, use the Renderer.material property.
+ * The MeshLambertMaterial class.
  *
  * @author mosframe ( https://github.com/mosframe )
  *
  * @export
- * @class Material
- * @extends {Ubject}
+ * @class MeshLambertMaterial
+ * @extends {Material}
  */
-export class Material extends Ubject {
+export class MeshLambertMaterial extends Material {
 
     // [ Public Variables ]
 
@@ -30,17 +27,17 @@ export class Material extends Ubject {
      *
      * @memberof Material
      */
-    get core() : GL.Material { return this._core; }
+    get core() : GL.MeshLambertMaterial { return <GL.MeshLambertMaterial>this._core; }
 
     /**
      * The main material's color.
      *
      * @readonly
      * @type {Color}
-     * @memberof Material
+     * @memberof MeshLambertMaterial
      */
-    get color() : Color         { return Color.black; }
-    set color( value:Color )    {}
+    get color() : Color         { return <Color>this.core.color; }
+    set color( value:Color )    { this.core.color = value; }
     /*
     enableInstancing	Gets and sets whether GPU instancing is enabled for this material.
     globalIlluminationFlags	Defines how the material should interact with lightmaps and lightprobes.
@@ -54,16 +51,6 @@ export class Material extends Ubject {
     */
 
     // [ Constructors ]
-
-    /**
-     * Creates an instance of Material.
-     *
-     * @memberof Material
-     */
-    constructor() {
-        super();
-        this.create();
-    }
 
     // [ Public Functions ]
 
@@ -79,12 +66,9 @@ export class Material extends Ubject {
 
     // [ Protected Variables ]
 
-    protected _core : GL.Material;
-
     // [ Protected Functions ]
-
     protected create() {
-        this._core = new GL.Material();
+        this._core = new GL.MeshLambertMaterial({color:0xffffff});
     }
 
     // [ Protected Static Variables ]

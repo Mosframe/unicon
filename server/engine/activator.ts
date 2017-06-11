@@ -1,18 +1,22 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// activator.ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/ubject';
-
 /**
- * Temp
+ * Activator
  *
+ * @example {
+ *
+ * var activator = new Activator<Ubject>(window);
+ *
+ * var example = activator.createInstance('ClassA');
+ *
+ * }
  * @author mosframe ( https://github.com/mosframe )
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class Activator
+ * @template T
  */
-export class Temp extends Ubject {
+export class Activator<T> {
 
     // [ Public Delegates ]
 
@@ -20,13 +24,20 @@ export class Temp extends Ubject {
 
     // [ Public Variables ]
 
-    get core() : GL.Object3D { return this._core; }
-
     // [ Constructors ]
+
+    constructor( private context:Object ) {
+    }
 
     // [ Public Static Functions ]
 
     // [ Public Functions ]
+
+    createInstance( name:string, ...args: any[] ) : T {
+        var instance = Object.create(this.context[name].prototype);
+        instance.constructor.apply(instance, args);
+        return <T> instance;
+    }
 
     // [ Public Operators ]
 
@@ -36,11 +47,12 @@ export class Temp extends Ubject {
 
     // [ Protected Variables ]
 
-    protected _core : GL.Object3D;
-
     // [ Protected Static Variables ]
 
     // [ Protected Functions ]
 
     // [ Protected Static Functions ]
 }
+
+
+

@@ -10,7 +10,7 @@ import {EditorWindow} from '../editor/editor-window';
  * Each item in the scene has an entry in the hierarchy, so the two windows are inherently linked.
  * The hierarchy reveals the structure of how objects are attached to one another.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class HierarchyWindow
  * @extends {EditorWindow}

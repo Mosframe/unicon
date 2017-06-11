@@ -1,15 +1,14 @@
 // -----------------------------------------------------------------------------
 // mesh.ts
 // -----------------------------------------------------------------------------
-import {Geometry    } from '../engine/geometry';
 import * as GL        from '../engine/graphic';
-import {Material    } from '../engine/material';
+import {Geometry    } from '../engine/geometry';
 import {Ubject      } from '../engine/ubject';
 
 /**
  * A class that allows creating or modifying meshes from scripts.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class Mesh
@@ -20,13 +19,13 @@ export class Mesh extends Ubject {
     // [ Public Variables ]
 
     /**
-     * get GL.Math
+     * get Geometry
      *
      * @readonly
      *
      * @memberof Mesh
      */
-    get core() : GL.Mesh { return this._core; }
+    get geometry() : Geometry { return this._geometry; }
 
     /*
     bindposes	The bind poses. The bind pose at each index refers to the bone with the same index.
@@ -54,14 +53,12 @@ export class Mesh extends Ubject {
     /**
      * Creates an instance of Mesh.
      * @param {Geometry} geometry
-     * @param {Material} material
      *
      * @memberof Mesh
      */
-    constructor( geometry:Geometry, material:Material ) {
+    constructor( geometry:Geometry ) {
         super();
-
-        this._core = new GL.Mesh( geometry.core, material.core );
+        this._geometry = geometry;
     }
 
     // [ Public Functions ]
@@ -114,7 +111,8 @@ export class Mesh extends Ubject {
 
     // [ Protected Variables ]
 
-    protected _core : GL.Mesh;
+    //protected _core : GL.Mesh;
+    protected _geometry : Geometry;
 
     // [ Protected Functions ]
 

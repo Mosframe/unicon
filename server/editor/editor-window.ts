@@ -8,7 +8,7 @@ import {ScriptableObject} from '../engine/scriptable-object';
 /**
  * Derive from this class to create an editor window.
  *
- * @author mosframe / https://github.com/mosframe
+ * @author mosframe ( https://github.com/mosframe )
  *
  * @export
  * @class EditorWindow
