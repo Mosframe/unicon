@@ -16,6 +16,8 @@
 # 개발 프로세스
 - [개발 진행과정을 간략하게 기술한 문서들](./documents/index.md)
 
+# 라이센스
+- [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://github.com/superpowers/superpowers-core/blob/master/LICENSE.txt)
 
 # 참고자료들
 - [README Guidline](https://www.visualstudio.com/en-us/docs/git/create-a-readme)
