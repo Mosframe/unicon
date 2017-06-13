@@ -4,6 +4,10 @@
 import * as signals   from 'signals';
 import {Signal      } from 'signals';
 import * as THREE     from 'three';
+import {Command     } from './command';
+import {Config      } from './config';
+import {Loader      } from './loader';
+import {History     } from './history';
 
 /**
  * Editor
@@ -25,24 +29,50 @@ export class Editor {
 
     constructor() {
 
-        this.DEFAULT_CAMERA.name = 'Camera';
+        this.DEFAULT_CAMERA     = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
+        this.DEFAULT_CAMERA.name= 'Camera';
         this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
         this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
+
+        this.camera             = this.DEFAULT_CAMERA.clone();
+        this.config             = new Config( 'unicon-editor' );
+        this.history            = new History( this );
+        this.storage            = new Storage();
+        this.loader             = new Loader( this );
+
+        this.scene              = new THREE.Scene();
+        this.scene.name         = 'Scene';
+        this.scene.background   = new THREE.Color( 0xaaaaaa );
+
+        this.sceneHelpers       = new THREE.Scene();
+
+        this.object             = {};
+        this.geometries         = {};
+        this.materials          = {};
+        this.textures           = {};
+        this.scripts            = {};
+        this.helpers            = {};
+
+        this.selected           = null;
     }
 
     // [ Public Static Functions ]
 
     // [ Public Functions ]
 
-    // [ Public Operators ]
-
-    // [ Public Events ]
-
-    // [ Public Messages ]
-
-    // [ Protected Variables ]
-
-    protected signals = {
+    /**
+     * config
+     *
+     * @type {Config}
+     * @memberof Editor
+     */
+    config : Config;
+    /**
+     * signals
+     *
+     * @memberof Editor
+     */
+    signals = {
 
         // script
 
@@ -108,31 +138,112 @@ export class Editor {
         refreshSidebarObject3D: new Signal(),
         historyChanged: new Signal()
     };
+    /**
+     * default camera
+     *
+     * @type {THREE.PerspectiveCamera}
+     * @memberof Editor
+     */
+    DEFAULT_CAMERA : THREE.PerspectiveCamera;
+    /**
+     * History
+     *
+     * @type {History}
+     * @memberof Editor
+     */
+	history : History;
+    /**
+     * Storage
+     *
+     * @type {Storage}
+     * @memberof Editor
+     */
+	storage : Storage;
+    /**
+     * Loader
+     *
+     * @type {Loader}
+     * @memberof Editor
+     */
+	loader : Loader;
+    /**
+     * Camera
+     *
+     * @type {THREE.Camera}
+     * @memberof Editor
+     */
+	camera : THREE.Camera;
+    /**
+     * Scene
+     *
+     * @type {THREE.Scene}
+     * @memberof Editor
+     */
+	scene : THREE.Scene;
+    /**
+     * Scene Helpers
+     *
+     * @type {THREE.Scene}
+     * @memberof Editor
+     */
+	sceneHelpers : THREE.Scene;
+    /**
+     * objects
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	object : {};
+    /**
+     * geometries
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	geometries : {};
+    /**
+     * materials
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	materials : {};
+    /**
+     * textures
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	textures : {};
+    /**
+     * scripts
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	scripts : {};
+    /**
+     * selected
+     *
+     * @type {*}
+     * @memberof Editor
+     */
+	selected : any;
+    /**
+     * helpers
+     *
+     * @type {{}}
+     * @memberof Editor
+     */
+	helpers : {};
 
-    protected DEFAULT_CAMERA = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
+    // [ Public Operators ]
 
-	protected config = new Config( 'threejs-editor' );
-	protected history = new History( this );
-	protected storage = new Storage();
-	protected loader = new Loader( this );
+    // [ Public Events ]
 
-	protected camera = this.DEFAULT_CAMERA.clone();
+    // [ Public Messages ]
 
-	protected scene = new THREE.Scene();
-	protected scene.name = 'Scene';
-	protected scene.background = new THREE.Color( 0xaaaaaa );
-
-	protected sceneHelpers = new THREE.Scene();
-
-	protected object = {};
-	protected geometries = {};
-	protected materials = {};
-	protected textures = {};
-	protected scripts = {};
-
-	protected selected = null;
-	protected helpers = {};
-
+    // [ Protected Variables ]
 
     // [ Protected Static Variables ]
 
