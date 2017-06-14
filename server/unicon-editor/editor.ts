@@ -19,47 +19,6 @@ import {Storage     } from './storage';
  */
 export class Editor {
 
-    // [ Public Delegates ]
-
-    // [ Public Static Variables ]
-
-    // [ Public Variables ]
-
-    // [ Constructors ]
-
-    constructor() {
-
-        this.DEFAULT_CAMERA     = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
-        this.DEFAULT_CAMERA.name= 'Camera';
-        this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
-        this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
-
-        this.camera             = this.DEFAULT_CAMERA.clone();
-        this.config             = new Config( 'unicon-editor' );
-        this.history            = new History( this );
-        this.storage            = new Storage();
-        this.loader             = new Loader( this );
-
-        this.scene              = new THREE.Scene();
-        this.scene.name         = 'Scene';
-        this.scene.background   = new THREE.Color( 0xaaaaaa );
-
-        this.sceneHelpers       = new THREE.Scene();
-
-        this.object             = {};
-        this.geometries         = {};
-        this.materials          = {};
-        this.textures           = {};
-        this.scripts            = {};
-        this.helpers            = {};
-
-        this.selected           = null;
-    }
-
-    // [ Public Static Functions ]
-
-    // [ Public Functions ]
-
     /**
      * config
      *
@@ -237,17 +196,34 @@ export class Editor {
      */
 	helpers : {};
 
-    // [ Public Operators ]
+    // [ Constructors ]
 
-    // [ Public Events ]
+    constructor() {
 
-    // [ Public Messages ]
+        this.DEFAULT_CAMERA     = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
+        this.DEFAULT_CAMERA.name= 'Camera';
+        this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
+        this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
 
-    // [ Protected Variables ]
+        this.camera             = this.DEFAULT_CAMERA.clone();
+        this.config             = new Config( 'unicon-editor' );
+        this.history            = new History( this );
+        this.storage            = new Storage();
+        this.loader             = new Loader( this );
 
-    // [ Protected Static Variables ]
+        this.scene              = new THREE.Scene();
+        this.scene.name         = 'Scene';
+        this.scene.background   = new THREE.Color( 0xaaaaaa );
 
-    // [ Protected Functions ]
+        this.sceneHelpers       = new THREE.Scene();
 
-    // [ Protected Static Functions ]
+        this.object             = {};
+        this.geometries         = {};
+        this.materials          = {};
+        this.textures           = {};
+        this.scripts            = {};
+        this.helpers            = {};
+
+        this.selected           = null;
+    }
 }

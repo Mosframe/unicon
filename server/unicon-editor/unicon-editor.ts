@@ -1,27 +1,18 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-import {Editor          } from './editor';
+import {        } from '../engine/number';
+import {Editor  } from './editor';
 
-
-// Number.format 속성 추가
-declare global {
-    interface NumberConstructor {
-    format: () => string;
-    }
-}
-Number.format = function (){
-    return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-};
 
 //
 
 var editor = new Editor();
 
-/*
 var viewport = new Viewport( editor );
 document.body.appendChild( viewport.dom );
 
+/*
 var script = new Script( editor );
 document.body.appendChild( script.dom );
 

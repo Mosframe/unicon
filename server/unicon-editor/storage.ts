@@ -2,6 +2,7 @@
 // storage.ts
 // -----------------------------------------------------------------------------
 import {Signal  } from 'signals';
+import {Debug   } from '../engine/debug';
 import {Config  } from './config';
 import {Editor  } from './editor';
 
@@ -65,7 +66,7 @@ export class Storage {
     };
 
     /**
-     * get
+     * get data
      *
      * @param {Function} callback
      *
@@ -80,7 +81,14 @@ export class Storage {
             callback( event.target.result );
         };
     }
-
+    /**
+     * set data
+     *
+     * @param {*} data
+     * @param {Function} callback
+     *
+     * @memberof Storage
+     */
     set ( data:any, callback:Function ) {
 
         let start = performance.now();
@@ -90,37 +98,26 @@ export class Storage {
         let request     = objectStore.put( data, 0 );
 
         request.onsuccess = ( event:any ) => {
-            console.log( '[' + /\d\d\:\d\d\:\d\d/.exec( new Date() )[ 0 ] + ']', 'Saved state to IndexedDB. ' + ( performance.now() - start ).toFixed( 2 ) + 'ms' );
+            Debug.log( 'Saved state to IndexedDB. ' + ( performance.now() - start ).toFixed( 2 ) + 'ms' );
         };
 
     }
-
+    /**
+     * clear data
+     *
+     * @returns
+     *
+     * @memberof Storage
+     */
     clear () {
 
-        if ( database === undefined ) return;
+        if ( this.database === undefined ) return;
 
-        var transaction = database.transaction( [ 'states' ], 'readwrite' );
-        var objectStore = transaction.objectStore( 'states' );
-        var request = objectStore.clear();
+        let transaction = this.database.transaction( [ 'states' ], 'readwrite' );
+        let objectStore = transaction.objectStore( 'states' );
+        let request = objectStore.clear();
         request.onsuccess = function ( event ) {
-
-            console.log( '[' + /\d\d\:\d\d\:\d\d/.exec( new Date() )[ 0 ] + ']', 'Cleared IndexedDB.' );
-
+            Debug.log( 'Cleared IndexedDB.' );
         };
-
     }
-
-    // [ Public Operators ]
-
-    // [ Public Events ]
-
-    // [ Public Messages ]
-
-    // [ Protected Variables ]
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Functions ]
-
-    // [ Protected Static Functions ]
 }

@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 // config.ts
 // -----------------------------------------------------------------------------
+import {Debug   } from '../engine/debug';
 /**
  * Config data
  *
@@ -45,10 +46,7 @@ export class Config {
 
         window.localStorage[ this._name ] = JSON.stringify( this._storage );
 
-        let header = '';
-        let dateString = /\d\d\:\d\d\:\d\d/.exec( Date.now().toString() );
-        if( dateString ) header = dateString[0];
-        console.log( '[' + header + ']', 'Saved config to LocalStorage.' );
+        Debug.log( 'Saved config to LocalStorage.' );
     }
     /**
      * clear localStorage
