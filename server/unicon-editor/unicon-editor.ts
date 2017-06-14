@@ -1,8 +1,7 @@
 // -----------------------------------------------------------------------------
-// index.ts
+// unicon-editor.ts
 // -----------------------------------------------------------------------------
-import {app             } from 'electron';
-import {Editor          } from './ts/editor';
+import {Editor          } from './editor';
 
 
 // Number.format 속성 추가

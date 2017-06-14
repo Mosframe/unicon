@@ -4,10 +4,10 @@
 import * as signals   from 'signals';
 import {Signal      } from 'signals';
 import * as THREE     from 'three';
-import {Command     } from './command';
 import {Config      } from './config';
-import {Loader      } from './loader';
 import {History     } from './history';
+import {Loader      } from './loader';
+import {Storage     } from './storage';
 
 /**
  * Editor

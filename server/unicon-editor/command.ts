@@ -55,20 +55,6 @@ export class Command {
         return new Command( editorRef );
     }
 
-    // [ Public Functions ]
-
-    // [ Public Operators ]
-
-    // [ Public Events ]
-
-    // [ Public Messages ]
-
     // [ Protected Variables ]
 	protected _editor : Editor;
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Functions ]
-
-    // [ Protected Static Functions ]
 }

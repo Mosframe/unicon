@@ -1,37 +1,25 @@
 // -----------------------------------------------------------------------------
-// unicon.ts
+// main.ts
 // -----------------------------------------------------------------------------
 import {app             } from 'electron';
 import {BrowserWindow   } from 'electron';
-import * as index         from './index';
 
-const path      = require( 'path' );
-const url       = require( 'url' );
-const datGUI    = require('../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
-const detector  = require('../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
+const path  = require( 'path' );
+const url   = require( 'url' );
 
 /**
- * unicon
+ * Main
  *
  * @author mosframe ( https://github.com/mosframe )
  *
  * @export
- * @class Unicon
+ * @class Main
  */
-export class Unicon {
+export class Main {
 
-    // [ Public Variables ]
+    // [ Public Functions ]
 
-    // [ Constructors ]
-
-    /**
-     * Creates an instance of Unicon.
-     *
-     * @memberof Unicon
-     */
-    constructor() {
-
-        // [ main window ]
+    run() : void {
 
         app.on( 'ready', this._createWindow );
 
@@ -48,11 +36,7 @@ export class Unicon {
         } );
     }
 
-    // [ Public Functions ]
-
-    // [ Public Static Variables ]
-
-    // [ Public Static Functions ]
+    // [ Constructors ]
 
     // [ Protected Variables ]
 
@@ -67,22 +51,19 @@ export class Unicon {
             }
         } );
         this._mainWindow.maximize();
-        //this._mainWindow.setMenu( new Electron.Menu() );
-        //this._mainWindow.loadURL(
-        //    url.format( {
-        //        pathname: path.join( __dirname, 'index.html' ),
-        //        protocol: 'file:',
-        //        slashes: true
-        //    } )
-        //);
+        this._mainWindow.setMenu( new Electron.Menu() );
+        this._mainWindow.loadURL(
+            url.format({
+                pathname: path.join( __dirname, '../client/assets/editor/index.html' ),
+                protocol: 'file:',
+                slashes: true
+            })
+        );
         this._mainWindow.on( 'closed', function () {
             this._mainWindow = null;
         } );
     }
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Static Functions ]
 }
 
-let unicon = new Unicon();
+let main = new Main();
+main.run();

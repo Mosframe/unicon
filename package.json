@@ -14,8 +14,8 @@
   },
   "scripts": {
     "start": "ts-node server/main.ts",
-    "watch-back": "watchify server/client/main.ts -p tsify -o server/client/assets/unicon.js -dv",
-    "watch": "watchify server/tool/unicon.ts -p tsify -o server/client/assets/unicon.js -dv",
+    "watch": "watchify server/client/main.ts -p tsify -o server/client/assets/unicon.js -dv",
+    "watch-editor": "watchify server/unicon-editor/unicon-editor.ts -p tsify -o server/client/assets/editor/js/unicon-editor.js -dv",
     "watch-001": "watchify server/client/examples/001.ts -p tsify -o server/client/assets/examples/001.js -dv",
     "watch-002": "watchify server/client/examples/002.ts -p tsify -o server/client/assets/examples/002.js -dv",
     "watch-003": "watchify server/client/examples/003.ts -p tsify -o server/client/assets/examples/003.js -dv",
