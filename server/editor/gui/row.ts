@@ -1,27 +1,28 @@
 // -----------------------------------------------------------------------------
-// span.ts
+// row.ts
 // -----------------------------------------------------------------------------
 import {Element} from './element';
 
 /**
- * Span
+ * Row
  *
  * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
- * @class Span
+ * @class Row
  * @extends {Element}
  */
-export class Span extends Element {
+export class Row extends Element {
 
     // [ Constructors ]
 
     /**
-     * Creates an instance of Span.
+     * Creates an instance of Row.
      *
-     * @memberof Span
+     * @memberof Row
      */
     constructor() {
-        super( document.createElement( 'span' ) );
+        super( document.createElement( 'div' ) );
+        this.core.className = 'Row';
     }
 }

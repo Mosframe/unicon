@@ -1,27 +1,27 @@
 // -----------------------------------------------------------------------------
-// span.ts
+// div.ts
 // -----------------------------------------------------------------------------
 import {Element} from './element';
 
 /**
- * Span
+ * Div
  *
  * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
- * @class Span
+ * @class Div
  * @extends {Element}
  */
-export class Span extends Element {
+export class Div extends Element {
 
     // [ Constructors ]
 
     /**
-     * Creates an instance of Span.
+     * Creates an instance of Div.
      *
-     * @memberof Span
+     * @memberof Div
      */
     constructor() {
-        super( document.createElement( 'span' ) );
+        super( document.createElement( 'div' ) );
     }
 }
