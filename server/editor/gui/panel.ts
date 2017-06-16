@@ -6,7 +6,6 @@ import {Element} from './element';
 /**
  * Panel
  *
- * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Panel
@@ -22,7 +21,12 @@ export class Panel extends Element {
      * @memberof Panel
      */
     constructor() {
-        super( document.createElement( 'div' ) );
-        this.core.className = 'Panel';
+        let element = document.createElement( 'div' );
+        element.className = 'Panel';
+        super( element );
     }
+
+    // [ core ]
+
+    get core() : HTMLDivElement { return <HTMLDivElement>this._core; }
 }

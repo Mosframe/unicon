@@ -6,7 +6,6 @@ import {Element} from './element';
 /**
  * Input
  *
- * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Input
@@ -34,14 +33,16 @@ export class Input extends Element {
      * @memberof Input
      */
     constructor ( text:string ) {
-        super( document.createElement( 'input' ) );
-        this.core.className         = 'Input';
-        this.core.style.padding     = '2px';
-        this.core.style.border      = '1px solid transparent';
+        let element = document.createElement( 'input' );
+        element.className         = 'Input';
+        element.style.padding     = '2px';
+        element.style.border      = '1px solid transparent';
 
-        this.core.addEventListener( 'keydown', ( event ) =>{
+        element.addEventListener( 'keydown', ( event:KeyboardEvent ) =>{
             event.stopPropagation();
         }, false );
+
+        super( element );
 
         this.value = text;
     }

@@ -6,174 +6,96 @@ import {} from '../../engine/object';
 /**
  * Element
  *
- * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Element
  */
 export class Element {
 
-    // [ Public Variables ]
-
-    setBackground       ( ...values:any[] ) { this.setStyle('background'        ,values); }
-    setBackgroundColor  ( ...values:any[] ) { this.setStyle('backgroundColor'   ,values); }
-    setBorder           ( ...values:any[] ) { this.setStyle('border'            ,values); }
-    setBorderLeft       ( ...values:any[] ) { this.setStyle('borderLeft'        ,values); }
-    setBorderTop        ( ...values:any[] ) { this.setStyle('borderTop'         ,values); }
-    setBorderRight      ( ...values:any[] ) { this.setStyle('borderRight'       ,values); }
-    setBorderBottom     ( ...values:any[] ) { this.setStyle('borderBottom'      ,values); }
-    setBorderColor      ( ...values:any[] ) { this.setStyle('borderColor'       ,values); }
-    setBottom           ( ...values:any[] ) { this.setStyle('bottom'            ,values); }
-    setColor            ( ...values:any[] ) { this.setStyle('color'             ,values); }
-    setCursor           ( ...values:any[] ) { this.setStyle('cursor'            ,values); }
-    setDisplay          ( ...values:any[] ) { this.setStyle('display'           ,values); }
-    setFontSize         ( ...values:any[] ) { this.setStyle('fontSize'          ,values); }
-    setFontWeight       ( ...values:any[] ) { this.setStyle('fontWeight'        ,values); }
-    setHeight           ( ...values:any[] ) { this.setStyle('height'            ,values); }
-    setLeft             ( ...values:any[] ) { this.setStyle('left'              ,values); }
-    setMargin           ( ...values:any[] ) { this.setStyle('margin'            ,values); }
-    setMarginBottom     ( ...values:any[] ) { this.setStyle('marginBottom'      ,values); }
-    setMarginLeft       ( ...values:any[] ) { this.setStyle('marginLeft'        ,values); }
-    setMarginRight      ( ...values:any[] ) { this.setStyle('marginRight'       ,values); }
-    setMarginTop        ( ...values:any[] ) { this.setStyle('marginTop'         ,values); }
-    setOpacity          ( ...values:any[] ) { this.setStyle('opacity'           ,values); }
-    setOverflow         ( ...values:any[] ) { this.setStyle('overflow'          ,values); }
-    setPadding          ( ...values:any[] ) { this.setStyle('padding'           ,values); }
-    setPaddingBottom    ( ...values:any[] ) { this.setStyle('paddingBottom'     ,values); }
-    setPaddingLeft      ( ...values:any[] ) { this.setStyle('paddingLeft'       ,values); }
-    setPaddingRight     ( ...values:any[] ) { this.setStyle('paddingRight'      ,values); }
-    setPaddingTop       ( ...values:any[] ) { this.setStyle('paddingTop'        ,values); }
-    setPosition         ( ...values:any[] ) { this.setStyle('position'          ,values); }
-    setRight            ( ...values:any[] ) { this.setStyle('right'             ,values); }
-    setTextAlign        ( ...values:any[] ) { this.setStyle('textAlign'         ,values); }
-    setTextDecoration   ( ...values:any[] ) { this.setStyle('textDecoration'    ,values); }
-    setTextTransform    ( ...values:any[] ) { this.setStyle('textTransform'     ,values); }
-    setTop              ( ...values:any[] ) { this.setStyle('top'               ,values); }
-    setWidth            ( ...values:any[] ) { this.setStyle('width'             ,values); }
-    setZIndex           ( ...values:any[] ) { this.setStyle('zIndex'            ,values); }
-
-
-    // [ Constructors ]
-
-    /**
-     * Creates an instance of Element.
-     * @param {any} dom
-     *
-     * @memberof Element
-     */
-    constructor ( dom ) {
-        this.core = dom;
-    };
-
     // [ Public Functions ]
 
     /**
-     * add property
+     * append child elements
      *
-     * @param {...any[]} args arguments
+     * @param {...Element[]} elements
      * @returns
      *
      * @memberof Element
      */
-    add ( ...args:any[] ) {
+    add ( ...elements:Element[] ) {
 
-        for ( let i = 0; i < args.length; i ++ ) {
+        for( let i=0; i < elements.length; ++i ) {
+            this._core.appendChild( elements[i].core );
+        }
+        return this;
+    }
+    /**
+     * remove child elements
+     *
+     * @param {...any[]} elements
+     * @returns
+     *
+     * @memberof Element
+     */
+    remove ( ...elements:Element[] ) {
 
-            let argument = args[ i ];
-
-            if ( argument instanceof Element ) {
-
-                this.core.appendChild( argument.core );
-
-            } else {
-
-                console.error( 'UI.Element:', argument, 'is not an instance of UI.Element.' );
-
-            }
-
+        for( let i=0; i < elements.length; ++i ) {
+            this._core.removeChild( elements[i].core );
         }
 
         return this;
     }
     /**
-     * remove property
-     *
-     * @param {...any[]} args arguments
-     * @returns
-     *
-     * @memberof Element
-     */
-    remove ( ...args:any[] ) {
-
-        for ( let i = 0; i < args.length; i ++ ) {
-
-            var argument = args[ i ];
-
-            if ( argument instanceof Element ) {
-
-                this.core.removeChild( argument.core );
-
-            } else {
-
-                console.error( 'UI.Element:', argument, 'is not an instance of UI.Element.' );
-
-            }
-
-        }
-
-        return this;
-    }
-    /**
-     * clear properties
+     * clear children elements
      *
      *
      * @memberof Element
      */
     clear () {
 
-        while( this.core.children.length ) {
-            this.core.removeChild( this.core.lastChild );
+        while( this._core.children.length ) {
+            this._core.removeChild( this._core.lastChild );
         }
     }
     /**
      * set id
      *
-     * @param {any} id
+     * @param {string} id
      * @returns
      *
      * @memberof Element
      */
-    setId ( id ) {
+    setId ( id:string ) {
 
-        this.core.id = id;
+        this._core.id = id;
         return this;
     }
     /**
      * set class
      *
-     * @param {any} name
+     * @param {string} name
      * @returns
      *
      * @memberof Element
      */
-    setClass ( name ) {
+    setClass ( name:string ) {
 
-        this.core.className = name;
+        this._core.className = name;
         return this;
     }
     /**
      * set style
      *
      * @param {string} style
-     * @param {any[]} values
+     * @param {string[]} values
      * @returns
      *
      * @memberof Element
      */
-    setStyle ( style:string, values:any[] ) {
+    setStyle ( style:string, values:string[] ) {
 
-        for ( var i = 0; i < values.length; i ++ ) {
-            this.core.style[ style ] = values[ i ];
+        for( let i = 0; i < values.length; ++i ) {
+            this._core.style[style] = values[i];
         }
         return this;
     }
@@ -187,32 +109,84 @@ export class Element {
      */
     setDisabled ( value:boolean ) {
 
-        if( Object.existProterty( this.core, 'disabled' ) ) this.core['disabled'] = value;
+        if( Object.existProterty( this._core, 'disabled' ) ) this._core['disabled'] = value;
         return this;
     }
     /**
      * set text content
      *
-     * @param {any} value
+     * @param {string} value
      * @returns
      *
      * @memberof Element
      */
-    setTextContent ( value ) {
+    setTextContent ( value:string ) {
 
-        this.core.textContent = value;
+        this._core.textContent = value;
         return this;
     }
 
+    // [ Public Functions - Styles ]
+
+    setBackground       ( ...values:string[] ) { this.setStyle('background'        ,values); }
+    setBackgroundColor  ( ...values:string[] ) { this.setStyle('backgroundColor'   ,values); }
+    setBorder           ( ...values:string[] ) { this.setStyle('border'            ,values); }
+    setBorderLeft       ( ...values:string[] ) { this.setStyle('borderLeft'        ,values); }
+    setBorderTop        ( ...values:string[] ) { this.setStyle('borderTop'         ,values); }
+    setBorderRight      ( ...values:string[] ) { this.setStyle('borderRight'       ,values); }
+    setBorderBottom     ( ...values:string[] ) { this.setStyle('borderBottom'      ,values); }
+    setBorderColor      ( ...values:string[] ) { this.setStyle('borderColor'       ,values); }
+    setBottom           ( ...values:string[] ) { this.setStyle('bottom'            ,values); }
+    setColor            ( ...values:string[] ) { this.setStyle('color'             ,values); }
+    setCursor           ( ...values:string[] ) { this.setStyle('cursor'            ,values); }
+    setDisplay          ( ...values:string[] ) { this.setStyle('display'           ,values); }
+    setFontSize         ( ...values:string[] ) { this.setStyle('fontSize'          ,values); }
+    setFontWeight       ( ...values:string[] ) { this.setStyle('fontWeight'        ,values); }
+    setHeight           ( ...values:string[] ) { this.setStyle('height'            ,values); }
+    setLeft             ( ...values:string[] ) { this.setStyle('left'              ,values); }
+    setMargin           ( ...values:string[] ) { this.setStyle('margin'            ,values); }
+    setMarginBottom     ( ...values:string[] ) { this.setStyle('marginBottom'      ,values); }
+    setMarginLeft       ( ...values:string[] ) { this.setStyle('marginLeft'        ,values); }
+    setMarginRight      ( ...values:string[] ) { this.setStyle('marginRight'       ,values); }
+    setMarginTop        ( ...values:string[] ) { this.setStyle('marginTop'         ,values); }
+    setOpacity          ( ...values:string[] ) { this.setStyle('opacity'           ,values); }
+    setOverflow         ( ...values:string[] ) { this.setStyle('overflow'          ,values); }
+    setPadding          ( ...values:string[] ) { this.setStyle('padding'           ,values); }
+    setPaddingBottom    ( ...values:string[] ) { this.setStyle('paddingBottom'     ,values); }
+    setPaddingLeft      ( ...values:string[] ) { this.setStyle('paddingLeft'       ,values); }
+    setPaddingRight     ( ...values:string[] ) { this.setStyle('paddingRight'      ,values); }
+    setPaddingTop       ( ...values:string[] ) { this.setStyle('paddingTop'        ,values); }
+    setPosition         ( ...values:string[] ) { this.setStyle('position'          ,values); }
+    setRight            ( ...values:string[] ) { this.setStyle('right'             ,values); }
+    setTextAlign        ( ...values:string[] ) { this.setStyle('textAlign'         ,values); }
+    setTextDecoration   ( ...values:string[] ) { this.setStyle('textDecoration'    ,values); }
+    setTextTransform    ( ...values:string[] ) { this.setStyle('textTransform'     ,values); }
+    setTop              ( ...values:string[] ) { this.setStyle('top'               ,values); }
+    setWidth            ( ...values:string[] ) { this.setStyle('width'             ,values); }
+    setZIndex           ( ...values:string[] ) { this.setStyle('zIndex'            ,values); }
+
+    // [ Constructors ]
+
+    /**
+     * Creates an instance of Element.
+     * @param {HTMLElement} element
+     *
+     * @memberof Element
+     */
+    constructor ( element:HTMLElement ) {
+        this._core = element;
+    };
+
+
     // [ Events ]
 
-    onKeyUp     ( callback:Function ) { this.core.addEventListener( 'keyup'      , callback.bind( this ), false ); }
-    onKeyDown   ( callback:Function ) { this.core.addEventListener( 'keyuown'    , callback.bind( this ), false ); }
-    onMouseOver ( callback:Function ) { this.core.addEventListener( 'mouseover'  , callback.bind( this ), false ); }
-    onMouseOut  ( callback:Function ) { this.core.addEventListener( 'mouseout'   , callback.bind( this ), false ); }
-    onClick     ( callback:Function ) { this.core.addEventListener( 'click'      , callback.bind( this ), false ); }
-    onDblClick  ( callback:Function ) { this.core.addEventListener( 'dblclick'   , callback.bind( this ), false ); }
-    onChange    ( callback:Function ) { this.core.addEventListener( 'change'     , callback.bind( this ), false ); }
+    onKeyUp     ( callback:Function ) { this._core.addEventListener( 'keyup'      , callback.bind( this ), false ); }
+    onKeyDown   ( callback:Function ) { this._core.addEventListener( 'keyuown'    , callback.bind( this ), false ); }
+    onMouseOver ( callback:Function ) { this._core.addEventListener( 'mouseover'  , callback.bind( this ), false ); }
+    onMouseOut  ( callback:Function ) { this._core.addEventListener( 'mouseout'   , callback.bind( this ), false ); }
+    onClick     ( callback:Function ) { this._core.addEventListener( 'click'      , callback.bind( this ), false ); }
+    onDblClick  ( callback:Function ) { this._core.addEventListener( 'dblclick'   , callback.bind( this ), false ); }
+    onChange    ( callback:Function ) { this._core.addEventListener( 'change'     , callback.bind( this ), false ); }
 
     // [ core ]
 
