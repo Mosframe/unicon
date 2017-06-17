@@ -6,6 +6,7 @@ import {Element} from './element';
 /**
  * TextArea
  *
+ * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class TextArea
@@ -22,7 +23,7 @@ export class TextArea extends Element {
      * @memberof Text
      */
     get value () : string        { return this.core.value; }
-    set value ( value:string )   { this.core.value = value; }
+    set value ( value:string )   { if( value !== undefined ) this.core.value = value; }
 
     // [ Constructors ]
 

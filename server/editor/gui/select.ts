@@ -6,6 +6,7 @@ import {Element} from './element';
 /**
  * Select
  *
+ * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Select
@@ -22,7 +23,7 @@ export class Select extends Element {
      * @memberof Select
      */
     get value () : string        { return this.core.value; }
-    set value ( value:string )   { this.core.value = value; }
+    set value ( value:string )   { if( value !== undefined ) this.core.value = value; }
     /**
      * multiple
      *

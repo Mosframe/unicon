@@ -6,6 +6,7 @@ import {Element} from './element';
 /**
  * Div
  *
+ * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Div
