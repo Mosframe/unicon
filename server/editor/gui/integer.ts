@@ -36,7 +36,8 @@ export class Integer extends Element {
      * @type {number}
      * @memberof Integer
      */
-    step        : number;
+    get step() : number { return this._step; }
+    set step( value:number ) { this._step = parseInt( value.toString() ); }
 
     /**
      * value
@@ -48,15 +49,13 @@ export class Integer extends Element {
     set value ( value:number )   {
         if( value !== undefined ) {
 
-            value = parseFloat( value.toString() );
+            value = parseInt( value.toString() );
 
             if( value < this.min ) value = this.min;
             if( value > this.max ) value = this.max;
 
             this._value = value;
-            this.core.value = value.toFixed( this.precision );
-
-            if( this.unit !== '' ) this.core.value += ' ' + this.unit;
+            this.core.value = value.toString();
         }
     }
 
@@ -105,15 +104,16 @@ export class Integer extends Element {
         this._onBlur(null);
 
         this._core.addEventListener( 'mousedown', this._onMouseDown  , false );
+        this._core.addEventListener( 'change'   , this._onChange     , false );
         this._core.addEventListener( 'focus'    , this._onFocus      , false );
         this._core.addEventListener( 'blur'     , this._onBlur       , false );
-        this._core.addEventListener( 'change'   , this._onChange     , false );
     }
 
 
     // [ Protected Variables ]
 
     protected _value                : number;
+    protected _step                 : number;
     protected _changeEvent          : Event;
     protected _distance             : number;
     protected _onMouseDownValue     : number;
@@ -146,7 +146,7 @@ export class Integer extends Element {
 		this._distance += ( this._pointer[ 0 ] - this._prevPointer[ 0 ] ) - ( this._pointer[ 1 ] - this._prevPointer[ 1 ] );
 
 		let value = this._onMouseDownValue + ( this._distance / ( event.shiftKey ? 5 : 50 ) ) * this.step;
-		value = Math.min( this.max, Math.max( this.min, value ) );
+		value = Math.min( this.max, Math.max( this.min, value ) ) | 0;
 
 		if( currentValue !== value ) {
 			this.value = value;
