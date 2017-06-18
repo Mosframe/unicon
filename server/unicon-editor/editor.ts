@@ -4,10 +4,21 @@
 import * as signals   from 'signals';
 import {Signal      } from 'signals';
 import * as THREE     from 'three';
+import {Command     } from './command';
 import {Config      } from './config';
 import {History     } from './history';
 import {Loader      } from './loader';
 import {Storage     } from './storage';
+
+
+export interface IEditor {
+	scene       : any;
+    camera      : any;
+    history     : any;
+    scripts     : any;
+    metadata    : any;
+    project     : any;
+}
 
 /**
  * Editor
@@ -187,7 +198,7 @@ export class Editor {
      * @type {THREE.Object3D}
      * @memberof Editor
      */
-	selected : THREE.Object3D;
+	selected : THREE.Object3D | null;
     /**
      * helpers
      *
@@ -486,16 +497,16 @@ export class Editor {
     /**
      * select object
      *
-     * @param {THREE.Object3D} object
+     * @param {(THREE.Object3D|null)} object
      * @returns
      *
      * @memberof Editor
      */
-	select ( object:THREE.Object3D ) {
+	select ( object:THREE.Object3D|null ) {
 
 		if( this.selected === object ) return;
 
-		let uuid = null;
+		let uuid : string|null = null;
 
 		if( object !== null ) {
 			uuid = object.uuid;
@@ -580,7 +591,7 @@ export class Editor {
 
 		this.camera.copy( this.DEFAULT_CAMERA );
 		this.scene.background.setHex( 0xaaaaaa );
-		this.scene.fog = null;
+		this.scene.fog = new THREE.Fog(0);
 
 		let objects = this.scene.children;
 
@@ -596,6 +607,116 @@ export class Editor {
 		this.deselect();
 
 		this.signals.editorCleared.dispatch();
+	}
+    /**
+     * load from json
+     *
+     * @param {IEditor} json
+     * @returns
+     *
+     * @memberof Editor
+     */
+	fromJSON ( json:IEditor ) {
+
+		let loader = new THREE.ObjectLoader();
+
+		// backwards
+
+		if ( json.scene === undefined ) {
+
+			this.setScene( <THREE.Scene>loader.parse( json ) );
+			return;
+		}
+
+		let camera = <THREE.Camera>loader.parse( json.camera );
+
+		this.camera.copy( camera );
+        if( this.camera instanceof THREE.PerspectiveCamera ) {
+            this.camera.aspect = this.DEFAULT_CAMERA.aspect;
+            this.camera.updateProjectionMatrix();
+        }
+
+		this.history.fromJSON( json.history );
+		this.scripts = json.scripts;
+
+		this.setScene( <THREE.Scene>loader.parse( json.scene ) );
+	}
+    /**
+     * editor to json
+     *
+     * @returns {IEditor}
+     *
+     * @memberof Editor
+     */
+	toJSON () : IEditor {
+
+		// scripts clean up
+
+		let scene   = this.scene;
+		let scripts = this.scripts;
+
+		for( let key in scripts ) {
+			let script = scripts[ key ];
+			if ( script.length === 0 || scene.getObjectByProperty( 'uuid', key ) === undefined ) {
+				delete scripts[ key ];
+			}
+		}
+
+		//
+		return {
+
+			metadata: {},
+			project : {
+				gammaInput  : this.config.getKey( 'project/renderer/gammaInput' ),
+				gammaOutput : this.config.getKey( 'project/renderer/gammaOutput' ),
+				shadows     : this.config.getKey( 'project/renderer/shadows' ),
+				vr          : this.config.getKey( 'project/vr' )
+			},
+			camera  : this.camera.toJSON(),
+			scene   : this.scene.toJSON(),
+			scripts : this.scripts,
+			history : this.history.toJSON()
+		};
+	}
+    /**
+     * get object by uuid
+     *
+     * @param {string} uuid
+     * @returns
+     *
+     * @memberof Editor
+     */
+	objectByUuid ( uuid:string ) {
+		return this.scene.getObjectByProperty( 'uuid', uuid );
+	}
+    /**
+     * execute command
+     *
+     * @param {Command} cmd
+     * @param {string} optionalName
+     *
+     * @memberof Editor
+     */
+    execute ( cmd:Command, optionalName:string ) {
+		this.history.execute( cmd, optionalName );
+	}
+    /**
+     * undo
+     *
+     *
+     * @memberof Editor
+     */
+	undo () {
+		this.history.undo();
+	}
+    /**
+     * redo
+     *
+     *
+     * @memberof Editor
+     */
+	redo () {
+		this.history.redo();
 	}
 
     // [ Constructors ]

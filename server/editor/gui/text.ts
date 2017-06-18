@@ -19,11 +19,11 @@ export class Text extends Element {
     /**
      * value
      *
-     * @type {string}
+     * @type {(string|null)}
      * @memberof Text
      */
-    get value () : string        { return this.core.textContent; }
-    set value ( value:string )   { if( value !== undefined ) this.core.textContent = value; }
+    get value () : string|null      { return this.core.textContent; }
+    set value ( value:string|null ) { if( value !== undefined ) this.core.textContent = value; }
 
     // [ Constructors ]
 

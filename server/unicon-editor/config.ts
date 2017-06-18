@@ -16,10 +16,6 @@ import {Debug   } from '../engine/debug';
  */
 export class Config {
 
-    // [ Public Delegates ]
-
-    // [ Public Static Variables ]
-
     // [ Public Variables ]
 
     /**
@@ -79,20 +75,9 @@ export class Config {
         }
     }
 
-    // [ Public Static Functions ]
-
-    // [ Public Functions ]
-
-    // [ Public Operators ]
-
-    // [ Public Events ]
-
-    // [ Public Messages ]
-
     // [ Protected Variables ]
 
     protected _name : string;
-
     protected _storage = {
 		'autosave': true,
 		'theme': 'css/dark.css',
@@ -106,10 +91,4 @@ export class Config {
 
 		'settings/history': false
 	};
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Functions ]
-
-    // [ Protected Static Functions ]
 }

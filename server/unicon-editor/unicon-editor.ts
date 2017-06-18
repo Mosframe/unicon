@@ -1,9 +1,10 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-import {        } from '../engine/number';
-import {Editor  } from './editor';
-import {Viewport} from './viewport';
+import {                    } from '../engine/number';
+//import {Panel as GUIPanel 	} from '../editor/gui/panel';
+import {Editor              } from './editor';
+import {Viewport            } from './viewport';
 
 
 //
@@ -11,7 +12,7 @@ import {Viewport} from './viewport';
 var editor = new Editor();
 
 var viewport = new Viewport( editor );
-document.body.appendChild( viewport.dom );
+//document.body.appendChild( viewport.container.core );
 
 /*
 var script = new Script( editor );

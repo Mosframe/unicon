@@ -48,6 +48,7 @@
     "three": "^0.85.2",
     "three-orbit-controls": "^82.1.0",
     "three-orbitcontrols-ts": "^0.1.2",
+    "three-transformcontrols": "^0.78.1",
     "typescript": "^2.3.4",
     "typescript-dotnet-es6": "^4.9.6",
     "url": "^0.11.0",

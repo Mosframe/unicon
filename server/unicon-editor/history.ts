@@ -6,6 +6,21 @@ import {Config  } from './config';
 import {Command } from './command';
 
 /**
+ * IHistory
+ *
+ * Developed as part of a project at University of Applied Sciences and Arts Northwestern Switzerland (www.fhnw.ch)
+ *
+ * @author dforrer ( https://github.com/dforrer )
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @interface IHistory
+ */
+export interface IHistory {
+    undos : any[];
+    redos : any[];
+}
+
+/**
  * History
  *
  * Developed as part of a project at University of Applied Sciences and Arts Northwestern Switzerland (www.fhnw.ch)
@@ -19,9 +34,10 @@ export class History {
 
     // [ Public Variables ]
 
+    undos           : Command[];
+    redos           : Command[];
+
     editor          : Editor;
-    undos           : any[];
-    redos           : any[];
     lastCmdTime     : Date;
     idCounter       : number;
     historyDisabled : boolean;
@@ -80,114 +96,88 @@ export class History {
 
 	}
 
-	undo () {
+	undo () : Command|undefined {
+
+		let cmd:Command|undefined;
 
 		if ( this.historyDisabled ) {
 
 			alert( "Undo/Redo disabled while scene is playing." );
-			return;
-
+			return cmd;
 		}
-
-		let cmd = undefined;
 
 		if ( this.undos.length > 0 ) {
 
 			cmd = this.undos.pop();
-
-			if ( cmd.inMemory === false ) {
-
+			if ( cmd && cmd.inMemory === false ) {
 				cmd.fromJSON( cmd.json );
-
 			}
-
 		}
 
-		if ( cmd !== undefined ) {
-
+		if ( cmd ) {
 			cmd.undo();
 			this.redos.push( cmd );
 			this.editor.signals.historyChanged.dispatch( cmd );
-
 		}
 
 		return cmd;
 	}
 
-	redo () {
+	redo () : Command|undefined {
+
+		let cmd:Command|undefined;
 
 		if ( this.historyDisabled ) {
-
 			alert( "Undo/Redo disabled while scene is playing." );
-			return;
-
+			return cmd;
 		}
 
-		let cmd = undefined;
-
-		if ( this.redos.length > 0 ) {
+		if( this.redos.length > 0 ) {
 
 			cmd = this.redos.pop();
-
-			if ( cmd.inMemory === false ) {
-
+			if( cmd && cmd.inMemory === false ) {
 				cmd.fromJSON( cmd.json );
-
 			}
-
 		}
-
-		if ( cmd !== undefined ) {
-
+		if( cmd ) {
 			cmd.execute();
 			this.undos.push( cmd );
 			this.editor.signals.historyChanged.dispatch( cmd );
-
+			return cmd;
 		}
-
-		return cmd;
 	}
 
-	toJSON () {
+	toJSON () : IHistory {
 
-		let history:History = new History(this.editor);
-		history.undos = [];
-		history.redos = [];
+		let history : IHistory = {
+			undos : [],
+			redos : [],
+		};
 
 		if ( ! this.config.getKey( 'settings/history' ) ) {
-
 			return history;
-
 		}
 
 		// Append Undos to History
 
 		for ( let i = 0 ; i < this.undos.length; i ++ ) {
-
 			if ( this.undos[ i ].hasOwnProperty( "json" ) ) {
-
 				history.undos.push( this.undos[ i ].json );
-
 			}
-
 		}
 
 		// Append Redos to History
 
 		for ( let i = 0 ; i < this.redos.length; i ++ ) {
-
 			if ( this.redos[ i ].hasOwnProperty( "json" ) ) {
-
 				history.redos.push( this.redos[ i ].json );
-
 			}
-
 		}
 
 		return history;
 	}
 
-	fromJSON ( json ) {
+	fromJSON ( json:IHistory ) {
 
 		if ( json === undefined ) return;
 

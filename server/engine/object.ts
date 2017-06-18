@@ -14,20 +14,60 @@ declare global {
      */
     export interface ObjectConstructor {
         /**
-         * exist property
+         * object has propery?
+         *
          *
          * @memberof ObjectConstructor
          */
-        existProterty : ( object:Object, property:string ) => boolean;
+        hasProterty : ( object:object, propertyName:string ) => boolean;
+        /**
+         * object has function?
+         *
+         *
+         * @memberof ObjectConstructor
+         */
+        hasFunction : ( object:object, functionName:string ) => boolean;
+    }
+    export interface Object {
+        /**
+         * object has propery?
+         *
+         *
+         * @memberof Object
+         */
+        hasProterty : ( object:object, propertyName:string ) => boolean;
+        /**
+         * object has function?
+         *
+         *
+         * @memberof Object
+         */
+        hasFunction : ( object:object, functionName:string ) => boolean;
     }
 }
 
-Object.existProterty = ( object:Object, property:string ) : boolean => {
-    let names = Object.getOwnPropertyNames( object );
-    for( let name of names ) {
-        if( name === property ) {
+Object.hasProterty = ( object:object, propertyName:string ) : boolean => {
+    for( let name in object ) {
+        if( name === propertyName ) {
             return true;
         }
     }
     return false;
+};
+Object.hasFunction = ( object:object, functionName:string ) : boolean => {
+    for( let name in object ) {
+        if( name === functionName ) {
+            if( typeof object[name] == 'function' ) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+Object.prototype.hasProterty = ( object:object, propertyName:string ) : boolean => {
+    return Object.hasProterty( object, propertyName );
+};
+Object.prototype.hasFunction = ( object:object, functionName:string ) : boolean => {
+    return Object.hasFunction( object, functionName );
 };

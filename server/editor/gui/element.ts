@@ -55,7 +55,9 @@ export class Element {
     clear () {
 
         while( this._core.children.length ) {
-            this._core.removeChild( this._core.lastChild );
+            if( this._core.lastChild ) {
+                this._core.removeChild( this._core.lastChild );
+            }
         }
     }
     /**
@@ -110,7 +112,7 @@ export class Element {
      */
     setDisabled ( value:boolean ) {
 
-        if( Object.existProterty( this._core, 'disabled' ) ) this._core['disabled'] = value;
+        if( Object.hasProterty( this._core, 'disabled' ) ) this._core['disabled'] = value;
         return this;
     }
     /**
@@ -129,42 +131,42 @@ export class Element {
 
     // [ Public Functions - Styles ]
 
-    setBackground       ( ...values:string[] ) { this.setStyle('background'        ,values); }
-    setBackgroundColor  ( ...values:string[] ) { this.setStyle('backgroundColor'   ,values); }
-    setBorder           ( ...values:string[] ) { this.setStyle('border'            ,values); }
-    setBorderLeft       ( ...values:string[] ) { this.setStyle('borderLeft'        ,values); }
-    setBorderTop        ( ...values:string[] ) { this.setStyle('borderTop'         ,values); }
-    setBorderRight      ( ...values:string[] ) { this.setStyle('borderRight'       ,values); }
-    setBorderBottom     ( ...values:string[] ) { this.setStyle('borderBottom'      ,values); }
-    setBorderColor      ( ...values:string[] ) { this.setStyle('borderColor'       ,values); }
-    setBottom           ( ...values:string[] ) { this.setStyle('bottom'            ,values); }
-    setColor            ( ...values:string[] ) { this.setStyle('color'             ,values); }
-    setCursor           ( ...values:string[] ) { this.setStyle('cursor'            ,values); }
-    setDisplay          ( ...values:string[] ) { this.setStyle('display'           ,values); }
-    setFontSize         ( ...values:string[] ) { this.setStyle('fontSize'          ,values); }
-    setFontWeight       ( ...values:string[] ) { this.setStyle('fontWeight'        ,values); }
-    setHeight           ( ...values:string[] ) { this.setStyle('height'            ,values); }
-    setLeft             ( ...values:string[] ) { this.setStyle('left'              ,values); }
-    setMargin           ( ...values:string[] ) { this.setStyle('margin'            ,values); }
-    setMarginBottom     ( ...values:string[] ) { this.setStyle('marginBottom'      ,values); }
-    setMarginLeft       ( ...values:string[] ) { this.setStyle('marginLeft'        ,values); }
-    setMarginRight      ( ...values:string[] ) { this.setStyle('marginRight'       ,values); }
-    setMarginTop        ( ...values:string[] ) { this.setStyle('marginTop'         ,values); }
-    setOpacity          ( ...values:string[] ) { this.setStyle('opacity'           ,values); }
-    setOverflow         ( ...values:string[] ) { this.setStyle('overflow'          ,values); }
-    setPadding          ( ...values:string[] ) { this.setStyle('padding'           ,values); }
-    setPaddingBottom    ( ...values:string[] ) { this.setStyle('paddingBottom'     ,values); }
-    setPaddingLeft      ( ...values:string[] ) { this.setStyle('paddingLeft'       ,values); }
-    setPaddingRight     ( ...values:string[] ) { this.setStyle('paddingRight'      ,values); }
-    setPaddingTop       ( ...values:string[] ) { this.setStyle('paddingTop'        ,values); }
-    setPosition         ( ...values:string[] ) { this.setStyle('position'          ,values); }
-    setRight            ( ...values:string[] ) { this.setStyle('right'             ,values); }
-    setTextAlign        ( ...values:string[] ) { this.setStyle('textAlign'         ,values); }
-    setTextDecoration   ( ...values:string[] ) { this.setStyle('textDecoration'    ,values); }
-    setTextTransform    ( ...values:string[] ) { this.setStyle('textTransform'     ,values); }
-    setTop              ( ...values:string[] ) { this.setStyle('top'               ,values); }
-    setWidth            ( ...values:string[] ) { this.setStyle('width'             ,values); }
-    setZIndex           ( ...values:string[] ) { this.setStyle('zIndex'            ,values); }
+    setBackground       ( ...values:string[] ) { return this.setStyle('background'        ,values); }
+    setBackgroundColor  ( ...values:string[] ) { return this.setStyle('backgroundColor'   ,values); }
+    setBorder           ( ...values:string[] ) { return this.setStyle('border'            ,values); }
+    setBorderLeft       ( ...values:string[] ) { return this.setStyle('borderLeft'        ,values); }
+    setBorderTop        ( ...values:string[] ) { return this.setStyle('borderTop'         ,values); }
+    setBorderRight      ( ...values:string[] ) { return this.setStyle('borderRight'       ,values); }
+    setBorderBottom     ( ...values:string[] ) { return this.setStyle('borderBottom'      ,values); }
+    setBorderColor      ( ...values:string[] ) { return this.setStyle('borderColor'       ,values); }
+    setBottom           ( ...values:string[] ) { return this.setStyle('bottom'            ,values); }
+    setColor            ( ...values:string[] ) { return this.setStyle('color'             ,values); }
+    setCursor           ( ...values:string[] ) { return this.setStyle('cursor'            ,values); }
+    setDisplay          ( ...values:string[] ) { return this.setStyle('display'           ,values); }
+    setFontSize         ( ...values:string[] ) { return this.setStyle('fontSize'          ,values); }
+    setFontWeight       ( ...values:string[] ) { return this.setStyle('fontWeight'        ,values); }
+    setHeight           ( ...values:string[] ) { return this.setStyle('height'            ,values); }
+    setLeft             ( ...values:string[] ) { return this.setStyle('left'              ,values); }
+    setMargin           ( ...values:string[] ) { return this.setStyle('margin'            ,values); }
+    setMarginBottom     ( ...values:string[] ) { return this.setStyle('marginBottom'      ,values); }
+    setMarginLeft       ( ...values:string[] ) { return this.setStyle('marginLeft'        ,values); }
+    setMarginRight      ( ...values:string[] ) { return this.setStyle('marginRight'       ,values); }
+    setMarginTop        ( ...values:string[] ) { return this.setStyle('marginTop'         ,values); }
+    setOpacity          ( ...values:string[] ) { return this.setStyle('opacity'           ,values); }
+    setOverflow         ( ...values:string[] ) { return this.setStyle('overflow'          ,values); }
+    setPadding          ( ...values:string[] ) { return this.setStyle('padding'           ,values); }
+    setPaddingBottom    ( ...values:string[] ) { return this.setStyle('paddingBottom'     ,values); }
+    setPaddingLeft      ( ...values:string[] ) { return this.setStyle('paddingLeft'       ,values); }
+    setPaddingRight     ( ...values:string[] ) { return this.setStyle('paddingRight'      ,values); }
+    setPaddingTop       ( ...values:string[] ) { return this.setStyle('paddingTop'        ,values); }
+    setPosition         ( ...values:string[] ) { return this.setStyle('position'          ,values); }
+    setRight            ( ...values:string[] ) { return this.setStyle('right'             ,values); }
+    setTextAlign        ( ...values:string[] ) { return this.setStyle('textAlign'         ,values); }
+    setTextDecoration   ( ...values:string[] ) { return this.setStyle('textDecoration'    ,values); }
+    setTextTransform    ( ...values:string[] ) { return this.setStyle('textTransform'     ,values); }
+    setTop              ( ...values:string[] ) { return this.setStyle('top'               ,values); }
+    setWidth            ( ...values:string[] ) { return this.setStyle('width'             ,values); }
+    setZIndex           ( ...values:string[] ) { return this.setStyle('zIndex'            ,values); }
 
     // [ Constructors ]
 
