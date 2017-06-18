@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------------
 // viewport.ts
 // -----------------------------------------------------------------------------
-import {Signal  } from 'signals';
-import {Editor  } from './editor';
+import {Signal  			} from 'signals';
+import * as THREE     		  from 'three';
+import {Panel as GUIPanel 	} from '../editor/gui/panel';
+import {Editor  			} from './editor';
 
 
 
@@ -17,114 +19,104 @@ import {Editor  } from './editor';
 export class Viewport {
 
     // [ Public Variables ]
-    signals : {};
-    container :
+	editor 			: Editor;
+    signals 		: {};
+    container 		: GUIPanel;
+	renderer 		: THREE.Renderer;
+	camera 			: THREE.Camera;
+	scene 			: THREE.Scene;
+	sceneHelpers 	: THREE.Scene;
+	objects 		: THREE.Object3D[];
 
     // [ Constructors ]
 
     constructor( editor:Editor ) {
 
-	    this.signals = editor.signals;
+		this.editor = editor;
 
-        var container = new UI.Panel();
-        container.setId( 'viewport' );
-        container.setPosition( 'absolute' );
+        this.container = new GUIPanel();
+        this.container.setId( 'viewport' );
+        this.container.setPosition( 'absolute' );
+        this.container.add( new Viewport.Info( editor ) );
 
-        container.add( new Viewport.Info( editor ) );
-    }
+		this.renderer 		= null;
+		this.camera 		= editor.camera;
+		this.scene 			= editor.scene;
+		this.sceneHelpers 	= editor.sceneHelpers;
 
+		this.objects = [];
 
+		let vrEffect;
+		let vrControls;
 
-	//
-
-	var renderer = null;
-
-	var camera = editor.camera;
-	var scene = editor.scene;
-	var sceneHelpers = editor.sceneHelpers;
-
-	var objects = [];
-
-	//
-
-	var vrEffect, vrControls;
-
-	if ( WEBVR.isAvailable() === true ) {
-
-		var vrCamera = new THREE.PerspectiveCamera();
-		vrCamera.projectionMatrix = camera.projectionMatrix;
-		camera.add( vrCamera );
-
-	}
-
-	// helpers
-
-	var grid = new THREE.GridHelper( 60, 60 );
-	sceneHelpers.add( grid );
-
-	//
-
-	var box = new THREE.Box3();
-
-	var selectionBox = new THREE.BoxHelper();
-	selectionBox.material.depthTest = false;
-	selectionBox.material.transparent = true;
-	selectionBox.visible = false;
-	sceneHelpers.add( selectionBox );
-
-	var objectPositionOnDown = null;
-	var objectRotationOnDown = null;
-	var objectScaleOnDown = null;
-
-	var transformControls = new THREE.TransformControls( camera, container.dom );
-	transformControls.addEventListener( 'change', function () {
-
-		var object = transformControls.object;
-
-		if ( object !== undefined ) {
-
-			selectionBox.setFromObject( object );
-
-			if ( editor.helpers[ object.id ] !== undefined ) {
-
-				editor.helpers[ object.id ].update();
-
-			}
-
-			signals.refreshSidebarObject3D.dispatch( object );
-
+		if( WEBVR.isAvailable() === true ) {
+			var vrCamera = new THREE.PerspectiveCamera();
+			vrCamera.projectionMatrix = this.camera.projectionMatrix;
+			this.camera.add( vrCamera );
 		}
 
-		render();
+		// helpers
 
-	} );
-	transformControls.addEventListener( 'mouseDown', function () {
+		let grid = new THREE.GridHelper( 60, 60 );
+		this.sceneHelpers.add( grid );
 
-		var object = transformControls.object;
+		//
 
-		objectPositionOnDown = object.position.clone();
-		objectRotationOnDown = object.rotation.clone();
-		objectScaleOnDown = object.scale.clone();
+		let box = new THREE.Box3();
 
-		controls.enabled = false;
+		let selectionBox = new THREE.BoxHelper();
+		selectionBox.material.depthTest = false;
+		selectionBox.material.transparent = true;
+		selectionBox.visible = false;
+		this.sceneHelpers.add( selectionBox );
 
-	} );
-	transformControls.addEventListener( 'mouseUp', function () {
+		let objectPositionOnDown = null;
+		let objectRotationOnDown = null;
+		let objectScaleOnDown = null;
 
-		var object = transformControls.object;
+		let transformControls = new THREE.TransformControls( this.camera, this.container.core );
+		transformControls.addEventListener( 'change', ()=> {
 
-		if ( object !== undefined ) {
+			let object = transformControls.object;
+			if( object !== undefined ) {
 
-			switch ( transformControls.getMode() ) {
+				//selectionBox.setFromObject( object );
+				selectionBox = new THREE.BoxHelper( object );
 
+				if( editor.helpers[ object.id ] !== undefined ) {
+
+					editor.helpers[ object.id ].update();
+
+				}
+
+				this.editor.signals.refreshSidebarObject3D.dispatch( object );
+			}
+			render();
+		});
+
+		transformControls.addEventListener( 'mouseDown', () => {
+
+			let object = transformControls.object;
+
+			objectPositionOnDown 	= object.position.clone();
+			objectRotationOnDown 	= object.rotation.clone();
+			objectScaleOnDown 		= object.scale.clone();
+
+			controls.enabled = false;
+		});
+
+		transformControls.addEventListener( 'mouseUp', function () {
+
+			let object = transformControls.object;
+
+			if( object !== undefined ) {
+
+				switch( transformControls.getMode() ) {
 				case 'translate':
 
-					if ( ! objectPositionOnDown.equals( object.position ) ) {
-
+					if( ! objectPositionOnDown.equals( object.position ) ) {
 						editor.execute( new SetPositionCommand( object, object.position, objectPositionOnDown ) );
-
 					}
-
 					break;
 
 				case 'rotate':
@@ -146,14 +138,18 @@ export class Viewport {
 					}
 
 					break;
+				}
 
 			}
 
-		}
+			controls.enabled = true;
 
-		controls.enabled = true;
+		});
 
-	} );
+	}
+
+
+
 
 	sceneHelpers.add( transformControls );
 

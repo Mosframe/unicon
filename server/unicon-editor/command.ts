@@ -16,45 +16,70 @@ import {Config} from './config';
  */
 export class Command {
 
-    // [ Public Delegates ]
-
     // [ Public Static Variables ]
-	static editor : Editor;
+    static editor : Editor;
 
     // [ Public Variables ]
+
 	id          : number;
 	inMemory    : boolean;
 	updatable   : boolean;
 	type        : string;
 	name        : string;
 
+    // [ Public Functions ]
+
+    /**
+     * command to json
+     *
+     * @returns {Command}
+     *
+     * @memberof Command
+     */
+    toJSON () : Command {
+        let output  = new Command(this._editor);
+        output.type = this.type;
+        output.id   = this.id;
+        output.name = this.name;
+        return output;
+    }
+    /**
+     * command from json
+     *
+     * @param {Command} json
+     *
+     * @memberof Command
+     */
+    fromJSON ( json:Command ) {
+        this.inMemory   = true;
+        this.type       = json.type;
+        this.id         = json.id;
+        this.name       = json.name;
+    }
+
+
     // [ Constructors ]
 
     /**
      * Creates an instance of Command.
-     * @param {Editor} editorRef
+     * @param {Editor} editor
      *
      * @memberof Command
      */
-    constructor( editorRef:Editor ) {
+    constructor( editor:Editor ) {
         this.id         = - 1;
         this.inMemory   = false;
         this.updatable  = false;
         this.type       = '';
         this.name       = '';
 
-        if( editorRef !== undefined ) {
-            Command.editor = editorRef;
+        if( editor !== undefined ) {
+            Command.editor = editor;
         }
         this._editor = Command.editor;
     }
 
-    // [ Public Static Functions ]
-
-    static create( editorRef:Editor ) : Command {
-        return new Command( editorRef );
-    }
-
     // [ Protected Variables ]
+
 	protected _editor : Editor;
 }

@@ -149,52 +149,454 @@ export class Editor {
     /**
      * objects
      *
-     * @type {{}}
+     * @type {{[uuid:string]:THREE.Object3D}}
      * @memberof Editor
      */
-	object : {};
+	object : {[uuid:string]:THREE.Object3D};
     /**
      * geometries
      *
-     * @type {{}}
+     * @type {{[uuid:string]:THREE.Geometry|THREE.BufferGeometry}}
      * @memberof Editor
      */
-	geometries : {};
+	geometries : {[uuid:string]:THREE.Geometry|THREE.BufferGeometry};
     /**
      * materials
      *
-     * @type {{}}
+     * @type {{[uuid:string]:THREE.Material}}
      * @memberof Editor
      */
-	materials : {};
+	materials : {[uuid:string]:THREE.Material};
     /**
      * textures
      *
-     * @type {{}}
+     * @type {{[uuid:string]:THREE.Texture}}
      * @memberof Editor
      */
-	textures : {};
+	textures : {[uuid:string]:THREE.Texture};
     /**
      * scripts
      *
-     * @type {{}}
+     * @type {{[uuid:string]:string[]}}
      * @memberof Editor
      */
-	scripts : {};
+	scripts : {[uuid:string]:string[]};
     /**
      * selected
      *
-     * @type {*}
+     * @type {THREE.Object3D}
      * @memberof Editor
      */
-	selected : any;
+	selected : THREE.Object3D;
     /**
      * helpers
      *
-     * @type {{}}
+     * @type {{[uuid:string]:THREE.Object3D}}
      * @memberof Editor
      */
-	helpers : {};
+	helpers : {[uuid:string]:THREE.Object3D};
+
+    // [ Public Functions ]
+
+    /**
+     * set theme
+     *
+     * @param {any} value
+     *
+     * @memberof Editor
+     */
+    setTheme ( value:any ) {
+        let theme = <HTMLLinkElement>document.getElementById( 'theme' );
+		theme.href = value;
+		this.signals.themeChanged.dispatch( value );
+    }
+    /**
+     * set scene
+     *
+     * @param {THREE.Scene} scene
+     *
+     * @memberof Editor
+     */
+	setScene ( scene:THREE.Scene ) {
+
+		this.scene.uuid = scene.uuid;
+		this.scene.name = scene.name;
+
+		if ( scene.background !== null ) this.scene.background = scene.background.clone();
+		if ( scene.fog !== null ) this.scene.fog = scene.fog.clone();
+
+		this.scene.userData = JSON.parse( JSON.stringify( scene.userData ) );
+
+		// avoid render per object
+
+		this.signals.sceneGraphChanged.active = false;
+
+		while( scene.children.length > 0 ) {
+			this.addObject( scene.children[ 0 ] );
+		}
+
+		this.signals.sceneGraphChanged.active = true;
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * add object
+     *
+     * @param {THREE.Object3D} object
+     *
+     * @memberof Editor
+     */
+	addObject ( object:THREE.Object3D ) {
+
+		object.traverse( ( child:THREE.Object3D ) => {
+
+			if( child instanceof THREE.Mesh ){
+                this.addGeometry( child.geometry );
+                this.addMaterial( child.material );
+            }
+
+			this.addHelper( child );
+		});
+
+		this.scene.add( object );
+
+		this.signals.objectAdded.dispatch( object );
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * move object
+     *
+     * @type null
+     * @memberof Editor
+     */
+	moveObject ( object:THREE.Object3D, parent:THREE.Object3D, before:THREE.Object3D ) {
+
+		if( parent === undefined ) {
+			parent = this.scene;
+		}
+
+		parent.add( object );
+
+		// sort children array
+
+		if( before !== undefined ) {
+			var index = parent.children.indexOf( before );
+			parent.children.splice( index, 0, object );
+			parent.children.pop();
+		}
+
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * set object name
+     *
+     * @param {THREE.Object3D} object
+     * @param {string} name
+     *
+     * @memberof Editor
+     */
+	nameObject ( object:THREE.Object3D, name:string ) {
+		object.name = name;
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * remove object
+     *
+     * @param {THREE.Object3D} object
+     * @returns
+     *
+     * @memberof Editor
+     */
+    removeObject ( object:THREE.Object3D ) {
+
+		if( object.parent === null ) return; // avoid deleting the camera or scene
+
+		object.traverse( ( child:THREE.Object3D ) => {
+			this.removeHelper( child );
+		});
+
+		object.parent.remove( object );
+
+		this.signals.objectRemoved.dispatch( object );
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * add geometry
+     *
+     * @param {(THREE.Geometry|THREE.BufferGeometry)} geometry
+     *
+     * @memberof Editor
+     */
+	addGeometry ( geometry:THREE.Geometry|THREE.BufferGeometry ) {
+		this.geometries[ geometry.uuid ] = geometry;
+	}
+    /**
+     * set geometry name
+     *
+     * @param {(THREE.Geometry|THREE.BufferGeometry)} geometry
+     * @param {string} name
+     *
+     * @memberof Editor
+     */
+	setGeometryName ( geometry:THREE.Geometry|THREE.BufferGeometry, name:string ) {
+		geometry.name = name;
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * add material
+     *
+     * @param {THREE.Material} material
+     *
+     * @memberof Editor
+     */
+	addMaterial ( material:THREE.Material ) {
+		this.materials[ material.uuid ] = material;
+	}
+    /**
+     * set material name
+     *
+     * @param {THREE.Material} material
+     * @param {string} name
+     *
+     * @memberof Editor
+     */
+	setMaterialName ( material:THREE.Material, name:string ) {
+		material.name = name;
+		this.signals.sceneGraphChanged.dispatch();
+	}
+    /**
+     * add texture
+     *
+     * @param {THREE.Texture} texture
+     *
+     * @memberof Editor
+     */
+	addTexture ( texture:THREE.Texture ) {
+		this.textures[ texture.uuid ] = texture;
+	}
+    /**
+     * add helper
+     *
+     * @returns
+     *
+     * @memberof Editor
+     */
+	addHelper ( object:THREE.Object3D ) {
+
+        let helper : THREE.Object3D;
+
+        if( object instanceof THREE.Camera ) {
+
+            helper = new THREE.CameraHelper( object );
+
+        } else if ( object instanceof THREE.PointLight ) {
+
+            helper = new THREE.PointLightHelper( object, 1 );
+
+        } else if ( object instanceof THREE.DirectionalLight ) {
+
+            helper = new THREE.DirectionalLightHelper( object, 1 );
+
+        } else if ( object instanceof THREE.SpotLight ) {
+
+            helper = new THREE.SpotLightHelper( object );
+
+        } else if ( object instanceof THREE.HemisphereLight ) {
+
+            helper = new THREE.HemisphereLightHelper( object, 1 );
+
+        } else if ( object instanceof THREE.SkinnedMesh ) {
+
+            helper = new THREE.SkeletonHelper( object );
+
+        } else {
+            // no helper for this object type
+            return;
+        }
+
+		let geometry = new THREE.SphereBufferGeometry( 2, 4, 2 );
+		let material = new THREE.MeshBasicMaterial( { color:0xff0000, visible:false } );
+
+        let picker = new THREE.Mesh( geometry, material );
+        picker.name = 'picker';
+        picker.userData.object = object;
+        helper.add( picker );
+
+        this.sceneHelpers.add( helper );
+        this.helpers[ object.id ] = helper;
+
+        this.signals.helperAdded.dispatch( helper );
+	}
+    /**
+     * remove helper
+     *
+     * @param {THREE.Object3D} object
+     *
+     * @memberof Editor
+     */
+	removeHelper ( object:THREE.Object3D ) {
+
+		if( this.helpers[ object.id ] !== undefined ) {
+
+			var helper = this.helpers[ object.id ];
+			helper.parent.remove( helper );
+
+			delete this.helpers[ object.id ];
+
+			this.signals.helperRemoved.dispatch( helper );
+		}
+	}
+    /**
+     * add script
+     *
+     * @param {THREE.Object3D} object
+     * @param {string} script
+     *
+     * @memberof Editor
+     */
+	addScript ( object:THREE.Object3D, script:string ) {
+
+		if( this.scripts[ object.uuid ] === undefined ) {
+			this.scripts[ object.uuid ] = [];
+		}
+
+		this.scripts[ object.uuid ].push( script );
+		this.signals.scriptAdded.dispatch( script );
+	}
+    /**
+     * remove script
+     *
+     * @param {THREE.Object3D} object
+     * @param {string} script
+     * @returns
+     *
+     * @memberof Editor
+     */
+	removeScript ( object:THREE.Object3D, script:string ) {
+
+		if( this.scripts[ object.uuid ] === undefined ) return;
+
+		let index = this.scripts[ object.uuid ].indexOf( script );
+
+		if( index !== - 1 ) {
+			this.scripts[ object.uuid ].splice( index, 1 );
+		}
+
+		this.signals.scriptRemoved.dispatch( script );
+	}
+    /**
+     * select object
+     *
+     * @param {THREE.Object3D} object
+     * @returns
+     *
+     * @memberof Editor
+     */
+	select ( object:THREE.Object3D ) {
+
+		if( this.selected === object ) return;
+
+		let uuid = null;
+
+		if( object !== null ) {
+			uuid = object.uuid;
+		}
+
+		this.selected = object;
+
+		this.config.setKey( 'selected', uuid );
+		this.signals.objectSelected.dispatch( object );
+	}
+    /**
+     * select object by id
+     *
+     * @param {number} id
+     * @returns
+     *
+     * @memberof Editor
+     */
+	selectById ( id:number ) {
+		if( id === this.camera.id ) {
+			this.select( this.camera );
+			return;
+		}
+		this.select( this.scene.getObjectById( id ) );
+	}
+    /**
+     * select object by uuid
+     *
+     * @param {string} uuid
+     *
+     * @memberof Editor
+     */
+	selectByUuid ( uuid:string ) {
+		this.scene.traverse( ( child ) => {
+			if( child.uuid === uuid ) {
+				this.select( child );
+			}
+		});
+	}
+    /**
+     * deselect
+     *
+     *
+     * @memberof Editor
+     */
+	deselect () {
+
+		this.select( null );
+	}
+    /**
+     * focus object
+     *
+     * @param {THREE.Object3D} object
+     *
+     * @memberof Editor
+     */
+	focus ( object:THREE.Object3D ) {
+
+		this.signals.objectFocused.dispatch( object );
+	}
+    /**
+     * focus by object id
+     *
+     * @param {number} id
+     *
+     * @memberof Editor
+     */
+	focusById ( id:number ) {
+
+		this.focus( this.scene.getObjectById( id ) );
+	}
+    /**
+     * clear
+     *
+     *
+     * @memberof Editor
+     */
+	clear () {
+
+		this.history.clear();
+		this.storage.clear();
+
+		this.camera.copy( this.DEFAULT_CAMERA );
+		this.scene.background.setHex( 0xaaaaaa );
+		this.scene.fog = null;
+
+		let objects = this.scene.children;
+
+		while( objects.length > 0 ) {
+			this.removeObject( objects[ 0 ] );
+		}
+
+		this.geometries = {};
+		this.materials  = {};
+		this.textures   = {};
+		this.scripts    = {};
+
+		this.deselect();
+
+		this.signals.editorCleared.dispatch();
+	}
 
     // [ Constructors ]
 

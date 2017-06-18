@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import {        } from '../engine/number';
 import {Editor  } from './editor';
+import {Viewport} from './viewport';
 
 
 //
