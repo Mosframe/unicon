@@ -1,12 +1,13 @@
 // -----------------------------------------------------------------------------
 // viewport.ts
 // -----------------------------------------------------------------------------
-import {Signal  			} from 'signals';
-import * as THREE     		  from 'three';
-import {					} from '../engine/object';
-import {Panel as GUIPanel 	} from '../editor/gui/panel';
-//import {Editor  			} from './editor';
-import {ViewportInfo		} from './viewport-info';
+import {Signal  				} from 'signals';
+import * as THREE     		  	  from 'three';
+import {						} from '../engine/object';
+import {Panel as UIPanel 		} from '../editor/gui/panel';
+import {TransformControls		} from '../editor/handles/transform-controls';
+//import {Editor  				} from './editor';
+import {ViewportInfo			} from './viewport-info';
 
 let SetPositionCommand 	= require( '../lib/three.js/editor/js/commands/SetPositionCommand' );
 let SetRotationCommand	= require( '../lib/three.js/editor/js/commands/SetRotationCommand' );
@@ -31,14 +32,14 @@ export class Viewport {
     // [ Public Variables ]
 
 	editor 				: any;
-    container 			: GUIPanel;
+    container 			: UIPanel;
 	renderer 			: THREE.WebGLRenderer | null;
 	camera 				: THREE.Camera;
 	scene 				: THREE.Scene;
 	sceneHelpers 		: THREE.Scene;
 	objects 			: THREE.Object3D[];
 	controls 			: THREE.EditorControls;
-	transformControls 	: THREE.TransformControls;
+	transformControls 	: TransformControls;
 	selectionBox 		: THREE.BoxHelper;
 	vrEffect			: any;
 	vrControls			: any;
@@ -82,7 +83,7 @@ export class Viewport {
 
 		this.editor = editor;
 
-        this.container = new GUIPanel();
+        this.container = new UIPanel();
         this.container.setId( 'viewport' );
         this.container.setPosition( 'absolute' );
         this.container.add( (new ViewportInfo( editor )).container );
@@ -125,7 +126,7 @@ export class Viewport {
 		console.log( this.camera );
 		console.log( this.container.core );
 
-		this.transformControls = new THREE.TransformControls( this.camera, this.container.core );
+		this.transformControls = new TransformControls( this.camera, this.container );
 		this.transformControls.addEventListener( 'change', ()=> {
 
 			let object = this.transformControls.object;
@@ -149,10 +150,12 @@ export class Viewport {
 
 		this.transformControls.addEventListener( 'mouseDown', () => {
 			let object = this.transformControls.object;
-			this.objectPositionOnDown 	= object.position.clone();
-			this.objectRotationOnDown 	= object.rotation.clone();
-			this.objectScaleOnDown 		= object.scale.clone();
-			this.controls.enabled = false;
+			if( object ) {
+				this.objectPositionOnDown 	= object.position.clone();
+				this.objectRotationOnDown 	= object.rotation.clone();
+				this.objectScaleOnDown 		= object.scale.clone();
+				this.controls.enabled = false;
+			}
 		});
 
 		this.transformControls.addEventListener( 'mouseUp', function () {
@@ -229,20 +232,16 @@ export class Viewport {
 		});
 
 		this.editor.signals.transformModeChanged.add( ( mode:string ) => {
-
-			this.transformControls.setMode( mode );
-
+			this.transformControls.mode = mode;
 		});
 
 		this.editor.signals.snapChanged.add( ( dist:any ) => {
-			this.transformControls.setSnap( dist );
+			this.transformControls.setTranslationSnap( dist );
 		});
 
 		this.editor.signals.spaceChanged.add( ( space:string ) => {
-
 			this.transformControls.setSpace( space );
-
-		} );
+		});
 
 		this.editor.signals.rendererChanged.add( ( newRenderer:THREE.WebGLRenderer ) => {
 

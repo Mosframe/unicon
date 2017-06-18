@@ -34,15 +34,13 @@ export class TransformGizmoRotate extends TransformGizmo {
 	circleGeometry ( radius:number, facing:string, arc:number ) : THREE.BufferGeometry {
 
 		let geometry = new THREE.BufferGeometry();
-		let vertices = [];
+		let vertices : number[] = [];
 		arc = arc ? arc : 1;
 
 		for ( let i = 0; i <= 64 * arc; ++ i ) {
-
 			if ( facing === 'x' ) vertices.push( 0, Math.cos( i / 32 * Math.PI ) * radius, Math.sin( i / 32 * Math.PI ) * radius );
 			if ( facing === 'y' ) vertices.push( Math.cos( i / 32 * Math.PI ) * radius, 0, Math.sin( i / 32 * Math.PI ) * radius );
 			if ( facing === 'z' ) vertices.push( Math.sin( i / 32 * Math.PI ) * radius, Math.cos( i / 32 * Math.PI ) * radius, 0 );
-
 		}
 
 		geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );

@@ -41,7 +41,7 @@ export class GizmoLineMaterial extends THREE.LineBasicMaterial {
 		this.depthWrite     = false;
 		this.transparent    = true;
 		this.linewidth      = 1;
-		this.setValues( parameters );
+		if( parameters ) this.setValues( parameters );
 
 		this._oldColor      = this.color.clone();
 		this._oldOpacity    = this.opacity;

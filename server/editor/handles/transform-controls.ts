@@ -1,15 +1,16 @@
 // -----------------------------------------------------------------------------
 // transform-controls.ts
 // -----------------------------------------------------------------------------
-import * as THREE             	  from 'three';
-import {                    	} from '../../engine/object';
-import {GizmoLineMaterial   	} from './gizmo-line-material';
-import {GizmoMaterial       	} from './gizmo-material';
-import {pickerMaterial      	} from './gizmo-material';
-import {TransformGizmo      	} from './transform-gizmo';
-import {TransformGizmoTranslate	} from './transform-gizmo-translate';
-import {TransformGizmoRotate	} from './transform-gizmo-rotate';
-import {TransformGizmoScale		} from './transform-gizmo-scale';
+import * as THREE             	  	  from 'three';
+import {                    		} from '../../engine/object';
+import {Element as UIElement		} from '../gui/element';
+import {GizmoLineMaterial   		} from './gizmo-line-material';
+import {GizmoMaterial       		} from './gizmo-material';
+import {pickerMaterial      		} from './gizmo-material';
+import {TransformGizmo      		} from './transform-gizmo';
+import {TransformGizmoTranslate		} from './transform-gizmo-translate';
+import {TransformGizmoRotate		} from './transform-gizmo-rotate';
+import {TransformGizmoScale			} from './transform-gizmo-scale';
 
 /**
  * TransformControls
@@ -24,6 +25,7 @@ export class TransformControls extends THREE.Object3D {
 
     // [ Public Variables ]
 
+	get object() : THREE.Object3D|undefined { return this._object; }
 	get mode () : string		{ return this._mode; }
 	set mode ( value:string ) 	{
 
@@ -46,17 +48,17 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	dispose () {
 
-		this._domElement.removeEventListener( "mousedown"	, this.onPointerDown 	);
-		this._domElement.removeEventListener( "touchstart"	, this.onPointerDown 	);
-		this._domElement.removeEventListener( "mousemove"	, this.onPointerHover 	);
-		this._domElement.removeEventListener( "touchmove"	, this.onPointerHover 	);
-		this._domElement.removeEventListener( "mousemove"	, this.onPointerMove 	);
-		this._domElement.removeEventListener( "touchmove"	, this.onPointerMove 	);
-		this._domElement.removeEventListener( "mouseup"		, this.onPointerUp 		);
-		this._domElement.removeEventListener( "mouseout"		, this.onPointerUp 		);
-		this._domElement.removeEventListener( "touchend"		, this.onPointerUp 		);
-		this._domElement.removeEventListener( "touchcancel"	, this.onPointerUp 		);
-		this._domElement.removeEventListener( "touchleave"	, this.onPointerUp 		);
+		this._domElement.core.removeEventListener( "mousedown"	, this.onPointerDown 	);
+		this._domElement.core.removeEventListener( "touchstart"	, this.onPointerDown 	);
+		this._domElement.core.removeEventListener( "mousemove"	, this.onPointerHover 	);
+		this._domElement.core.removeEventListener( "touchmove"	, this.onPointerHover 	);
+		this._domElement.core.removeEventListener( "mousemove"	, this.onPointerMove 	);
+		this._domElement.core.removeEventListener( "touchmove"	, this.onPointerMove 	);
+		this._domElement.core.removeEventListener( "mouseup"	, this.onPointerUp 		);
+		this._domElement.core.removeEventListener( "mouseout"	, this.onPointerUp 		);
+		this._domElement.core.removeEventListener( "touchend"	, this.onPointerUp 		);
+		this._domElement.core.removeEventListener( "touchcancel", this.onPointerUp 		);
+		this._domElement.core.removeEventListener( "touchleave"	, this.onPointerUp 		);
 	}
 	/**
 	 * attach
@@ -79,7 +81,7 @@ export class TransformControls extends THREE.Object3D {
 	detach () {
 		this._object 	= undefined;
 		this.visible 	= false;
-		this.axis 		= null;
+		this._axis 		= null;
 	}
 	/**
 	 * set translation snap
@@ -177,7 +179,7 @@ export class TransformControls extends THREE.Object3D {
 
 		}
 
-		this._gizmo[ this._mode ].highlight( this.axis );
+		this._gizmo[ this._mode ].highlight( this._axis );
 	}
 
 	onPointerHover( event:Event ) {
@@ -185,7 +187,7 @@ export class TransformControls extends THREE.Object3D {
 		if ( this._object === undefined || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
-		let pointer 	= event;
+		let pointer = event;
 		if( event instanceof TouchEvent ) {
 			pointer = <Event>(event.changedTouches ? event.changedTouches[ 0 ] : event);
 		}
@@ -198,8 +200,8 @@ export class TransformControls extends THREE.Object3D {
 			event.preventDefault();
 		}
 
-		if ( this.axis !== axis ) {
-			this.axis = axis;
+		if ( this._axis !== axis ) {
+			this._axis = axis;
 			this.update();
 			this.dispatchEvent( this._changeEvent );
 		}
@@ -227,13 +229,13 @@ export class TransformControls extends THREE.Object3D {
 
 					this.dispatchEvent( this._mouseDownEvent );
 
-					this.axis = intersect.object.name;
+					this._axis = intersect.object.name;
 
 					this.update();
 
 					this._eye.copy( this._camPosition ).sub( this._worldPosition ).normalize();
 
-					this._gizmo[ this._mode ].setActivePlane( this.axis, this._eye );
+					this._gizmo[ this._mode ].setActivePlane( this._axis, this._eye );
 
 					let planeIntersect = this.intersectObjects( pointer, [ this._gizmo[ this._mode ].activePlane ] );
 
@@ -260,7 +262,7 @@ export class TransformControls extends THREE.Object3D {
 
 	onPointerMove( event:Event ) {
 
-		if ( this._object === undefined || this.axis === null || this._dragging === true ) return;
+		if ( this._object === undefined || this._axis === null || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer = event;
@@ -287,9 +289,9 @@ export class TransformControls extends THREE.Object3D {
 
 				this._point.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-				if ( this.axis.search( "X" ) === - 1 ) this._point.x = 0;
-				if ( this.axis.search( "Y" ) === - 1 ) this._point.y = 0;
-				if ( this.axis.search( "Z" ) === - 1 ) this._point.z = 0;
+				if ( this._axis.search( "X" ) === - 1 ) this._point.x = 0;
+				if ( this._axis.search( "Y" ) === - 1 ) this._point.y = 0;
+				if ( this._axis.search( "Z" ) === - 1 ) this._point.z = 0;
 
 				this._point.applyMatrix4( this._oldRotationMatrix );
 
@@ -298,11 +300,11 @@ export class TransformControls extends THREE.Object3D {
 
 			}
 
-			if ( this._space === "world" || this.axis.search( "XYZ" ) !== - 1 ) {
+			if ( this._space === "world" || this._axis.search( "XYZ" ) !== - 1 ) {
 
-				if ( this.axis.search( "X" ) === - 1 ) this._point.x = 0;
-				if ( this.axis.search( "Y" ) === - 1 ) this._point.y = 0;
-				if ( this.axis.search( "Z" ) === - 1 ) this._point.z = 0;
+				if ( this._axis.search( "X" ) === - 1 ) this._point.x = 0;
+				if ( this._axis.search( "Y" ) === - 1 ) this._point.y = 0;
+				if ( this._axis.search( "Z" ) === - 1 ) this._point.z = 0;
 
 				this._point.applyMatrix4( this._tempMatrix.getInverse( this._parentRotationMatrix ) );
 
@@ -319,9 +321,9 @@ export class TransformControls extends THREE.Object3D {
 
 				}
 
-				if ( this.axis.search( "X" ) !== - 1 ) this._object.position.x = Math.round( this._object.position.x / this._translationSnap ) * this._translationSnap;
-				if ( this.axis.search( "Y" ) !== - 1 ) this._object.position.y = Math.round( this._object.position.y / this._translationSnap ) * this._translationSnap;
-				if ( this.axis.search( "Z" ) !== - 1 ) this._object.position.z = Math.round( this._object.position.z / this._translationSnap ) * this._translationSnap;
+				if ( this._axis.search( "X" ) !== - 1 ) this._object.position.x = Math.round( this._object.position.x / this._translationSnap ) * this._translationSnap;
+				if ( this._axis.search( "Y" ) !== - 1 ) this._object.position.y = Math.round( this._object.position.y / this._translationSnap ) * this._translationSnap;
+				if ( this._axis.search( "Z" ) !== - 1 ) this._object.position.z = Math.round( this._object.position.z / this._translationSnap ) * this._translationSnap;
 
 				if ( this._space === "local" ) {
 
@@ -338,7 +340,7 @@ export class TransformControls extends THREE.Object3D {
 
 			if ( this._space === "local" ) {
 
-				if ( this.axis === "XYZ" ) {
+				if ( this._axis === "XYZ" ) {
 
 					let scale = 1 + ( ( this._point.y ) / Math.max( this._oldScale.x, this._oldScale.y, this._oldScale.z ) );
 
@@ -350,9 +352,9 @@ export class TransformControls extends THREE.Object3D {
 
 					this._point.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-					if ( this.axis === "X" ) this._object.scale.x = this._oldScale.x * ( 1 + this._point.x / this._oldScale.x );
-					if ( this.axis === "Y" ) this._object.scale.y = this._oldScale.y * ( 1 + this._point.y / this._oldScale.y );
-					if ( this.axis === "Z" ) this._object.scale.z = this._oldScale.z * ( 1 + this._point.z / this._oldScale.z );
+					if ( this._axis === "X" ) this._object.scale.x = this._oldScale.x * ( 1 + this._point.x / this._oldScale.x );
+					if ( this._axis === "Y" ) this._object.scale.y = this._oldScale.y * ( 1 + this._point.y / this._oldScale.y );
+					if ( this._axis === "Z" ) this._object.scale.z = this._oldScale.z * ( 1 + this._point.z / this._oldScale.z );
 
 				}
 
@@ -367,7 +369,7 @@ export class TransformControls extends THREE.Object3D {
 
 			let rotation = new THREE.Vector3();
 
-			if ( this.axis === "E" ) {
+			if ( this._axis === "E" ) {
 
 				this._point.applyMatrix4( this._tempMatrix.getInverse( this._lookAtMatrix ) );
 				this._tempVector.applyMatrix4( this._tempMatrix.getInverse( this._lookAtMatrix ) );
@@ -385,7 +387,7 @@ export class TransformControls extends THREE.Object3D {
 
 				this._object.quaternion.copy( this._tempQuaternion );
 
-			} else if ( this.axis === "XYZE" ) {
+			} else if ( this._axis === "XYZE" ) {
 
 				let rotationAxis = this._point.clone().cross( this._tempVector ).normalize();
 				let rotationEular = new THREE.Euler( rotationAxis.x, rotationAxis.y, rotationAxis.z );
@@ -426,9 +428,9 @@ export class TransformControls extends THREE.Object3D {
 
 				}
 
-				if ( this.axis === "X" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionX );
-				if ( this.axis === "Y" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionY );
-				if ( this.axis === "Z" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionZ );
+				if ( this._axis === "X" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionX );
+				if ( this._axis === "Y" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionY );
+				if ( this._axis === "Z" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionZ );
 
 				this._object.quaternion.copy( this._quaternionXYZ );
 
@@ -455,9 +457,9 @@ export class TransformControls extends THREE.Object3D {
 
 				this._quaternionXYZ.setFromRotationMatrix( this._worldRotationMatrix );
 
-				if ( this.axis === "X" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionX );
-				if ( this.axis === "Y" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionY );
-				if ( this.axis === "Z" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionZ );
+				if ( this._axis === "X" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionX );
+				if ( this._axis === "Y" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionY );
+				if ( this._axis === "Z" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionZ );
 
 				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionXYZ );
 
@@ -479,7 +481,7 @@ export class TransformControls extends THREE.Object3D {
 
 		let pointer = event;
 
-		if ( this._dragging && ( this.axis !== null ) ) {
+		if ( this._dragging && ( this._axis !== null ) ) {
 
 			this._mouseUpEvent.mode = this._mode;
 			this.dispatchEvent( this._mouseUpEvent );
@@ -491,7 +493,7 @@ export class TransformControls extends THREE.Object3D {
 
 			// Force "rollover"
 
-			this.axis = null;
+			this._axis = null;
 			this.update();
 			this.dispatchEvent( this._changeEvent );
 
@@ -538,11 +540,11 @@ export class TransformControls extends THREE.Object3D {
 	 *
 	 * @memberof TransformControls
 	 */
-    constructor( camera:THREE.Camera, domElement:Document ) {
+    constructor( camera:THREE.Camera, domElement:UIElement ) {
         super();
 
 		this._camera = camera;
-		this._domElement = ( domElement !== undefined ) ? domElement : document;
+		this._domElement = domElement;
 
 		this.visible = false;
 
@@ -552,29 +554,29 @@ export class TransformControls extends THREE.Object3D {
 			this.add( gizmoObj );
 		}
 
-		this._domElement.addEventListener( "mousedown"	, this.onPointerDown	, false );
-		this._domElement.addEventListener( "touchstart"	, this.onPointerDown	, false );
-		this._domElement.addEventListener( "mousemove"	, this.onPointerHover	, false );
-		this._domElement.addEventListener( "touchmove"	, this.onPointerHover	, false );
-		this._domElement.addEventListener( "mousemove"	, this.onPointerMove	, false );
-		this._domElement.addEventListener( "touchmove"	, this.onPointerMove	, false );
-		this._domElement.addEventListener( "mouseup"		, this.onPointerUp		, false );
-		this._domElement.addEventListener( "mouseout"	, this.onPointerUp		, false );
-		this._domElement.addEventListener( "touchend"	, this.onPointerUp		, false );
-		this._domElement.addEventListener( "touchcancel"	, this.onPointerUp		, false );
-		this._domElement.addEventListener( "touchleave"	, this.onPointerUp		, false );
+		this._domElement.core.addEventListener( "mousedown"	, this.onPointerDown	, false );
+		this._domElement.core.addEventListener( "touchstart"	, this.onPointerDown	, false );
+		this._domElement.core.addEventListener( "mousemove"	, this.onPointerHover	, false );
+		this._domElement.core.addEventListener( "touchmove"	, this.onPointerHover	, false );
+		this._domElement.core.addEventListener( "mousemove"	, this.onPointerMove	, false );
+		this._domElement.core.addEventListener( "touchmove"	, this.onPointerMove	, false );
+		this._domElement.core.addEventListener( "mouseup"	, this.onPointerUp		, false );
+		this._domElement.core.addEventListener( "mouseout"	, this.onPointerUp		, false );
+		this._domElement.core.addEventListener( "touchend"	, this.onPointerUp		, false );
+		this._domElement.core.addEventListener( "touchcancel", this.onPointerUp		, false );
+		this._domElement.core.addEventListener( "touchleave"	, this.onPointerUp		, false );
     }
 
 	// [ Protected Variables ]
 
 	protected _camera				: THREE.Camera;
-	protected _domElement 			: Document;
-	protected _object 				= undefined;
-	protected _translationSnap		= null;
-	protected _rotationSnap 		= null;
+	protected _domElement 			: UIElement;
+	protected _object 				: THREE.Object3D | undefined = undefined;
+	protected _translationSnap		: number | null = null;
+	protected _rotationSnap 		: number | null = null;
 	protected _space 				= "world";
 	protected _size 				= 1;
-	protected axis 					= null;
+	protected _axis					: string | null = null;
 
 	protected _mode 				= "translate";
 	protected _dragging 			= false;

@@ -41,7 +41,7 @@ export class GizmoMaterial extends THREE.MeshBasicMaterial {
 		this.depthWrite     = false;
 		this.side           = THREE.FrontSide;
 		this.transparent    = true;
-		this.setValues( parameters );
+        if( parameters ) this.setValues( parameters );
 
 		this._oldColor      = this.color.clone();
 		this._oldOpacity    = this.opacity;
