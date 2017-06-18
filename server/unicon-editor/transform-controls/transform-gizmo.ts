@@ -39,7 +39,7 @@ export class TransformGizmo extends THREE.Object3D {
         // [ planes ]
 
         let planeGeometry = new THREE.PlaneBufferGeometry( 50, 50, 2, 2 );
-        let planeMaterial = new THREE.MeshBasicMaterial( { visible: false, side: THREE.DoubleSide } );
+        let planeMaterial = new THREE.MeshBasicMaterial( { visible:false, side:THREE.DoubleSide } );
 
         let planes = {
             "XY":   new THREE.Mesh( planeGeometry, planeMaterial ),

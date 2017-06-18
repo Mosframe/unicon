@@ -28,11 +28,11 @@ export class TransformControls extends THREE.Object3D {
 	set mode ( value:string ) 	{
 
 		this._mode = value ? value : this._mode;
-		if ( this._mode === "scale" ) this.space = "local";
+		if ( this._mode === "scale" ) this._space = "local";
 		for ( let type in this._gizmo ) this._gizmo[ type ].visible = ( type === this._mode );
 
 		this.update();
-		this.dispatchEvent( this.changeEvent );
+		this.dispatchEvent( this._changeEvent );
 	}
 
 
@@ -46,17 +46,17 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	dispose () {
 
-		this.domElement.removeEventListener( "mousedown"	, this._onPointerDown 	);
-		this.domElement.removeEventListener( "touchstart"	, this._onPointerDown 	);
-		this.domElement.removeEventListener( "mousemove"	, this._onPointerHover 	);
-		this.domElement.removeEventListener( "touchmove"	, this._onPointerHover 	);
-		this.domElement.removeEventListener( "mousemove"	, this._onPointerMove 	);
-		this.domElement.removeEventListener( "touchmove"	, this._onPointerMove 	);
-		this.domElement.removeEventListener( "mouseup"		, this._onPointerUp 	);
-		this.domElement.removeEventListener( "mouseout"		, this._onPointerUp 	);
-		this.domElement.removeEventListener( "touchend"		, this._onPointerUp 	);
-		this.domElement.removeEventListener( "touchcancel"	, this._onPointerUp 	);
-		this.domElement.removeEventListener( "touchleave"	, this._onPointerUp 	);
+		this._domElement.removeEventListener( "mousedown"	, this.onPointerDown 	);
+		this._domElement.removeEventListener( "touchstart"	, this.onPointerDown 	);
+		this._domElement.removeEventListener( "mousemove"	, this.onPointerHover 	);
+		this._domElement.removeEventListener( "touchmove"	, this.onPointerHover 	);
+		this._domElement.removeEventListener( "mousemove"	, this.onPointerMove 	);
+		this._domElement.removeEventListener( "touchmove"	, this.onPointerMove 	);
+		this._domElement.removeEventListener( "mouseup"		, this.onPointerUp 		);
+		this._domElement.removeEventListener( "mouseout"		, this.onPointerUp 		);
+		this._domElement.removeEventListener( "touchend"		, this.onPointerUp 		);
+		this._domElement.removeEventListener( "touchcancel"	, this.onPointerUp 		);
+		this._domElement.removeEventListener( "touchleave"	, this.onPointerUp 		);
 	}
 	/**
 	 * attach
@@ -66,7 +66,7 @@ export class TransformControls extends THREE.Object3D {
 	 * @memberof TransformControls
 	 */
 	attach ( object:THREE.Object3D ) {
-		this.object = object;
+		this._object = object;
 		this.visible = true;
 		this.update();
 	}
@@ -77,7 +77,7 @@ export class TransformControls extends THREE.Object3D {
 	 * @memberof TransformControls
 	 */
 	detach () {
-		this.object 	= undefined;
+		this._object 	= undefined;
 		this.visible 	= false;
 		this.axis 		= null;
 	}
@@ -90,7 +90,7 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	setTranslationSnap ( translationSnap ) {
 
-		this.translationSnap = translationSnap;
+		this._translationSnap = translationSnap;
 
 	}
 	/**
@@ -102,7 +102,7 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	setRotationSnap ( rotationSnap ) {
 
-		this.rotationSnap = rotationSnap;
+		this._rotationSnap = rotationSnap;
 
 	}
 	/**
@@ -114,9 +114,9 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	setSize ( size ) {
 
-		this.size = size;
+		this._size = size;
 		this.update();
-		this.dispatchEvent( this.changeEvent );
+		this.dispatchEvent( this._changeEvent );
 
 	}
 	/**
@@ -128,9 +128,9 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	setSpace ( space ) {
 
-		this.space = space;
+		this._space = space;
 		this.update();
-		this.dispatchEvent( this.changeEvent );
+		this.dispatchEvent( this._changeEvent );
 
 	}
 	/**
@@ -142,38 +142,38 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	update () {
 
-		if ( this.object === undefined ) return;
+		if ( this._object === undefined ) return;
 
-		this.object.updateMatrixWorld(true);
-		this.worldPosition.setFromMatrixPosition( this.object.matrixWorld );
-		this.worldRotation.setFromRotationMatrix( this.tempMatrix.extractRotation( this.object.matrixWorld ) );
+		this._object.updateMatrixWorld(true);
+		this._worldPosition.setFromMatrixPosition( this._object.matrixWorld );
+		this._worldRotation.setFromRotationMatrix( this._tempMatrix.extractRotation( this._object.matrixWorld ) );
 
-		this.camera.updateMatrixWorld(true);
-		this.camPosition.setFromMatrixPosition( this.camera.matrixWorld );
-		this.camRotation.setFromRotationMatrix( this.tempMatrix.extractRotation( this.camera.matrixWorld ) );
+		this._camera.updateMatrixWorld(true);
+		this._camPosition.setFromMatrixPosition( this._camera.matrixWorld );
+		this._camRotation.setFromRotationMatrix( this._tempMatrix.extractRotation( this._camera.matrixWorld ) );
 
 		let scale = 1;
-		scale = this.worldPosition.distanceTo( this.camPosition ) / 6 * this.size;
-		this.position.copy( this.worldPosition );
+		scale = this._worldPosition.distanceTo( this._camPosition ) / 6 * this._size;
+		this.position.copy( this._worldPosition );
 		this.scale.set( scale, scale, scale );
 
-		if ( this.camera instanceof THREE.PerspectiveCamera ) {
+		if ( this._camera instanceof THREE.PerspectiveCamera ) {
 
-			this.eye.copy( this.camPosition ).sub( this.worldPosition ).normalize();
+			this._eye.copy( this._camPosition ).sub( this._worldPosition ).normalize();
 
-		} else if ( this.camera instanceof THREE.OrthographicCamera ) {
+		} else if ( this._camera instanceof THREE.OrthographicCamera ) {
 
-			this.eye.copy( this.camPosition ).normalize();
+			this._eye.copy( this._camPosition ).normalize();
 
 		}
 
-		if ( this.space === "local" ) {
+		if ( this._space === "local" ) {
 
-			this._gizmo[ this._mode ].update( this.worldRotation, this.eye );
+			this._gizmo[ this._mode ].update( this._worldRotation, this._eye );
 
-		} else if ( this.space === "world" ) {
+		} else if ( this._space === "world" ) {
 
-			this._gizmo[ this._mode ].update( new THREE.Euler(), this.eye );
+			this._gizmo[ this._mode ].update( new THREE.Euler(), this._eye );
 
 		}
 
@@ -182,7 +182,7 @@ export class TransformControls extends THREE.Object3D {
 
 	onPointerHover( event:Event ) {
 
-		if ( this.object === undefined || this._dragging === true ) return;
+		if ( this._object === undefined || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer 	= event;
@@ -201,12 +201,12 @@ export class TransformControls extends THREE.Object3D {
 		if ( this.axis !== axis ) {
 			this.axis = axis;
 			this.update();
-			this.dispatchEvent( this.changeEvent );
+			this.dispatchEvent( this._changeEvent );
 		}
 	}
 	onPointerDown( event:Event ) {
 
-		if ( this.object === undefined || this._dragging === true ) return;
+		if ( this._object === undefined || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer = event;
@@ -225,30 +225,30 @@ export class TransformControls extends THREE.Object3D {
 					event.preventDefault();
 					event.stopPropagation();
 
-					this.dispatchEvent( this.mouseDownEvent );
+					this.dispatchEvent( this._mouseDownEvent );
 
 					this.axis = intersect.object.name;
 
 					this.update();
 
-					this.eye.copy( this.camPosition ).sub( this.worldPosition ).normalize();
+					this._eye.copy( this._camPosition ).sub( this._worldPosition ).normalize();
 
-					this._gizmo[ this._mode ].setActivePlane( this.axis, this.eye );
+					this._gizmo[ this._mode ].setActivePlane( this.axis, this._eye );
 
 					let planeIntersect = this.intersectObjects( pointer, [ this._gizmo[ this._mode ].activePlane ] );
 
 					if ( planeIntersect ) {
 
-						this.oldPosition.copy( this.object.position );
-						this.oldScale.copy( this.object.scale );
+						this._oldPosition.copy( this._object.position );
+						this._oldScale.copy( this._object.scale );
 
-						this.oldRotationMatrix.extractRotation( this.object.matrix );
-						this.worldRotationMatrix.extractRotation( this.object.matrixWorld );
+						this._oldRotationMatrix.extractRotation( this._object.matrix );
+						this._worldRotationMatrix.extractRotation( this._object.matrixWorld );
 
-						this.parentRotationMatrix.extractRotation( this.object.parent.matrixWorld );
-						this.parentScale.setFromMatrixScale( this.tempMatrix.getInverse( this.object.parent.matrixWorld ) );
+						this._parentRotationMatrix.extractRotation( this._object.parent.matrixWorld );
+						this._parentScale.setFromMatrixScale( this._tempMatrix.getInverse( this._object.parent.matrixWorld ) );
 
-						this.offset.copy( planeIntersect.point );
+						this._offset.copy( planeIntersect.point );
 					}
 				}
 			}
@@ -260,7 +260,7 @@ export class TransformControls extends THREE.Object3D {
 
 	onPointerMove( event:Event ) {
 
-		if ( this.object === undefined || this.axis === null || this._dragging === true ) return;
+		if ( this._object === undefined || this.axis === null || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer = event;
@@ -276,56 +276,56 @@ export class TransformControls extends THREE.Object3D {
 		event.preventDefault();
 		event.stopPropagation();
 
-		this.point.copy( planeIntersect.point );
+		this._point.copy( planeIntersect.point );
 
 		if ( this._mode === "translate" ) {
 
-			this.point.sub( this.offset );
-			this.point.multiply( this.parentScale );
+			this._point.sub( this._offset );
+			this._point.multiply( this._parentScale );
 
-			if ( this.space === "local" ) {
+			if ( this._space === "local" ) {
 
-				this.point.applyMatrix4( this.tempMatrix.getInverse( this.worldRotationMatrix ) );
+				this._point.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-				if ( this.axis.search( "X" ) === - 1 ) this.point.x = 0;
-				if ( this.axis.search( "Y" ) === - 1 ) this.point.y = 0;
-				if ( this.axis.search( "Z" ) === - 1 ) this.point.z = 0;
+				if ( this.axis.search( "X" ) === - 1 ) this._point.x = 0;
+				if ( this.axis.search( "Y" ) === - 1 ) this._point.y = 0;
+				if ( this.axis.search( "Z" ) === - 1 ) this._point.z = 0;
 
-				this.point.applyMatrix4( this.oldRotationMatrix );
+				this._point.applyMatrix4( this._oldRotationMatrix );
 
-				this.object.position.copy( this.oldPosition );
-				this.object.position.add( this.point );
-
-			}
-
-			if ( this.space === "world" || this.axis.search( "XYZ" ) !== - 1 ) {
-
-				if ( this.axis.search( "X" ) === - 1 ) this.point.x = 0;
-				if ( this.axis.search( "Y" ) === - 1 ) this.point.y = 0;
-				if ( this.axis.search( "Z" ) === - 1 ) this.point.z = 0;
-
-				this.point.applyMatrix4( this.tempMatrix.getInverse( this.parentRotationMatrix ) );
-
-				this.object.position.copy( this.oldPosition );
-				this.object.position.add( this.point );
+				this._object.position.copy( this._oldPosition );
+				this._object.position.add( this._point );
 
 			}
 
-			if ( this.translationSnap !== null ) {
+			if ( this._space === "world" || this.axis.search( "XYZ" ) !== - 1 ) {
 
-				if ( this.space === "local" ) {
+				if ( this.axis.search( "X" ) === - 1 ) this._point.x = 0;
+				if ( this.axis.search( "Y" ) === - 1 ) this._point.y = 0;
+				if ( this.axis.search( "Z" ) === - 1 ) this._point.z = 0;
 
-					this.object.position.applyMatrix4( this.tempMatrix.getInverse( this.worldRotationMatrix ) );
+				this._point.applyMatrix4( this._tempMatrix.getInverse( this._parentRotationMatrix ) );
+
+				this._object.position.copy( this._oldPosition );
+				this._object.position.add( this._point );
+
+			}
+
+			if ( this._translationSnap !== null ) {
+
+				if ( this._space === "local" ) {
+
+					this._object.position.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
 				}
 
-				if ( this.axis.search( "X" ) !== - 1 ) this.object.position.x = Math.round( this.object.position.x / this.translationSnap ) * this.translationSnap;
-				if ( this.axis.search( "Y" ) !== - 1 ) this.object.position.y = Math.round( this.object.position.y / this.translationSnap ) * this.translationSnap;
-				if ( this.axis.search( "Z" ) !== - 1 ) this.object.position.z = Math.round( this.object.position.z / this.translationSnap ) * this.translationSnap;
+				if ( this.axis.search( "X" ) !== - 1 ) this._object.position.x = Math.round( this._object.position.x / this._translationSnap ) * this._translationSnap;
+				if ( this.axis.search( "Y" ) !== - 1 ) this._object.position.y = Math.round( this._object.position.y / this._translationSnap ) * this._translationSnap;
+				if ( this.axis.search( "Z" ) !== - 1 ) this._object.position.z = Math.round( this._object.position.z / this._translationSnap ) * this._translationSnap;
 
-				if ( this.space === "local" ) {
+				if ( this._space === "local" ) {
 
-					this.object.position.applyMatrix4( this.worldRotationMatrix );
+					this._object.position.applyMatrix4( this._worldRotationMatrix );
 
 				}
 
@@ -333,26 +333,26 @@ export class TransformControls extends THREE.Object3D {
 
 		} else if ( this._mode === "scale" ) {
 
-			this.point.sub( this.offset );
-			this.point.multiply( this.parentScale );
+			this._point.sub( this._offset );
+			this._point.multiply( this._parentScale );
 
-			if ( this.space === "local" ) {
+			if ( this._space === "local" ) {
 
 				if ( this.axis === "XYZ" ) {
 
-					let scale = 1 + ( ( this.point.y ) / Math.max( this.oldScale.x, this.oldScale.y, this.oldScale.z ) );
+					let scale = 1 + ( ( this._point.y ) / Math.max( this._oldScale.x, this._oldScale.y, this._oldScale.z ) );
 
-					this.object.scale.x = this.oldScale.x * scale;
-					this.object.scale.y = this.oldScale.y * scale;
-					this.object.scale.z = this.oldScale.z * scale;
+					this._object.scale.x = this._oldScale.x * scale;
+					this._object.scale.y = this._oldScale.y * scale;
+					this._object.scale.z = this._oldScale.z * scale;
 
 				} else {
 
-					this.point.applyMatrix4( this.tempMatrix.getInverse( this.worldRotationMatrix ) );
+					this._point.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-					if ( this.axis === "X" ) this.object.scale.x = this.oldScale.x * ( 1 + this.point.x / this.oldScale.x );
-					if ( this.axis === "Y" ) this.object.scale.y = this.oldScale.y * ( 1 + this.point.y / this.oldScale.y );
-					if ( this.axis === "Z" ) this.object.scale.z = this.oldScale.z * ( 1 + this.point.z / this.oldScale.z );
+					if ( this.axis === "X" ) this._object.scale.x = this._oldScale.x * ( 1 + this._point.x / this._oldScale.x );
+					if ( this.axis === "Y" ) this._object.scale.y = this._oldScale.y * ( 1 + this._point.y / this._oldScale.y );
+					if ( this.axis === "Z" ) this._object.scale.z = this._oldScale.z * ( 1 + this._point.z / this._oldScale.z );
 
 				}
 
@@ -360,111 +360,114 @@ export class TransformControls extends THREE.Object3D {
 
 		} else if ( this._mode === "rotate" ) {
 
-			this.point.sub( this.worldPosition );
-			this.point.multiply( this.parentScale );
-			this.tempVector.copy( this.offset ).sub( this.worldPosition );
-			this.tempVector.multiply( this.parentScale );
+			this._point.sub( this._worldPosition );
+			this._point.multiply( this._parentScale );
+			this._tempVector.copy( this._offset ).sub( this._worldPosition );
+			this._tempVector.multiply( this._parentScale );
+
+			let rotation = new THREE.Vector3();
 
 			if ( this.axis === "E" ) {
 
-				this.point.applyMatrix4( this.tempMatrix.getInverse( this.lookAtMatrix ) );
-				this.tempVector.applyMatrix4( this.tempMatrix.getInverse( this.lookAtMatrix ) );
+				this._point.applyMatrix4( this._tempMatrix.getInverse( this._lookAtMatrix ) );
+				this._tempVector.applyMatrix4( this._tempMatrix.getInverse( this._lookAtMatrix ) );
 
-				this.rotation.set( Math.atan2( this.point.z, this.point.y ), Math.atan2( this.point.x, this.point.z ), Math.atan2( this.point.y, this.point.x ) );
-				this.offsetRotation.set( Math.atan2( this.tempVector.z, this.tempVector.y ), Math.atan2( this.tempVector.x, this.tempVector.z ), Math.atan2( this.tempVector.y, this.tempVector.x ) );
+				rotation.set( Math.atan2( this._point.z, this._point.y ), Math.atan2( this._point.x, this._point.z ), Math.atan2( this._point.y, this._point.x ) );
+				this._offsetRotation.set( Math.atan2( this._tempVector.z, this._tempVector.y ), Math.atan2( this._tempVector.x, this._tempVector.z ), Math.atan2( this._tempVector.y, this._tempVector.x ) );
 
-				this.tempQuaternion.setFromRotationMatrix( this.tempMatrix.getInverse( this.parentRotationMatrix ) );
+				this._tempQuaternion.setFromRotationMatrix( this._tempMatrix.getInverse( this._parentRotationMatrix ) );
 
-				this.quaternionE.setFromAxisAngle( this.eye, this.rotation.z - this.offsetRotation.z );
-				this.quaternionXYZ.setFromRotationMatrix( this.worldRotationMatrix );
+				this._quaternionE.setFromAxisAngle( this._eye, rotation.z - this._offsetRotation.z );
+				this._quaternionXYZ.setFromRotationMatrix( this._worldRotationMatrix );
 
-				this.tempQuaternion.multiplyQuaternions( this.tempQuaternion, this.quaternionE );
-				this.tempQuaternion.multiplyQuaternions( this.tempQuaternion, this.quaternionXYZ );
+				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionE );
+				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionXYZ );
 
-				this.object.quaternion.copy( this.tempQuaternion );
+				this._object.quaternion.copy( this._tempQuaternion );
 
 			} else if ( this.axis === "XYZE" ) {
 
-				quaternionE.setFromEuler( point.clone().cross( tempVector ).normalize() ); // rotation axis
+				let rotationAxis = this._point.clone().cross( this._tempVector ).normalize();
+				let rotationEular = new THREE.Euler( rotationAxis.x, rotationAxis.y, rotationAxis.z );
+				this._quaternionE.setFromEuler( rotationEular ); // rotation axis
 
-				tempQuaternion.setFromRotationMatrix( tempMatrix.getInverse( parentRotationMatrix ) );
-				quaternionX.setFromAxisAngle( quaternionE, - point.clone().angleTo( tempVector ) );
-				quaternionXYZ.setFromRotationMatrix( worldRotationMatrix );
+				this._tempQuaternion.setFromRotationMatrix( this._tempMatrix.getInverse( this._parentRotationMatrix ) );
 
-				tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionX );
-				tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionXYZ );
+				this._quaternionX.setFromAxisAngle( rotationAxis, - this._point.clone().angleTo( this._tempVector ) );
+				this._quaternionXYZ.setFromRotationMatrix( this._worldRotationMatrix );
 
-				this.object.quaternion.copy( tempQuaternion );
+				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionX );
+				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionXYZ );
 
-			} else if ( this.space === "local" ) {
+				this._object.quaternion.copy( this._tempQuaternion );
 
-				point.applyMatrix4( tempMatrix.getInverse( worldRotationMatrix ) );
+			} else if ( this._space === "local" ) {
 
-				tempVector.applyMatrix4( tempMatrix.getInverse( worldRotationMatrix ) );
+				this._point.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-				rotation.set( Math.atan2( point.z, point.y ), Math.atan2( point.x, point.z ), Math.atan2( point.y, point.x ) );
-				offsetRotation.set( Math.atan2( tempVector.z, tempVector.y ), Math.atan2( tempVector.x, tempVector.z ), Math.atan2( tempVector.y, tempVector.x ) );
+				this._tempVector.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
 
-				quaternionXYZ.setFromRotationMatrix( oldRotationMatrix );
+				rotation.set( Math.atan2( this._point.z, this._point.y ), Math.atan2( this._point.x, this._point.z ), Math.atan2( this._point.y, this._point.x ) );
+				this._offsetRotation.set( Math.atan2( this._tempVector.z, this._tempVector.y ), Math.atan2( this._tempVector.x, this._tempVector.z ), Math.atan2( this._tempVector.y, this._tempVector.x ) );
 
-				if ( this.rotationSnap !== null ) {
+				this._quaternionXYZ.setFromRotationMatrix( this._oldRotationMatrix );
 
-					quaternionX.setFromAxisAngle( unitX, Math.round( ( rotation.x - offsetRotation.x ) / this.rotationSnap ) * this.rotationSnap );
-					quaternionY.setFromAxisAngle( unitY, Math.round( ( rotation.y - offsetRotation.y ) / this.rotationSnap ) * this.rotationSnap );
-					quaternionZ.setFromAxisAngle( unitZ, Math.round( ( rotation.z - offsetRotation.z ) / this.rotationSnap ) * this.rotationSnap );
+				if ( this._rotationSnap !== null ) {
 
-				} else {
-
-					quaternionX.setFromAxisAngle( unitX, rotation.x - offsetRotation.x );
-					quaternionY.setFromAxisAngle( unitY, rotation.y - offsetRotation.y );
-					quaternionZ.setFromAxisAngle( unitZ, rotation.z - offsetRotation.z );
-
-				}
-
-				if ( this.axis === "X" ) quaternionXYZ.multiplyQuaternions( quaternionXYZ, quaternionX );
-				if ( this.axis === "Y" ) quaternionXYZ.multiplyQuaternions( quaternionXYZ, quaternionY );
-				if ( this.axis === "Z" ) quaternionXYZ.multiplyQuaternions( quaternionXYZ, quaternionZ );
-
-				this.object.quaternion.copy( quaternionXYZ );
-
-			} else if ( this.space === "world" ) {
-
-				rotation.set( Math.atan2( point.z, point.y ), Math.atan2( point.x, point.z ), Math.atan2( point.y, point.x ) );
-				offsetRotation.set( Math.atan2( tempVector.z, tempVector.y ), Math.atan2( tempVector.x, tempVector.z ), Math.atan2( tempVector.y, tempVector.x ) );
-
-				tempQuaternion.setFromRotationMatrix( tempMatrix.getInverse( parentRotationMatrix ) );
-
-				if ( this.rotationSnap !== null ) {
-
-					quaternionX.setFromAxisAngle( unitX, Math.round( ( rotation.x - offsetRotation.x ) / this.rotationSnap ) * this.rotationSnap );
-					quaternionY.setFromAxisAngle( unitY, Math.round( ( rotation.y - offsetRotation.y ) / this.rotationSnap ) * this.rotationSnap );
-					quaternionZ.setFromAxisAngle( unitZ, Math.round( ( rotation.z - offsetRotation.z ) / this.rotationSnap ) * this.rotationSnap );
+					this._quaternionX.setFromAxisAngle( this._unitX, Math.round( ( rotation.x - this._offsetRotation.x ) / this._rotationSnap ) * this._rotationSnap );
+					this._quaternionY.setFromAxisAngle( this._unitY, Math.round( ( rotation.y - this._offsetRotation.y ) / this._rotationSnap ) * this._rotationSnap );
+					this._quaternionZ.setFromAxisAngle( this._unitZ, Math.round( ( rotation.z - this._offsetRotation.z ) / this._rotationSnap ) * this._rotationSnap );
 
 				} else {
 
-					quaternionX.setFromAxisAngle( unitX, rotation.x - offsetRotation.x );
-					quaternionY.setFromAxisAngle( unitY, rotation.y - offsetRotation.y );
-					quaternionZ.setFromAxisAngle( unitZ, rotation.z - offsetRotation.z );
+					this._quaternionX.setFromAxisAngle( this._unitX, rotation.x - this._offsetRotation.x );
+					this._quaternionY.setFromAxisAngle( this._unitY, rotation.y - this._offsetRotation.y );
+					this._quaternionZ.setFromAxisAngle( this._unitZ, rotation.z - this._offsetRotation.z );
 
 				}
 
-				quaternionXYZ.setFromRotationMatrix( worldRotationMatrix );
+				if ( this.axis === "X" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionX );
+				if ( this.axis === "Y" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionY );
+				if ( this.axis === "Z" ) this._quaternionXYZ.multiplyQuaternions( this._quaternionXYZ, this._quaternionZ );
 
-				if ( this.axis === "X" ) tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionX );
-				if ( this.axis === "Y" ) tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionY );
-				if ( this.axis === "Z" ) tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionZ );
+				this._object.quaternion.copy( this._quaternionXYZ );
 
-				tempQuaternion.multiplyQuaternions( tempQuaternion, quaternionXYZ );
+			} else if ( this._space === "world" ) {
 
-				this.object.quaternion.copy( tempQuaternion );
+				rotation.set( Math.atan2( this._point.z, this._point.y ), Math.atan2( this._point.x, this._point.z ), Math.atan2( this._point.y, this._point.x ) );
+				this._offsetRotation.set( Math.atan2( this._tempVector.z, this._tempVector.y ), Math.atan2( this._tempVector.x, this._tempVector.z ), Math.atan2( this._tempVector.y, this._tempVector.x ) );
 
+				this._tempQuaternion.setFromRotationMatrix( this._tempMatrix.getInverse( this._parentRotationMatrix ) );
+
+				if ( this._rotationSnap !== null ) {
+
+					this._quaternionX.setFromAxisAngle( this._unitX, Math.round( ( rotation.x - this._offsetRotation.x ) / this._rotationSnap ) * this._rotationSnap );
+					this._quaternionY.setFromAxisAngle( this._unitY, Math.round( ( rotation.y - this._offsetRotation.y ) / this._rotationSnap ) * this._rotationSnap );
+					this._quaternionZ.setFromAxisAngle( this._unitZ, Math.round( ( rotation.z - this._offsetRotation.z ) / this._rotationSnap ) * this._rotationSnap );
+
+				} else {
+
+					this._quaternionX.setFromAxisAngle( this._unitX, rotation.x - this._offsetRotation.x );
+					this._quaternionY.setFromAxisAngle( this._unitY, rotation.y - this._offsetRotation.y );
+					this._quaternionZ.setFromAxisAngle( this._unitZ, rotation.z - this._offsetRotation.z );
+
+				}
+
+				this._quaternionXYZ.setFromRotationMatrix( this._worldRotationMatrix );
+
+				if ( this.axis === "X" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionX );
+				if ( this.axis === "Y" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionY );
+				if ( this.axis === "Z" ) this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionZ );
+
+				this._tempQuaternion.multiplyQuaternions( this._tempQuaternion, this._quaternionXYZ );
+
+				this._object.quaternion.copy( this._tempQuaternion );
 			}
-
 		}
 
 		this.update();
-		this.dispatchEvent( this.changeEvent );
-		this.dispatchEvent( this.objectChangeEvent );
+		this.dispatchEvent( this._changeEvent );
+		this.dispatchEvent( this._objectChangeEvent );
 
 	}
 
@@ -472,13 +475,14 @@ export class TransformControls extends THREE.Object3D {
 
 		event.preventDefault(); // Prevent MouseEvent on mobile
 
-		if ( event.button !== undefined && event.button !== 0 ) return;
+		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
+
+		let pointer = event;
 
 		if ( this._dragging && ( this.axis !== null ) ) {
 
-			this.mouseUpEvent.mode = this._mode;
-			this.dispatchEvent( this.mouseUpEvent );
-
+			this._mouseUpEvent.mode = this._mode;
+			this.dispatchEvent( this._mouseUpEvent );
 		}
 
 		this._dragging = false;
@@ -489,7 +493,7 @@ export class TransformControls extends THREE.Object3D {
 
 			this.axis = null;
 			this.update();
-			this.dispatchEvent( this.changeEvent );
+			this.dispatchEvent( this._changeEvent );
 
 		} else {
 
@@ -511,17 +515,17 @@ export class TransformControls extends THREE.Object3D {
 
 		let rect = new ClientRect();
 
-		if( Object.hasProterty( this.domElement, 'getBoundingClientRect' ) ) {
-			rect = this.domElement['getBoundingClientRect']();
+		if( Object.hasProterty( this._domElement, 'getBoundingClientRect' ) ) {
+			rect = this._domElement['getBoundingClientRect']();
 		}
 
 		let x = ( pointer.clientX - rect.left ) / rect.width;
 		let y = ( pointer.clientY - rect.top ) / rect.height;
 
-		this.pointerVector.set( ( x * 2 ) - 1, - ( y * 2 ) + 1 );
-		this.ray.setFromCamera( this.pointerVector, this.camera );
+		this._pointerVector.set( ( x * 2 ) - 1, - ( y * 2 ) + 1 );
+		this._ray.setFromCamera( this._pointerVector, this._camera );
 
-		let intersections = this.ray.intersectObjects( objects, true );
+		let intersections = this._ray.intersectObjects( objects, true );
 		return intersections[ 0 ] ? intersections[ 0 ] : false;
 	}
 
@@ -537,8 +541,10 @@ export class TransformControls extends THREE.Object3D {
     constructor( camera:THREE.Camera, domElement:Document ) {
         super();
 
-		this.camera = camera;
-		this.domElement = ( domElement !== undefined ) ? domElement : document;
+		this._camera = camera;
+		this._domElement = ( domElement !== undefined ) ? domElement : document;
+
+		this.visible = false;
 
 		for ( let type in this._gizmo ) {
 			let gizmoObj = this._gizmo[ type ];
@@ -546,29 +552,28 @@ export class TransformControls extends THREE.Object3D {
 			this.add( gizmoObj );
 		}
 
-		this.domElement.addEventListener( "mousedown"	, this._onPointerDown	, false );
-		this.domElement.addEventListener( "touchstart"	, this._onPointerDown	, false );
-		this.domElement.addEventListener( "mousemove"	, this._onPointerHover	, false );
-		this.domElement.addEventListener( "touchmove"	, this._onPointerHover	, false );
-		this.domElement.addEventListener( "mousemove"	, this._onPointerMove	, false );
-		this.domElement.addEventListener( "touchmove"	, this._onPointerMove	, false );
-		this.domElement.addEventListener( "mouseup"		, this._onPointerUp		, false );
-		this.domElement.addEventListener( "mouseout"	, this._onPointerUp		, false );
-		this.domElement.addEventListener( "touchend"	, this._onPointerUp		, false );
-		this.domElement.addEventListener( "touchcancel"	, this._onPointerUp		, false );
-		this.domElement.addEventListener( "touchleave"	, this._onPointerUp		, false );
+		this._domElement.addEventListener( "mousedown"	, this.onPointerDown	, false );
+		this._domElement.addEventListener( "touchstart"	, this.onPointerDown	, false );
+		this._domElement.addEventListener( "mousemove"	, this.onPointerHover	, false );
+		this._domElement.addEventListener( "touchmove"	, this.onPointerHover	, false );
+		this._domElement.addEventListener( "mousemove"	, this.onPointerMove	, false );
+		this._domElement.addEventListener( "touchmove"	, this.onPointerMove	, false );
+		this._domElement.addEventListener( "mouseup"		, this.onPointerUp		, false );
+		this._domElement.addEventListener( "mouseout"	, this.onPointerUp		, false );
+		this._domElement.addEventListener( "touchend"	, this.onPointerUp		, false );
+		this._domElement.addEventListener( "touchcancel"	, this.onPointerUp		, false );
+		this._domElement.addEventListener( "touchleave"	, this.onPointerUp		, false );
     }
 
 	// [ Protected Variables ]
 
-	protected camera				: THREE.Camera;
-	protected domElement 			: Document;
-	protected object 				= undefined;
-	protected visible 				= false;
-	protected translationSnap		= null;
-	protected rotationSnap 			= null;
-	protected space 				= "world";
-	protected size 					= 1;
+	protected _camera				: THREE.Camera;
+	protected _domElement 			: Document;
+	protected _object 				= undefined;
+	protected _translationSnap		= null;
+	protected _rotationSnap 		= null;
+	protected _space 				= "world";
+	protected _size 				= 1;
 	protected axis 					= null;
 
 	protected _mode 				= "translate";
@@ -580,41 +585,38 @@ export class TransformControls extends THREE.Object3D {
 		"scale"		: new TransformGizmoScale()
 	};
 
-	protected changeEvent 			= { type: "change" };
-	protected mouseDownEvent 		= { type: "mouseDown" };
-	protected mouseUpEvent 			= { type: "mouseUp", mode: this._mode };
-	protected objectChangeEvent 	= { type: "objectChange" };
+	protected _changeEvent 			= { type: "change" };
+	protected _mouseDownEvent 		= { type: "mouseDown" };
+	protected _mouseUpEvent 		= { type: "mouseUp", mode: this._mode };
+	protected _objectChangeEvent 	= { type: "objectChange" };
 
-	protected ray 					= new THREE.Raycaster();
-	protected pointerVector 		= new THREE.Vector2();
-	protected point 				= new THREE.Vector3();
-	protected offset 				= new THREE.Vector3();
-	protected rotation 				= new THREE.Vector3();
-	protected offsetRotation 		= new THREE.Vector3();
-	protected lookAtMatrix 			= new THREE.Matrix4();
-	protected eye 					= new THREE.Vector3();
-	protected tempMatrix 			= new THREE.Matrix4();
-	protected tempVector 			= new THREE.Vector3();
-	protected tempQuaternion 		= new THREE.Quaternion();
-	protected unitX 				= new THREE.Vector3( 1, 0, 0 );
-	protected unitY 				= new THREE.Vector3( 0, 1, 0 );
-	protected unitZ 				= new THREE.Vector3( 0, 0, 1 );
-	protected quaternionXYZ 		= new THREE.Quaternion();
-	protected quaternionX 			= new THREE.Quaternion();
-	protected quaternionY 			= new THREE.Quaternion();
-	protected quaternionZ 			= new THREE.Quaternion();
-	protected quaternionE 			= new THREE.Quaternion();
-	protected oldPosition 			= new THREE.Vector3();
-	protected oldScale 				= new THREE.Vector3();
-	protected oldRotationMatrix 	= new THREE.Matrix4();
-	protected parentRotationMatrix	= new THREE.Matrix4();
-	protected parentScale 			= new THREE.Vector3();
-	protected worldPosition 		= new THREE.Vector3();
-	protected worldRotation 		= new THREE.Euler();
-	protected worldRotationMatrix	= new THREE.Matrix4();
-	protected camPosition 			= new THREE.Vector3();
-	protected camRotation 			= new THREE.Euler();
-
-
+	protected _ray 					= new THREE.Raycaster();
+	protected _pointerVector 		= new THREE.Vector2();
+	protected _point 				= new THREE.Vector3();
+	protected _offset 				= new THREE.Vector3();
+	protected _offsetRotation 		= new THREE.Vector3();
+	protected _lookAtMatrix 		= new THREE.Matrix4();
+	protected _eye 					= new THREE.Vector3();
+	protected _tempMatrix 			= new THREE.Matrix4();
+	protected _tempVector 			= new THREE.Vector3();
+	protected _tempQuaternion 		= new THREE.Quaternion();
+	protected _unitX 				= new THREE.Vector3( 1, 0, 0 );
+	protected _unitY 				= new THREE.Vector3( 0, 1, 0 );
+	protected _unitZ 				= new THREE.Vector3( 0, 0, 1 );
+	protected _quaternionXYZ 		= new THREE.Quaternion();
+	protected _quaternionX 			= new THREE.Quaternion();
+	protected _quaternionY 			= new THREE.Quaternion();
+	protected _quaternionZ 			= new THREE.Quaternion();
+	protected _quaternionE 			= new THREE.Quaternion();
+	protected _oldPosition 			= new THREE.Vector3();
+	protected _oldScale 			= new THREE.Vector3();
+	protected _oldRotationMatrix 	= new THREE.Matrix4();
+	protected _parentRotationMatrix	= new THREE.Matrix4();
+	protected _parentScale 			= new THREE.Vector3();
+	protected _worldPosition 		= new THREE.Vector3();
+	protected _worldRotation 		= new THREE.Euler();
+	protected _worldRotationMatrix	= new THREE.Matrix4();
+	protected _camPosition 			= new THREE.Vector3();
+	protected _camRotation 			= new THREE.Euler();
 }
 
