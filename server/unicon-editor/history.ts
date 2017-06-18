@@ -318,7 +318,7 @@ export class History {
         this.config             = editor.config;
 
         //Set editor-reference in Command
-        Command.create( editor );
+        let cmd = new Command( editor );
 
         // signals
         this.editor.signals.startPlayer.add( ()=> {

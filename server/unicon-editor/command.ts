@@ -21,13 +21,22 @@ export class Command {
 
     // [ Public Variables ]
 
-	id          : number;
-	inMemory    : boolean;
-	updatable   : boolean;
-	type        : string;
-	name        : string;
+	id              : number;
+	inMemory        : boolean;
+	updatable       : boolean;
+	type            : string;
+	name            : string;
+    object          : object;
+    script          : string;
+    attributeName   : string;
+
+    json            : Command;
 
     // [ Public Functions ]
+
+    execute() {
+
+    }
 
     /**
      * command to json
@@ -37,10 +46,13 @@ export class Command {
      * @memberof Command
      */
     toJSON () : Command {
-        let output  = new Command(this._editor);
-        output.type = this.type;
-        output.id   = this.id;
-        output.name = this.name;
+        let output              = new Command(this._editor);
+        output.type             = this.type;
+        output.id               = this.id;
+        output.name             = this.name;
+        output.object           = this.object;
+        output.script           = this.script;
+        output.attributeName    = this.attributeName;
         return output;
     }
     /**
@@ -51,10 +63,13 @@ export class Command {
      * @memberof Command
      */
     fromJSON ( json:Command ) {
-        this.inMemory   = true;
-        this.type       = json.type;
-        this.id         = json.id;
-        this.name       = json.name;
+        this.inMemory       = true;
+        this.type           = json.type;
+        this.id             = json.id;
+        this.name           = json.name;
+        this.object         = json.object;
+        this.script         = json.script;
+        this.attributeName  = json.attributeName;
     }
 
 
@@ -72,6 +87,8 @@ export class Command {
         this.updatable  = false;
         this.type       = '';
         this.name       = '';
+        this.object     = null;
+        this.script     = null;
 
         if( editor !== undefined ) {
             Command.editor = editor;
