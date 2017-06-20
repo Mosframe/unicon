@@ -5,7 +5,8 @@ import {Signal  				} from 'signals';
 import * as THREE     		  	  from 'three';
 import {						} from '../engine/object';
 import {Panel as UIPanel 		} from '../editor/gui/panel';
-import {TransformControls		} from '../editor/handles/transform-controls';
+import {EditorControls			} from '../editor/handles/editor-controls';
+import {TransformControls		} from '../editor/handles/transform-controls/transform-controls';
 //import {Editor  				} from './editor';
 import {ViewportInfo			} from './viewport-info';
 
@@ -38,7 +39,7 @@ export class Viewport {
 	scene 				: THREE.Scene;
 	sceneHelpers 		: THREE.Scene;
 	objects 			: THREE.Object3D[];
-	controls 			: THREE.EditorControls;
+	controls 			: EditorControls;
 	transformControls 	: TransformControls;
 	selectionBox 		: THREE.BoxHelper;
 	vrEffect			: any;
@@ -88,6 +89,8 @@ export class Viewport {
         this.container.setPosition( 'absolute' );
         this.container.add( (new ViewportInfo( editor )).container );
 
+		//console.log( this.container );
+
 		this.renderer 		= null;
 		this.camera 		= editor.camera;
 		this.scene 			= editor.scene;
@@ -126,7 +129,7 @@ export class Viewport {
 		console.log( this.camera );
 		console.log( this.container.core );
 
-		this.transformControls = new TransformControls( this.camera, this.container );
+		this.transformControls = new TransformControls( this.camera, this.container.core );
 		this.transformControls.addEventListener( 'change', ()=> {
 
 			let object = this.transformControls.object;
@@ -200,7 +203,7 @@ export class Viewport {
 		// controls need to be added *after* main logic,
 		// otherwise controls.enabled doesn't work.
 
-		this.controls = new THREE.EditorControls( this.camera, this.container.core );
+		this.controls = new EditorControls( this.camera, this.container.core );
 		this.controls.addEventListener( 'change', () => {
 			this.transformControls.update();
 			this.editor.signals.cameraChanged.dispatch( this.camera );
@@ -232,7 +235,7 @@ export class Viewport {
 		});
 
 		this.editor.signals.transformModeChanged.add( ( mode:string ) => {
-			this.transformControls.mode = mode;
+			this.transformControls.setMode( mode );
 		});
 
 		this.editor.signals.snapChanged.add( ( dist:any ) => {
@@ -307,7 +310,7 @@ export class Viewport {
 		});
 
 		this.editor.signals.objectFocused.add( ( object:THREE.Object3D ) => {
-			this.controls.focus( object, true );
+			this.controls.focus( object );
 		});
 
 		this.editor.signals.geometryChanged.add( ( object:THREE.Object3D ) => {
@@ -442,20 +445,19 @@ export class Viewport {
 	protected objectRotationOnDown 		: any;
 	protected objectScaleOnDown 		: any;
 
-	protected _raycaster 				: THREE.Raycaster;
-	protected _mouse 					: THREE.Vector2;
-	protected _onDownPosition 			: THREE.Vector2;
-	protected _onUpPosition 			: THREE.Vector2;
-	protected _onDoubleClickPosition 	: THREE.Vector2;
+	protected _raycaster 				: THREE.Raycaster 	= new THREE.Raycaster();
+	protected _mouse 					: THREE.Vector2 	= new THREE.Vector2();
+	protected _onDownPosition 			: THREE.Vector2 	= new THREE.Vector2();
+	protected _onUpPosition 			: THREE.Vector2 	= new THREE.Vector2();
+	protected _onDoubleClickPosition 	: THREE.Vector2 	= new THREE.Vector2();
 	protected _currentFogType 			: string;
 
 	// [ Proected functions ]
 
-	protected _animate() {
+	protected _animate = () => {
 
 		requestAnimationFrame( this._animate );
 
-		//if( this.vrEffect && this.vrEffect.isPresenting ) {
 		if( this.vrEffect && this.vrEffect.isPresenting ) {
 			this.render();
 		}
@@ -487,7 +489,7 @@ export class Viewport {
 
 	// [ Proected Events ]
 
-	protected _onHandleClick() {
+	protected _onHandleClick = () => {
 
 		if( this._onDownPosition.distanceTo( this._onUpPosition ) === 0 ) {
 			let intersects = this.getIntersects( this._onUpPosition, this.objects );
@@ -509,7 +511,7 @@ export class Viewport {
 		}
 	}
 
-	protected _onMouseDown( event:MouseEvent ) {
+	protected _onMouseDown = ( event:MouseEvent ) => {
 
 		event.preventDefault();
 
@@ -519,7 +521,7 @@ export class Viewport {
 		document.addEventListener( 'mouseup', this._onMouseUp, false );
 	}
 
-	protected _onMouseUp( event:MouseEvent ) {
+	protected _onMouseUp = ( event:MouseEvent ) => {
 
 		let array = this.getMousePosition( this.container.core, event.clientX, event.clientY );
 		this._onUpPosition.fromArray( array );
@@ -529,7 +531,7 @@ export class Viewport {
 		document.removeEventListener( 'mouseup', this._onMouseUp, false );
 	}
 
-	protected _onTouchStart( event:TouchEvent ) {
+	protected _onTouchStart = ( event:TouchEvent ) => {
 
 		let touch = event.changedTouches[ 0 ];
 
@@ -540,7 +542,7 @@ export class Viewport {
 
 	}
 
-	protected _onTouchEnd( event:TouchEvent ) {
+	protected _onTouchEnd = ( event:TouchEvent ) => {
 
 		let touch = event.changedTouches[ 0 ];
 
@@ -553,7 +555,7 @@ export class Viewport {
 
 	}
 
-	protected _onDoubleClick( event ) {
+	protected _onDoubleClick = ( event ) => {
 
 		let array = this.getMousePosition( this.container.core, event.clientX, event.clientY );
 		this._onDoubleClickPosition.fromArray( array );

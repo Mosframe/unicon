@@ -12,7 +12,7 @@ import {Viewport            } from './viewport';
 var editor = new Editor();
 
 var viewport = new Viewport( editor );
-//document.body.appendChild( viewport.container.core );
+document.body.appendChild( viewport.container.core );
 
 /*
 var script = new Script( editor );
