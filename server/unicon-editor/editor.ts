@@ -1,24 +1,17 @@
 // -----------------------------------------------------------------------------
 // editor.ts
 // -----------------------------------------------------------------------------
-import * as signals   from 'signals';
-import {Signal      } from 'signals';
-import * as THREE     from 'three';
-import {Command     } from './command';
-import {Config      } from './config';
-import {History     } from './history';
-import {Loader      } from './loader';
-import {Storage     } from './storage';
+import * as signals       from 'signals';
+import * as THREE         from 'three';
+import {Signal          } from 'signals';
+import {IEditor         } from './interface';
+import {IEditorSignals  } from './interface';
+import {Command         } from './command';
+import {Config          } from './config';
+import {History         } from './history';
+import {Loader          } from './loader';
+import {Storage         } from './storage';
 
-
-export interface IEditor {
-	scene       : any;
-    camera      : any;
-    history     : any;
-    scripts     : any;
-    metadata    : any;
-    project     : any;
-}
 
 /**
  * Editor
@@ -27,8 +20,9 @@ export interface IEditor {
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Editor
+ * @implements {IEditor}
  */
-export class Editor {
+export class Editor implements IEditor {
 
     /**
      * config
@@ -37,77 +31,8 @@ export class Editor {
      * @memberof Editor
      */
     config : Config;
-    /**
-     * signals
-     *
-     * @memberof Editor
-     */
-    signals = {
 
-        // script
-
-        editScript: new Signal(),
-
-        // player
-
-        startPlayer: new Signal(),
-        stopPlayer: new Signal(),
-
-        // vr
-
-        enterVR: new Signal(),
-
-        enteredVR: new Signal(),
-        exitedVR: new Signal(),
-
-        // actions
-
-        showModal: new Signal(),
-
-        // notifications
-
-        editorCleared: new Signal(),
-
-        savingStarted: new Signal(),
-        savingFinished: new Signal(),
-
-        themeChanged: new Signal(),
-
-        transformModeChanged: new Signal(),
-        snapChanged: new Signal(),
-        spaceChanged: new Signal(),
-        rendererChanged: new Signal(),
-
-        sceneBackgroundChanged: new Signal(),
-        sceneFogChanged: new Signal(),
-        sceneGraphChanged: new Signal(),
-
-        cameraChanged: new Signal(),
-
-        geometryChanged: new Signal(),
-
-        objectSelected: new Signal(),
-        objectFocused: new Signal(),
-
-        objectAdded: new Signal(),
-        objectChanged: new Signal(),
-        objectRemoved: new Signal(),
-
-        helperAdded: new Signal(),
-        helperRemoved: new Signal(),
-
-        materialChanged: new Signal(),
-
-        scriptAdded: new Signal(),
-        scriptChanged: new Signal(),
-        scriptRemoved: new Signal(),
-
-        windowResize: new Signal(),
-
-        showGridChanged: new Signal(),
-        refreshSidebarObject3D: new Signal(),
-        historyChanged: new Signal()
-    };
+    signals : IEditorSignals;
     /**
      * default camera
      *
@@ -185,13 +110,8 @@ export class Editor {
      * @memberof Editor
      */
 	textures : {[uuid:string]:THREE.Texture};
-    /**
-     * scripts
-     *
-     * @type {{[uuid:string]:string[]}}
-     * @memberof Editor
-     */
-	scripts : {[uuid:string]:string[]};
+
+	scripts : {[uuid:string]:object[]};
     /**
      * selected
      *
@@ -249,13 +169,7 @@ export class Editor {
 		this.signals.sceneGraphChanged.active = true;
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * add object
-     *
-     * @param {THREE.Object3D} object
-     *
-     * @memberof Editor
-     */
+
 	addObject ( object:THREE.Object3D ) {
 
 		object.traverse( ( child:THREE.Object3D ) => {
@@ -309,14 +223,7 @@ export class Editor {
 		object.name = name;
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * remove object
-     *
-     * @param {THREE.Object3D} object
-     * @returns
-     *
-     * @memberof Editor
-     */
+
     removeObject ( object:THREE.Object3D ) {
 
 		if( object.parent === null ) return; // avoid deleting the camera or scene
@@ -460,11 +367,11 @@ export class Editor {
      * add script
      *
      * @param {THREE.Object3D} object
-     * @param {string} script
+     * @param {object} script
      *
      * @memberof Editor
      */
-	addScript ( object:THREE.Object3D, script:string ) {
+	addScript ( object:THREE.Object3D, script:object ) {
 
 		if( this.scripts[ object.uuid ] === undefined ) {
 			this.scripts[ object.uuid ] = [];
@@ -477,12 +384,12 @@ export class Editor {
      * remove script
      *
      * @param {THREE.Object3D} object
-     * @param {string} script
+     * @param {object} script
      * @returns
      *
      * @memberof Editor
      */
-	removeScript ( object:THREE.Object3D, script:string ) {
+	removeScript ( object:THREE.Object3D, script:object ) {
 
 		if( this.scripts[ object.uuid ] === undefined ) return;
 
@@ -546,14 +453,8 @@ export class Editor {
 			}
 		});
 	}
-    /**
-     * deselect
-     *
-     *
-     * @memberof Editor
-     */
-	deselect () {
 
+	deselect () {
 		this.select( null );
 	}
     /**
@@ -616,7 +517,7 @@ export class Editor {
      *
      * @memberof Editor
      */
-	fromJSON ( json:IEditor ) {
+	fromJSON ( json:any ) {
 
 		let loader = new THREE.ObjectLoader();
 
@@ -644,11 +545,11 @@ export class Editor {
     /**
      * editor to json
      *
-     * @returns {IEditor}
+     * @returns {*}
      *
      * @memberof Editor
      */
-	toJSON () : IEditor {
+	toJSON () : any {
 
 		// scripts clean up
 
@@ -678,14 +579,7 @@ export class Editor {
 			history : this.history.toJSON()
 		};
 	}
-    /**
-     * get object by uuid
-     *
-     * @param {string} uuid
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	objectByUuid ( uuid:string ) {
 		return this.scene.getObjectByProperty( 'uuid', uuid );
 	}
@@ -739,6 +633,43 @@ export class Editor {
         this.scene.background   = new THREE.Color( 0xaaaaaa );
 
         this.sceneHelpers       = new THREE.Scene();
+
+        // [ Signals ]
+        this.signals.editScript              = new Signal();
+        this.signals.startPlayer             = new Signal();
+        this.signals.stopPlayer              = new Signal();
+        this.signals.enterVR                 = new Signal();
+        this.signals.enteredVR               = new Signal();
+        this.signals.exitedVR                = new Signal();
+        this.signals.showModal               = new Signal();
+        this.signals.editorCleared           = new Signal();
+        this.signals.savingStarted           = new Signal();
+        this.signals.savingFinished          = new Signal();
+        this.signals.themeChanged            = new Signal();
+        this.signals.transformModeChanged    = new Signal();
+        this.signals.snapChanged             = new Signal();
+        this.signals.spaceChanged            = new Signal();
+        this.signals.rendererChanged         = new Signal();
+        this.signals.sceneBackgroundChanged  = new Signal();
+        this.signals.sceneFogChanged         = new Signal();
+        this.signals.sceneGraphChanged       = new Signal();
+        this.signals.cameraChanged           = new Signal();
+        this.signals.geometryChanged         = new Signal();
+        this.signals.objectSelected          = new Signal();
+        this.signals.objectFocused           = new Signal();
+        this.signals.objectAdded             = new Signal();
+        this.signals.objectChanged           = new Signal();
+        this.signals.objectRemoved           = new Signal();
+        this.signals.helperAdded             = new Signal();
+        this.signals.helperRemoved           = new Signal();
+        this.signals.materialChanged         = new Signal();
+        this.signals.scriptAdded             = new Signal();
+        this.signals.scriptChanged           = new Signal();
+        this.signals.scriptRemoved           = new Signal();
+        this.signals.windowResize            = new Signal();
+        this.signals.showGridChanged         = new Signal();
+        this.signals.refreshSidebarObject3D  = new Signal();
+        this.signals.historyChanged          = new Signal();
 
         this.object             = {};
         this.geometries         = {};

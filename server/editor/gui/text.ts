@@ -33,7 +33,7 @@ export class Text extends Element {
      *
      * @memberof Text
      */
-    constructor ( text:string ) {
+    constructor ( text:string='' ) {
 
         let element = document.createElement( 'span' );
         element.className             = 'Text';

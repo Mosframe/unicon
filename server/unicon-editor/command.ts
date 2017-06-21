@@ -1,27 +1,8 @@
 // -----------------------------------------------------------------------------
 // command.ts
 // -----------------------------------------------------------------------------
-import {Config} from './config';
-
-
-/**
- * ICommand
- *
- * Developed as part of a project at University of Applied Sciences and Arts Northwestern Switzerland (www.fhnw.ch)
- *
- * @author dforrer ( https://github.com/dforrer )
- * @author mosframe ( https://github.com/mosframe )
- * @export
- * @interface ICommand
- */
-export interface ICommand {
-	type            : string;
-	id              : number;
-	name            : string;
-    object          : object;
-    script          : string;
-    attributeName   : string;
-}
+import {IEditor     } from './interface';
+import {Config      } from './config';
 
 /**
  * Command
@@ -36,94 +17,79 @@ export interface ICommand {
 export class Command {
 
     // [ Public Static Variables ]
-    static editor : any;
+    static editor : IEditor;
 
     // [ Public Variables ]
 
-	type            : string;
 	id              : number;
+	type            : string;
 	name            : string;
-    object          : any;
-    script          : any;
-    attributeName   : string;
-
 	inMemory        : boolean;
 	updatable       : boolean;
-    json            : ICommand;
 
     // [ Public Functions ]
 
     /**
-     * command to json
-     *
-     * @returns {ICommand}
+     * execute
      *
      * @memberof Command
      */
-    toJSON () : ICommand {
+    execute () {}
+    /**
+     * undo
+     *
+     * @memberof Command
+     */
+    undo () {}
+    /**
+     * command to json
+     *
+     * @returns {*}
+     *
+     * @memberof Command
+     */
+    toJSON () : any {
         return {
             type             : this.type,
             id               : this.id,
             name             : this.name,
-            object           : this.object,
-            script           : this.script,
-            attributeName    : this.attributeName
         }
     }
     /**
      * command from json
      *
-     * @param {ICommand} json
+     * @param {*} json
      *
      * @memberof Command
      */
-    fromJSON ( json:ICommand ) {
+    fromJSON ( json:any ) {
         this.inMemory       = true;
         this.type           = json.type;
         this.id             = json.id;
         this.name           = json.name;
-        this.object         = json.object;
-        this.script         = json.script;
-        this.attributeName  = json.attributeName;
     }
-
-    execute () {
-
-    }
-
-    update ( cmd:Command ) {
-
-    }
-
-    undo() {
-
-    }
-
 
     // [ Constructors ]
 
     /**
      * Creates an instance of Command.
-     * @param {Editor} editor
-     *
+     * @param {IEditor} [editorRef] editorRef pointer to main editor object used to initialize each command object with a reference to the editor
      * @memberof Command
      */
-    constructor( editor:any ) {
+    constructor( editorRef?:IEditor ) {
         this.id         = - 1;
         this.inMemory   = false;
         this.updatable  = false;
         this.type       = '';
         this.name       = '';
-        this.object     = null;
-        this.script     = null;
 
-        if( editor !== undefined ) {
-            Command.editor = editor;
+        if( editorRef !== undefined ) {
+            Command.editor = editorRef;
         }
         this._editor = Command.editor;
     }
 
     // [ Protected Variables ]
 
-	protected _editor : any;
+	protected _editor : IEditor;
 }

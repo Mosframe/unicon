@@ -176,7 +176,7 @@ export class Element {
      *
      * @memberof Element
      */
-    constructor ( element:HTMLElement ) {
+    constructor ( element:HTMLElement|SVGSVGElement ) {
         this._core = element;
     };
 
@@ -193,6 +193,6 @@ export class Element {
 
     // [ core ]
 
-    get core() : HTMLElement { return this._core; }
-    protected _core : HTMLElement;
+    get core() : HTMLElement|SVGSVGElement { return this._core; }
+    protected _core : HTMLElement|SVGSVGElement;
 }
