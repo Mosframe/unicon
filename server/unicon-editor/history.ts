@@ -1,24 +1,11 @@
 // -----------------------------------------------------------------------------
 // history.ts
 // -----------------------------------------------------------------------------
-import {Editor  } from './editor';
-import {Config  } from './config';
-import {Command } from './command';
+import {ICommand 	} from './interface';
+import {IEditor  	} from './interface';
+import {Command 	} from './command';
+import {Config  	} from './config';
 
-/**
- * IHistory
- *
- * Developed as part of a project at University of Applied Sciences and Arts Northwestern Switzerland (www.fhnw.ch)
- *
- * @author dforrer ( https://github.com/dforrer )
- * @author mosframe ( https://github.com/mosframe )
- * @export
- * @interface IHistory
- */
-export interface IHistory {
-    undos : any[];
-    redos : any[];
-}
 
 /**
  * History
@@ -34,10 +21,10 @@ export class History {
 
     // [ Public Variables ]
 
-    undos           : Command[];
-    redos           : Command[];
+    undos           : ICommand[];
+    redos           : ICommand[];
 
-    editor          : Editor;
+    editor          : IEditor;
     lastCmdTime     : Date;
     idCounter       : number;
     historyDisabled : boolean;
@@ -45,23 +32,22 @@ export class History {
 
     // [ Public Functions ]
 
-	execute ( cmd:Command, optionalName:string ) {
+	execute ( cmd:ICommand, optionalName:string ) {
 
 		let lastCmd = this.undos[ this.undos.length - 1 ];
 		let timeDifference = new Date().getTime() - this.lastCmdTime.getTime();
 
-		let isUpdatableCmd = lastCmd &&
-			lastCmd.updatable &&
-			cmd.updatable &&
-			lastCmd.object === cmd.object &&
-			lastCmd.type === cmd.type &&
-			lastCmd.script === cmd.script &&
-			lastCmd.attributeName === cmd.attributeName;
+		let isUpdatableCmd   = lastCmd
+							&& lastCmd.updatable
+							&& cmd.updatable
+							&& lastCmd.object 			=== cmd.object
+							&& lastCmd.type 			=== cmd.type
+							&& lastCmd.script 			=== cmd.script
+							&& lastCmd.attributeName 	=== cmd.attributeName;
 
 		if( isUpdatableCmd && cmd.type === "SetScriptValueCommand" ) {
 
 			// When the cmd.type is "SetScriptValueCommand" the timeDifference is ignored
-
 			lastCmd.update( cmd );
 			cmd = lastCmd;
 
@@ -76,16 +62,13 @@ export class History {
 
 			this.undos.push( cmd );
 			cmd.id = ++ this.idCounter;
-
 		}
 		cmd.name = ( optionalName !== undefined ) ? optionalName : cmd.name;
 		cmd.execute();
 		cmd.inMemory = true;
 
 		if ( this.config.getKey( 'settings/history' ) ) {
-
 			cmd.json = cmd.toJSON();	// serialize the cmd immediately after execution and append the json to the cmd
-
 		}
 		this.lastCmdTime = new Date();
 
@@ -93,12 +76,11 @@ export class History {
 
 		this.redos = [];
 		this.editor.signals.historyChanged.dispatch( cmd );
-
 	}
 
-	undo () : Command|undefined {
+	undo () : ICommand|undefined {
 
-		let cmd:Command|undefined;
+		let cmd:ICommand|undefined;
 
 		if ( this.historyDisabled ) {
 
@@ -123,9 +105,9 @@ export class History {
 		return cmd;
 	}
 
-	redo () : Command|undefined {
+	redo () : ICommand|undefined {
 
-		let cmd:Command|undefined;
+		let cmd:ICommand|undefined;
 
 		if ( this.historyDisabled ) {
 			alert( "Undo/Redo disabled while scene is playing." );
@@ -147,9 +129,9 @@ export class History {
 		}
 	}
 
-	toJSON () : IHistory {
+	toJSON () : any {
 
-		let history : IHistory = {
+		let history : any = {
 			undos : [],
 			redos : [],
 		};
@@ -177,7 +159,7 @@ export class History {
 		return history;
 	}
 
-	fromJSON ( json:IHistory ) {
+	fromJSON ( json:any ) {
 
 		if ( json === undefined ) return;
 
@@ -207,14 +189,12 @@ export class History {
 		// Select the last executed undo-command
 		this.editor.signals.historyChanged.dispatch( this.undos[ this.undos.length - 1 ] );
 	}
-	clear () {
 
+	clear () {
 		this.undos = [];
 		this.redos = [];
 		this.idCounter = 0;
-
 		this.editor.signals.historyChanged.dispatch();
-
 	}
 
 	goToState ( id:number ) {
@@ -297,7 +277,7 @@ export class History {
 
     // [ Constructors ]
 
-    constructor ( editor:Editor ) {
+    constructor ( editor:IEditor ) {
 
         this.editor             = editor;
         this.undos              = [];

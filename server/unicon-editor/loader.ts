@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 // loader.ts
 // -----------------------------------------------------------------------------
-import {Editor} from './editor';
-import {Config} from './config';
+import {ILoader } from './interface';
+import {Editor  } from './editor';
+import {Config  } from './config';
 
 /**
  * Loader
@@ -11,7 +12,7 @@ import {Config} from './config';
  * @export
  * @class Loader
  */
-export class Loader {
+export class Loader implements ILoader {
 
     // [ Public Delegates ]
 

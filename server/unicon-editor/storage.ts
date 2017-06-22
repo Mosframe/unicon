@@ -1,10 +1,11 @@
 // -----------------------------------------------------------------------------
 // storage.ts
 // -----------------------------------------------------------------------------
-import {Signal  } from 'signals';
-import {Debug   } from '../engine/debug';
-import {Config  } from './config';
-import {Editor  } from './editor';
+import {Signal      } from 'signals';
+import {Debug       } from '../engine/debug';
+import {IStorage    } from './interface';
+import {Config      } from './config';
+import {Editor      } from './editor';
 
 /**
  * Storage
@@ -14,7 +15,7 @@ import {Editor  } from './editor';
  * @export
  * @class Command
  */
-export class Storage {
+export class Storage implements IStorage {
 
     // [ Public Variables ]
 

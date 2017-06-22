@@ -4,8 +4,9 @@
 import * as signals       from 'signals';
 import * as THREE         from 'three';
 import {Signal          } from 'signals';
+import {ICommand        } from './interface';
 import {IEditor         } from './interface';
-import {IEditorSignals  } from './interface';
+import {ISignals        } from './interface';
 import {Command         } from './command';
 import {Config          } from './config';
 import {History         } from './history';
@@ -24,130 +25,33 @@ import {Storage         } from './storage';
  */
 export class Editor implements IEditor {
 
-    /**
-     * config
-     *
-     * @type {Config}
-     * @memberof Editor
-     */
-    config : Config;
+    // [ Public Variables ]
 
-    signals : IEditorSignals;
-    /**
-     * default camera
-     *
-     * @type {THREE.PerspectiveCamera}
-     * @memberof Editor
-     */
-    DEFAULT_CAMERA : THREE.PerspectiveCamera;
-    /**
-     * History
-     *
-     * @type {History}
-     * @memberof Editor
-     */
-	history : History;
-    /**
-     * Storage
-     *
-     * @type {Storage}
-     * @memberof Editor
-     */
-	storage : Storage;
-    /**
-     * Loader
-     *
-     * @type {Loader}
-     * @memberof Editor
-     */
-	loader : Loader;
-    /**
-     * Camera
-     *
-     * @type {THREE.Camera}
-     * @memberof Editor
-     */
-	camera : THREE.Camera;
-    /**
-     * Scene
-     *
-     * @type {THREE.Scene}
-     * @memberof Editor
-     */
-	scene : THREE.Scene;
-    /**
-     * Scene Helpers
-     *
-     * @type {THREE.Scene}
-     * @memberof Editor
-     */
-	sceneHelpers : THREE.Scene;
-    /**
-     * objects
-     *
-     * @type {{[uuid:string]:THREE.Object3D}}
-     * @memberof Editor
-     */
-	object : {[uuid:string]:THREE.Object3D};
-    /**
-     * geometries
-     *
-     * @type {{[uuid:string]:THREE.Geometry|THREE.BufferGeometry}}
-     * @memberof Editor
-     */
-	geometries : {[uuid:string]:THREE.Geometry|THREE.BufferGeometry};
-    /**
-     * materials
-     *
-     * @type {{[uuid:string]:THREE.Material}}
-     * @memberof Editor
-     */
-	materials : {[uuid:string]:THREE.Material};
-    /**
-     * textures
-     *
-     * @type {{[uuid:string]:THREE.Texture}}
-     * @memberof Editor
-     */
-	textures : {[uuid:string]:THREE.Texture};
-
-	scripts : {[uuid:string]:object[]};
-    /**
-     * selected
-     *
-     * @type {THREE.Object3D}
-     * @memberof Editor
-     */
-	selected : THREE.Object3D | null;
-    /**
-     * helpers
-     *
-     * @type {{[uuid:string]:THREE.Object3D}}
-     * @memberof Editor
-     */
-	helpers : {[uuid:string]:THREE.Object3D};
+    config          : Config;
+    signals         : ISignals;
+    DEFAULT_CAMERA  : THREE.PerspectiveCamera;
+	history         : History;
+    storage         : Storage;
+	loader          : Loader;
+	camera          : THREE.Camera;
+	scene           : THREE.Scene;
+	sceneHelpers    : THREE.Scene;
+	object          : {[uuid:string]:THREE.Object3D};
+	geometries      : {[uuid:string]:THREE.Geometry|THREE.BufferGeometry};
+	materials       : {[uuid:string]:THREE.Material};
+	textures        : {[uuid:string]:THREE.Texture};
+	scripts         : {[uuid:string]:object[]};
+	selected        : THREE.Object3D | null;
+	helpers         : {[uuid:string]:THREE.Object3D};
 
     // [ Public Functions ]
 
-    /**
-     * set theme
-     *
-     * @param {any} value
-     *
-     * @memberof Editor
-     */
-    setTheme ( value:any ) {
+    setTheme ( value:string ) {
         let theme = <HTMLLinkElement>document.getElementById( 'theme' );
 		theme.href = value;
 		this.signals.themeChanged.dispatch( value );
     }
-    /**
-     * set scene
-     *
-     * @param {THREE.Scene} scene
-     *
-     * @memberof Editor
-     */
+
 	setScene ( scene:THREE.Scene ) {
 
 		this.scene.uuid = scene.uuid;
@@ -187,12 +91,7 @@ export class Editor implements IEditor {
 		this.signals.objectAdded.dispatch( object );
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * move object
-     *
-     * @type null
-     * @memberof Editor
-     */
+
 	moveObject ( object:THREE.Object3D, parent:THREE.Object3D, before:THREE.Object3D ) {
 
 		if( parent === undefined ) {
@@ -211,14 +110,7 @@ export class Editor implements IEditor {
 
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * set object name
-     *
-     * @param {THREE.Object3D} object
-     * @param {string} name
-     *
-     * @memberof Editor
-     */
+
 	nameObject ( object:THREE.Object3D, name:string ) {
 		object.name = name;
 		this.signals.sceneGraphChanged.dispatch();
@@ -237,67 +129,29 @@ export class Editor implements IEditor {
 		this.signals.objectRemoved.dispatch( object );
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * add geometry
-     *
-     * @param {(THREE.Geometry|THREE.BufferGeometry)} geometry
-     *
-     * @memberof Editor
-     */
+
 	addGeometry ( geometry:THREE.Geometry|THREE.BufferGeometry ) {
 		this.geometries[ geometry.uuid ] = geometry;
 	}
-    /**
-     * set geometry name
-     *
-     * @param {(THREE.Geometry|THREE.BufferGeometry)} geometry
-     * @param {string} name
-     *
-     * @memberof Editor
-     */
+
 	setGeometryName ( geometry:THREE.Geometry|THREE.BufferGeometry, name:string ) {
 		geometry.name = name;
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * add material
-     *
-     * @param {THREE.Material} material
-     *
-     * @memberof Editor
-     */
+
 	addMaterial ( material:THREE.Material ) {
 		this.materials[ material.uuid ] = material;
 	}
-    /**
-     * set material name
-     *
-     * @param {THREE.Material} material
-     * @param {string} name
-     *
-     * @memberof Editor
-     */
+
 	setMaterialName ( material:THREE.Material, name:string ) {
 		material.name = name;
 		this.signals.sceneGraphChanged.dispatch();
 	}
-    /**
-     * add texture
-     *
-     * @param {THREE.Texture} texture
-     *
-     * @memberof Editor
-     */
+
 	addTexture ( texture:THREE.Texture ) {
 		this.textures[ texture.uuid ] = texture;
 	}
-    /**
-     * add helper
-     *
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	addHelper ( object:THREE.Object3D ) {
 
         let helper : THREE.Object3D;
@@ -344,13 +198,7 @@ export class Editor implements IEditor {
 
         this.signals.helperAdded.dispatch( helper );
 	}
-    /**
-     * remove helper
-     *
-     * @param {THREE.Object3D} object
-     *
-     * @memberof Editor
-     */
+
 	removeHelper ( object:THREE.Object3D ) {
 
 		if( this.helpers[ object.id ] !== undefined ) {
@@ -363,14 +211,7 @@ export class Editor implements IEditor {
 			this.signals.helperRemoved.dispatch( helper );
 		}
 	}
-    /**
-     * add script
-     *
-     * @param {THREE.Object3D} object
-     * @param {object} script
-     *
-     * @memberof Editor
-     */
+
 	addScript ( object:THREE.Object3D, script:object ) {
 
 		if( this.scripts[ object.uuid ] === undefined ) {
@@ -380,15 +221,7 @@ export class Editor implements IEditor {
 		this.scripts[ object.uuid ].push( script );
 		this.signals.scriptAdded.dispatch( script );
 	}
-    /**
-     * remove script
-     *
-     * @param {THREE.Object3D} object
-     * @param {object} script
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	removeScript ( object:THREE.Object3D, script:object ) {
 
 		if( this.scripts[ object.uuid ] === undefined ) return;
@@ -401,14 +234,7 @@ export class Editor implements IEditor {
 
 		this.signals.scriptRemoved.dispatch( script );
 	}
-    /**
-     * select object
-     *
-     * @param {(THREE.Object3D|null)} object
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	select ( object:THREE.Object3D|null ) {
 
 		if( this.selected === object ) return;
@@ -424,14 +250,7 @@ export class Editor implements IEditor {
 		this.config.setKey( 'selected', uuid );
 		this.signals.objectSelected.dispatch( object );
 	}
-    /**
-     * select object by id
-     *
-     * @param {number} id
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	selectById ( id:number ) {
 		if( id === this.camera.id ) {
 			this.select( this.camera );
@@ -439,13 +258,7 @@ export class Editor implements IEditor {
 		}
 		this.select( this.scene.getObjectById( id ) );
 	}
-    /**
-     * select object by uuid
-     *
-     * @param {string} uuid
-     *
-     * @memberof Editor
-     */
+
 	selectByUuid ( uuid:string ) {
 		this.scene.traverse( ( child ) => {
 			if( child.uuid === uuid ) {
@@ -457,34 +270,17 @@ export class Editor implements IEditor {
 	deselect () {
 		this.select( null );
 	}
-    /**
-     * focus object
-     *
-     * @param {THREE.Object3D} object
-     *
-     * @memberof Editor
-     */
+
 	focus ( object:THREE.Object3D ) {
 
 		this.signals.objectFocused.dispatch( object );
 	}
-    /**
-     * focus by object id
-     *
-     * @param {number} id
-     *
-     * @memberof Editor
-     */
+
 	focusById ( id:number ) {
 
 		this.focus( this.scene.getObjectById( id ) );
 	}
-    /**
-     * clear
-     *
-     *
-     * @memberof Editor
-     */
+
 	clear () {
 
 		this.history.clear();
@@ -509,14 +305,7 @@ export class Editor implements IEditor {
 
 		this.signals.editorCleared.dispatch();
 	}
-    /**
-     * load from json
-     *
-     * @param {IEditor} json
-     * @returns
-     *
-     * @memberof Editor
-     */
+
 	fromJSON ( json:any ) {
 
 		let loader = new THREE.ObjectLoader();
@@ -542,13 +331,7 @@ export class Editor implements IEditor {
 
 		this.setScene( <THREE.Scene>loader.parse( json.scene ) );
 	}
-    /**
-     * editor to json
-     *
-     * @returns {*}
-     *
-     * @memberof Editor
-     */
+
 	toJSON () : any {
 
 		// scripts clean up
@@ -580,35 +363,18 @@ export class Editor implements IEditor {
 		};
 	}
 
-	objectByUuid ( uuid:string ) {
+	objectByUuid ( uuid:string ) : THREE.Object3D {
 		return this.scene.getObjectByProperty( 'uuid', uuid );
 	}
-    /**
-     * execute command
-     *
-     * @param {Command} cmd
-     * @param {string} optionalName
-     *
-     * @memberof Editor
-     */
-    execute ( cmd:Command, optionalName:string ) {
+
+    execute ( cmd:ICommand, optionalName:string ) {
 		this.history.execute( cmd, optionalName );
 	}
-    /**
-     * undo
-     *
-     *
-     * @memberof Editor
-     */
+
 	undo () {
 		this.history.undo();
 	}
-    /**
-     * redo
-     *
-     *
-     * @memberof Editor
-     */
+
 	redo () {
 		this.history.redo();
 	}
@@ -617,67 +383,69 @@ export class Editor implements IEditor {
 
     constructor() {
 
-        this.DEFAULT_CAMERA     = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
-        this.DEFAULT_CAMERA.name= 'Camera';
+        this.DEFAULT_CAMERA         = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
+        this.DEFAULT_CAMERA.name    = 'Camera';
         this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
         this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
 
-        this.camera             = this.DEFAULT_CAMERA.clone();
-        this.config             = new Config( 'unicon-editor' );
-        this.history            = new History( this );
-        this.storage            = new Storage();
-        this.loader             = new Loader( this );
+        this.camera                 = this.DEFAULT_CAMERA.clone();
+        this.config                 = new Config( 'unicon-editor' );
+        this.history                = new History( this );
+        this.storage                = new Storage();
+        this.loader                 = new Loader( this );
 
-        this.scene              = new THREE.Scene();
-        this.scene.name         = 'Scene';
-        this.scene.background   = new THREE.Color( 0xaaaaaa );
+        this.scene                  = new THREE.Scene();
+        this.scene.name             = 'Scene';
+        this.scene.background       = new THREE.Color( 0xaaaaaa );
 
-        this.sceneHelpers       = new THREE.Scene();
+        this.sceneHelpers           = new THREE.Scene();
 
         // [ Signals ]
-        this.signals.editScript              = new Signal();
-        this.signals.startPlayer             = new Signal();
-        this.signals.stopPlayer              = new Signal();
-        this.signals.enterVR                 = new Signal();
-        this.signals.enteredVR               = new Signal();
-        this.signals.exitedVR                = new Signal();
-        this.signals.showModal               = new Signal();
-        this.signals.editorCleared           = new Signal();
-        this.signals.savingStarted           = new Signal();
-        this.signals.savingFinished          = new Signal();
-        this.signals.themeChanged            = new Signal();
-        this.signals.transformModeChanged    = new Signal();
-        this.signals.snapChanged             = new Signal();
-        this.signals.spaceChanged            = new Signal();
-        this.signals.rendererChanged         = new Signal();
-        this.signals.sceneBackgroundChanged  = new Signal();
-        this.signals.sceneFogChanged         = new Signal();
-        this.signals.sceneGraphChanged       = new Signal();
-        this.signals.cameraChanged           = new Signal();
-        this.signals.geometryChanged         = new Signal();
-        this.signals.objectSelected          = new Signal();
-        this.signals.objectFocused           = new Signal();
-        this.signals.objectAdded             = new Signal();
-        this.signals.objectChanged           = new Signal();
-        this.signals.objectRemoved           = new Signal();
-        this.signals.helperAdded             = new Signal();
-        this.signals.helperRemoved           = new Signal();
-        this.signals.materialChanged         = new Signal();
-        this.signals.scriptAdded             = new Signal();
-        this.signals.scriptChanged           = new Signal();
-        this.signals.scriptRemoved           = new Signal();
-        this.signals.windowResize            = new Signal();
-        this.signals.showGridChanged         = new Signal();
-        this.signals.refreshSidebarObject3D  = new Signal();
-        this.signals.historyChanged          = new Signal();
+        this.signals = {
+            editScript              : new Signal(),
+            startPlayer             : new Signal(),
+            stopPlayer              : new Signal(),
+            enterVR                 : new Signal(),
+            enteredVR               : new Signal(),
+            exitedVR                : new Signal(),
+            showModal               : new Signal(),
+            editorCleared           : new Signal(),
+            savingStarted           : new Signal(),
+            savingFinished          : new Signal(),
+            themeChanged            : new Signal(),
+            transformModeChanged    : new Signal(),
+            snapChanged             : new Signal(),
+            spaceChanged            : new Signal(),
+            rendererChanged         : new Signal(),
+            sceneBackgroundChanged  : new Signal(),
+            sceneFogChanged         : new Signal(),
+            sceneGraphChanged       : new Signal(),
+            cameraChanged           : new Signal(),
+            geometryChanged         : new Signal(),
+            objectSelected          : new Signal(),
+            objectFocused           : new Signal(),
+            objectAdded             : new Signal(),
+            objectChanged           : new Signal(),
+            objectRemoved           : new Signal(),
+            helperAdded             : new Signal(),
+            helperRemoved           : new Signal(),
+            materialChanged         : new Signal(),
+            scriptAdded             : new Signal(),
+            scriptChanged           : new Signal(),
+            scriptRemoved           : new Signal(),
+            windowResize            : new Signal(),
+            showGridChanged         : new Signal(),
+            refreshSidebarObject3D  : new Signal(),
+            historyChanged          : new Signal(),
+        };
 
-        this.object             = {};
-        this.geometries         = {};
-        this.materials          = {};
-        this.textures           = {};
-        this.scripts            = {};
-        this.helpers            = {};
+        this.object                 = {};
+        this.geometries             = {};
+        this.materials              = {};
+        this.textures               = {};
+        this.scripts                = {};
+        this.helpers                = {};
 
-        this.selected           = null;
+        this.selected               = null;
     }
 }

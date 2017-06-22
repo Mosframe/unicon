@@ -18,15 +18,6 @@ import {Command     } from '../command';
  */
 export class AddObjectCommand extends Command {
 
-    // [ Public Variables ]
-
-    /**
-     * object
-     *
-     * @type {THREE.Object3D}@memberof AddObjectCommand
-     */
-     object : THREE.Object3D;
-
     // [ Public Functions ]
 
     /**

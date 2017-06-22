@@ -2,6 +2,7 @@
 // command.ts
 // -----------------------------------------------------------------------------
 import {IEditor     } from './interface';
+import {ICommand    } from './interface';
 import {Config      } from './config';
 
 /**
@@ -13,11 +14,13 @@ import {Config      } from './config';
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Command
+ * @implements {ICommand}
  */
-export class Command {
+export class Command implements ICommand {
 
     // [ Public Static Variables ]
-    static editor : IEditor;
+
+    static editor   : IEditor;
 
     // [ Public Variables ]
 
@@ -26,48 +29,32 @@ export class Command {
 	name            : string;
 	inMemory        : boolean;
 	updatable       : boolean;
+    object          : THREE.Object3D;
+    script          : object;
+    attributeName   : string;
+    json            : any;
 
     // [ Public Functions ]
 
-    /**
-     * execute
-     *
-     * @memberof Command
-     */
     execute () {}
-    /**
-     * undo
-     *
-     * @memberof Command
-     */
-    undo () {}
-    /**
-     * command to json
-     *
-     * @returns {*}
-     *
-     * @memberof Command
-     */
-    toJSON () : any {
+
+    undo    () {}
+
+    toJSON  () : any {
         return {
             type             : this.type,
             id               : this.id,
             name             : this.name,
         }
     }
-    /**
-     * command from json
-     *
-     * @param {*} json
-     *
-     * @memberof Command
-     */
+
     fromJSON ( json:any ) {
         this.inMemory       = true;
         this.type           = json.type;
         this.id             = json.id;
         this.name           = json.name;
     }
+    update ( cmd:ICommand ) {}
 
     // [ Constructors ]
 
