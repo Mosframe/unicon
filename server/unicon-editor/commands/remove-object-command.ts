@@ -49,8 +49,8 @@ export class RemoveObjectCommand extends Command {
      */
 	undo () {
 		this.object.traverse( ( child:THREE.Object3D ) => {
-            if( Object.hasProterty( child, 'geometry' ) ) this._editor.addGeometry( child['geometry'] );
-            if( Object.hasProterty( child, 'material' ) ) this._editor.addMaterial( child['material'] );
+            if( child.hasProterty( 'geometry' ) ) this._editor.addGeometry( child['geometry'] );
+            if( child.hasProterty( 'material' ) ) this._editor.addMaterial( child['material'] );
 			this._editor.addHelper( child );
 		});
 
@@ -104,9 +104,8 @@ export class RemoveObjectCommand extends Command {
     constructor( object:THREE.Object3D ) {
         super();
 
-        this.type = 'RemoveObjectCommand';
-        this.name = 'Remove Object';
-
+        this.type   = 'RemoveObjectCommand';
+        this.name   = 'Remove Object';
         this.object = object;
         this.parent = ( object !== undefined ) ? object.parent : undefined;
         if ( this.parent !== undefined ) {

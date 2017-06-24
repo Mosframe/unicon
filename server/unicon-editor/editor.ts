@@ -367,7 +367,7 @@ export class Editor implements IEditor {
 		return this.scene.getObjectByProperty( 'uuid', uuid );
 	}
 
-    execute ( cmd:ICommand, optionalName:string ) {
+    execute ( cmd:ICommand, optionalName?:string ) {
 		this.history.execute( cmd, optionalName );
 	}
 

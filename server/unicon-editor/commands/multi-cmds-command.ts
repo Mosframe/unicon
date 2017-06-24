@@ -2,6 +2,7 @@
 // multi-comds-command.ts
 // -----------------------------------------------------------------------------
 import * as THREE     from 'three';
+import {ICommand    } from '../interface';
 import {IEditor     } from '../interface';
 import {Command     } from '../command';
 
@@ -20,7 +21,7 @@ export class MultiCmdsCommand extends Command {
 
     // [ Public Variables ]
 
-    cmdArray : Command[];
+    cmdArray : ICommand[];
 
     // [ Public Functions ]
 
@@ -89,10 +90,10 @@ export class MultiCmdsCommand extends Command {
 
     /**
      * Creates an instance of MultiCmdsCommand.
-     * @param {Command[]} [cmdArray]
+     * @param {ICommand[]} [cmdArray]
      * @memberof MultiCmdsCommand
      */
-    constructor( cmdArray?:Command[] ) {
+    constructor( cmdArray?:ICommand[] ) {
         super();
 
         this.type       = 'MultiCmdsCommand';

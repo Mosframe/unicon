@@ -22,9 +22,9 @@ export class SetGeometryValueCommand extends Command {
 
     // [ Public Variables ]
 
-    object      : THREE.Mesh;
-    oldValue    : THREE.Geometry;
-    newValue    : THREE.Geometry;
+    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite;
+    oldValue    : number|string|boolean|object;
+    newValue    : number|string|boolean|object;
 
     // [ Public Functions ]
 
@@ -82,20 +82,19 @@ export class SetGeometryValueCommand extends Command {
 
     /**
      * Creates an instance of SetGeometryValueCommand.
-     * @param {THREE.Mesh} object
+     * @param {THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite} object
      * @param {string} attributeName
-     * @param {THREE.Geometry} newValue
+     * @param {number|string|boolean|object} newValue
      * @memberof SetGeometryValueCommand
      */
-    constructor( object:THREE.Mesh, attributeName:string, newValue:THREE.Geometry ) {
+    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite, attributeName:string, newValue:number|string|boolean|object ) {
         super();
 
-        this.type = 'SetGeometryValueCommand';
-        this.name = 'Set Geometry.' + attributeName;
-
-        this.object = object;
-        this.attributeName = attributeName;
-        this.oldValue = ( object !== undefined ) ? object.geometry[ attributeName ] : undefined;
-        this.newValue = newValue;
+        this.type           = 'SetGeometryValueCommand';
+        this.name           = 'Set Geometry.' + attributeName;
+        this.object         = object;
+        this.attributeName  = attributeName;
+        this.oldValue       = ( object !== undefined ) ? object.geometry[ attributeName ] : undefined;
+        this.newValue       = newValue;
     }
 }

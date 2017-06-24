@@ -22,7 +22,7 @@ export class SetGeometryCommand extends Command {
 
     // [ Public Variables ]
 
-    object      : THREE.Mesh;
+    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite;
     oldGeometry : THREE.Geometry | THREE.BufferGeometry;
     newGeometry : THREE.Geometry | THREE.BufferGeometry;
 
@@ -93,20 +93,18 @@ export class SetGeometryCommand extends Command {
 
     /**
      * Creates an instance of SetGeometryCommand.
-     * @param {THREE.Mesh} object
+     * @param {THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite} object
      * @param {(THREE.Geometry|THREE.BufferGeometry)} newGeometry
      * @memberof SetGeometryCommand
      */
-    constructor( object:THREE.Mesh, newGeometry:THREE.Geometry|THREE.BufferGeometry ) {
+    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite, newGeometry:THREE.Geometry|THREE.BufferGeometry ) {
         super();
-
-        this.type = 'SetGeometryCommand';
-        this.name = 'Set Geometry';
-        this.updatable = true;
-
-        this.object = object;
-        this.oldGeometry = ( object !== undefined ) ? object.geometry : undefined;
-        this.newGeometry = newGeometry;
+        this.type           = 'SetGeometryCommand';
+        this.name           = 'Set Geometry';
+        this.updatable      = true;
+        this.object         = object;
+        this.oldGeometry    = ( object !== undefined ) ? object.geometry : undefined;
+        this.newGeometry    = newGeometry;
     }
 
     // [ Protected Functions ]

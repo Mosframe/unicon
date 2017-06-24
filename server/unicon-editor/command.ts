@@ -37,9 +37,7 @@ export class Command implements ICommand {
     // [ Public Functions ]
 
     execute () {}
-
     undo    () {}
-
     toJSON  () : any {
         return {
             type             : this.type,
@@ -47,7 +45,6 @@ export class Command implements ICommand {
             name             : this.name,
         }
     }
-
     fromJSON ( json:any ) {
         this.inMemory       = true;
         this.type           = json.type;

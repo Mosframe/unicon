@@ -5,8 +5,32 @@
 export{}
 
 declare global {
+
     /**
      * Object
+     *
+     * @export
+     * @interface Object
+     */
+    export interface Object {
+        /**
+         * object has propery?
+         *
+         *
+         * @memberof Object
+         */
+        hasProterty : ( propertyName:string ) => boolean;
+        /**
+         * object has function?
+         *
+         *
+         * @memberof Object
+         */
+        hasFunction : ( functionName:string ) => boolean;
+    }
+
+    /**
+     * ObjectConstructor
      *
      * @author mosframe ( https://github.com/mosframe )
      * @export
@@ -28,36 +52,21 @@ declare global {
          */
         hasFunction : ( object:object, functionName:string ) => boolean;
     }
-    export interface Object {
-        /**
-         * object has propery?
-         *
-         *
-         * @memberof Object
-         */
-        hasProterty : ( object:object, propertyName:string ) => boolean;
-        /**
-         * object has function?
-         *
-         *
-         * @memberof Object
-         */
-        hasFunction : ( object:object, functionName:string ) => boolean;
-    }
 }
 
-Object.hasProterty = ( object:object, propertyName:string ) : boolean => {
-    for( let name in object ) {
+Object.prototype.hasProterty = ( propertyName:string ) : boolean => {
+    for( let name in this ) {
         if( name === propertyName ) {
             return true;
         }
     }
     return false;
 };
-Object.hasFunction = ( object:object, functionName:string ) : boolean => {
-    for( let name in object ) {
+
+Object.prototype.hasFunction = ( functionName:string ) : boolean => {
+    for( let name in this ) {
         if( name === functionName ) {
-            if( typeof object[name] == 'function' ) {
+            if( typeof this[name] == 'function' ) {
                 return true;
             }
         }
@@ -65,9 +74,11 @@ Object.hasFunction = ( object:object, functionName:string ) : boolean => {
     return false;
 };
 
-Object.prototype.hasProterty = ( object:object, propertyName:string ) : boolean => {
-    return Object.hasProterty( object, propertyName );
+Object.hasProterty = ( object:object, propertyName:string ) : boolean => {
+    return object.hasProterty( propertyName );
 };
-Object.prototype.hasFunction = ( object:object, functionName:string ) : boolean => {
-    return Object.hasFunction( object, functionName );
+
+Object.hasFunction = ( object:object, functionName:string ) : boolean => {
+    return object.hasProterty( functionName );
 };
+

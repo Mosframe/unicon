@@ -1,22 +1,11 @@
 // -----------------------------------------------------------------------------
-// 006 : Unicon 엔진 클라이언트 첫번째 테스트
+// 006 :
 // -----------------------------------------------------------------------------
+import * as THREE from 'three';
+import { OrbitControls } from 'three-orbitcontrols-ts';
 
-import * as GL            from '../../engine/graphic';
-import {OrbitControls   } from '../../editor/orbit-controls';
-import {Vector3         } from '../../engine/vector3';
-import {Behaviour       } from '../../engine/behaviour';
-import {MeshRenderer    } from '../../engine/mesh-renderer';
-import {PrimitiveType   } from '../../engine/primitive-type';
-import {Camera          } from '../../engine/camera';
-import {Light           } from '../../engine/light';
-import {GameObject      } from '../../engine/game-object';
-import {Renderer        } from '../../engine/renderer';
-import {Scene           } from '../../engine/scene';
-
-let Detector        = require('../../lib/three.js/examples/js/Detector'); // @types/three/detactor를 사용하는 방법을 몰라서 추가함
-let DatGUI          = require('../../lib/dat.gui/build/dat.gui'); // 주의 : 현재 npm에 0.6.1버전은 문제가 있다.
-
+let Detector    = require('../../lib/three.js/examples/js/Detector');
+let DatGUI      = require('../../lib/dat.gui/build/dat.gui');
 
 let container = document.createElement( 'div' );
 document.body.appendChild( container );
@@ -28,191 +17,75 @@ if( !Detector.webgl ) {
     container.appendChild(warning);
 }
 
-/*
-    유니티 구조
-    Scene
-        GameObject
-            transform
-            camera
-            light
-            Renderer
-            mesh
-            component
-            script
-                GameObject
-                    transform
-                    camera
-                    light
-                    Renderer
-                    mesh
-                    component
-
-    Three 구조
-
-    Scene
-        Object3D
-            Object3D
-                Object3D
-
-    Unicon 구조
-
-    Scene : GL.Scene : GL.Object3D
-        GameObject : Transform : GL.Object3D
-            Camera : GL.Camera : GL.Object3D
-            Transform : GL.Object3D
-                Light: GL.Light
-
-
-    Scene : Ubject
-        core : GL.Scene : GL.Object3D
-
-        GameObject : Ubject
-
-            Transform : Component
-                core = GL.Object3D
-
-            Camera : Component
-                core : GL.Camera : GL.Object3D
-
-            Light : Component
-                core : GL.Light : GL.Object3D
-
-
-    // Camera = GameObject + Transform + Camera
-    // Light  = GameObject + Transform + Light
-    //
-
-    Scene : GL.Scene : GL.Object3D
-
-        Transform : GL.Object3D
-
-        Camera : GL.Camera : GL.Object3D
-            components
-
-        Light : GL.Light : GL.Object3D
-            components
-
-*/
-
+// -----------------------------------------------------------------------------
+// 렌더러 설정
+// -----------------------------------------------------------------------------
+let renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setClearColor(0xdddddd);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.appendChild( renderer.domElement );
 
 // -----------------------------------------------------------------------------
-// SceneView
+// 씬 설정
 // -----------------------------------------------------------------------------
-class SceneView {
-    renderer    : Renderer;
-    camera      : Camera;   // editor camera
-    light       : Light;    // editor light
+let scene = new THREE.Scene();
 
-    scene       : Scene;    // current scene
-
-    // -------------------------------------------------------------------------
-    // constructor
-    // -------------------------------------------------------------------------
-    constructor() {
-
-        // scene setting
-        this.scene = new Scene();
-
-        // renderer setting
-        this.renderer = new MeshRenderer( container );
-        // camera setting
-        this.camera = new Camera();
-        // light setting
-        this.light = new Light();
-
-        //
-        GameObject.createPrimitive( PrimitiveType.cube );
-    }
-
-    // -----------------------------------------------------------------------------
-    // update
-    // -----------------------------------------------------------------------------
-    update = () => {
-        // -------------------------------------------------------------------------
-        // cube animation
-        // -------------------------------------------------------------------------
-        {
-            if( cube.controller ) {
-                cube.mesh.rotation.x += cube.controller.rotSpeed.x;
-                cube.mesh.rotation.y += cube.controller.rotSpeed.y;
-                cube.mesh.rotation.z += cube.controller.rotSpeed.z;
-            }
-        }
-    }
-
-    // -----------------------------------------------------------------------------
-    // render
-    // -----------------------------------------------------------------------------
-    render = () => {
-        requestAnimationFrame( this.render );
-        this.update();
-        this.renderer.render( this.scene, this.camera );
-    }
-
-    // -----------------------------------------------------------------------------
-    // onRender
-    // -----------------------------------------------------------------------------
-    onRender = (event:any):void => {
-        this.update();
-    }
-
-    // -----------------------------------------------------------------------------
-    // add : add object to scene
-    // -----------------------------------------------------------------------------
-    add = (obj:any):void => {
-        this.scene.core.add( obj );
-    }
+// -----------------------------------------------------------------------------
+// 카메라 설정
+// -----------------------------------------------------------------------------
+let cameraOption = {
+    fov     : 45,
+    aspect  : window.innerWidth / window.innerHeight,
+    near    : 0.1,
+    far     : 500,
 }
+let camera = new THREE.PerspectiveCamera(
+    cameraOption.fov,
+    cameraOption.aspect,
+    cameraOption.near,
+    cameraOption.far );
+
+camera.position.set( 40, 40, 40);
+//camera.lookAt( new THREE.Vector3(0,0,0) );
+camera.lookAt( scene.position );
 
 // -----------------------------------------------------------------------------
-// SceneHelper
+// 헬퍼 설정
 // -----------------------------------------------------------------------------
-class SceneHelper {
-    scene : Scene;
-
-    // -------------------------------------------------------------------------
-    // constructor
-    // -------------------------------------------------------------------------
-    constructor(sceneView:SceneView) {
-        this.scene = sceneView.scene;
-        // axis
-        {
-            let axis = new GL.AxisHelper(10);
-            //axis.position.set(-60,0,-60);
-            this.scene.core.add( axis );
-        }
-        // grids
-        {
-            // y
-            let grid = new GL.GridHelper(100,20,0xffff00,0x000000);
-            this.scene.core.add( grid );
-            // z
-            //let grid2 = new GL.GridHelper(100,20,0xffff00,0x000000);
-            //grid2.rotation.x = -0.5 * Math.PI;
-            //this.scene.add( grid2 );
-            // x
-            //let grid3 = new GL.GridHelper(100,20,0xffff00,0x000000);
-            //grid3.rotation.x = -0.5 * Math.PI;
-            //grid3.rotation.z = -0.5 * Math.PI;
-            //this.scene.add( grid3 );
-        }
-        // camera controll
-        {
-            let cameraControls = new OrbitControls( sceneView.camera.core, sceneView.renderer.core.domElement );
-            cameraControls.mouseButtons.PAN = GL.MOUSE.MIDDLE;
-            cameraControls.mouseButtons.ZOOM = GL.MOUSE.RIGHT;
-            cameraControls.addEventListener( 'change', sceneView.onRender );
-        }
-    }
+// 좌표축
+{
+    let axis = new THREE.AxisHelper(10);
+    //axis.position.set(-60,0,-60);
+    scene.add( axis );
+}
+// 그리드
+{
+    // y
+    let grid = new THREE.GridHelper(100,20,0xffff00,0x000000);
+    scene.add( grid );
+    // z
+    //let grid2 = new THREE.GridHelper(100,20,0xffff00,0x000000);
+    //grid2.rotation.x = -0.5 * Math.PI;
+    //scene.add( grid2 );
+    // x
+    //let grid3 = new THREE.GridHelper(100,20,0xffff00,0x000000);
+    //grid3.rotation.x = -0.5 * Math.PI;
+    //grid3.rotation.z = -0.5 * Math.PI;
+    //scene.add( grid3 );
 }
 
 
-
-let sceneView   = new SceneView();
-let sceneHelper = new SceneHelper(sceneView);
-
-
-
+// -----------------------------------------------------------------------------
+// 라이트 설정
+// -----------------------------------------------------------------------------
+{
+    let light = new THREE.SpotLight(0xffffff);
+    light.castShadow = true;
+    light.position.set(15,30,50);
+    scene.add(light);
+}
 
 // -----------------------------------------------------------------------------
 // line 생성
@@ -220,21 +93,115 @@ let sceneHelper = new SceneHelper(sceneView);
 /*
 {
     // 메터리얼 생성
-    let material = new GL.LineBasicMaterial( {color:0xff00ff} );
-    let geometry = new GL.Geometry();
-    geometry.vertices.push( new GL.Vector3(-10,  0,  0) );
-    geometry.vertices.push( new GL.Vector3(  0, 10,  0) );
-    geometry.vertices.push( new GL.Vector3( 10,  0,  0) );
-    var line = new GL.Line(geometry, material);
+    let material = new THREE.LineBasicMaterial( {color:0xff00ff} );
+    let geometry = new THREE.Geometry();
+    geometry.vertices.push( new THREE.Vector3(-10,  0,  0) );
+    geometry.vertices.push( new THREE.Vector3(  0, 10,  0) );
+    geometry.vertices.push( new THREE.Vector3( 10,  0,  0) );
+    var line = new THREE.Line(geometry, material);
     scene.add(line);
 }
 */
+// -----------------------------------------------------------------------------
+// plane
+// -----------------------------------------------------------------------------
+{
+    let geometry    = new THREE.PlaneGeometry( 30, 30, 30 );
+    let material    = new THREE.MeshLambertMaterial({color:0xffffff});
+    let mesh        = new THREE.Mesh( geometry, material );
+
+    mesh.rotation.x = -0.5 * Math.PI;
+    mesh.receiveShadow = true;
+
+    scene.add( mesh );
+}
+
+// -----------------------------------------------------------------------------
+// cube
+// -----------------------------------------------------------------------------
+let cube:any;
+{
+    let geometry    = new THREE.BoxGeometry( 5, 5, 5 );
+    let material    = new THREE.MeshLambertMaterial({color:0xff3300});
+    let mesh        = new THREE.Mesh( geometry, material );
+    mesh.position.x = 2.5;
+    mesh.position.y = 2.5;
+    mesh.position.z = 2.5;
+    mesh.castShadow = true;
+    scene.add( mesh );
+    cube = mesh;
+}
+
+// -----------------------------------------------------------------------------
+// cube 생성
+// -----------------------------------------------------------------------------
+/*
+{
+    let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+    let texture = new THREE.TextureLoader().load( "./textures/000.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 1, 1 );
+
+    let material = new THREE.MeshLambertMaterial({color:0xff3300});
+    //let material = new THREE.MeshBasicMaterial({color: 0xffffff, map: texture});
+
+    var cube = new THREE.Mesh( geometry, material );
+    cube.position.x = 5.5;
+    cube.position.y = 2.5;
+    cube.position.z = 2.5;
+    scene.add( cube );
+}
+*/
+
+// -----------------------------------------------------------------------------
+// update
+// -----------------------------------------------------------------------------
+let update = () => {
+    // -------------------------------------------------------------------------
+    // 큐브 에니메이션
+    // -------------------------------------------------------------------------
+    {
+        if( cube.controller ) {
+            cube.rotation.x += cube.controller.rotSpeed.x;
+            cube.rotation.y += cube.controller.rotSpeed.y;
+            cube.rotation.z += cube.controller.rotSpeed.z;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 렌더링
+// -----------------------------------------------------------------------------
+let render = () => {
+    requestAnimationFrame( render );
+    update();
+    renderer.render( scene, camera );
+}
+
+render();
 
 
+let controls = new OrbitControls( camera, renderer.domElement );
+controls.addEventListener( 'change', render );
+
+
+// -----------------------------------------------------------------------------
+// Component
+// -----------------------------------------------------------------------------
+class Vector3 {
+    x:number;
+    y:number;
+    z:number;
+}
+interface Component {
+
+}
 // -----------------------------------------------------------------------------
 // Component : Controller
 // -----------------------------------------------------------------------------
-class Controller {
+class Controller implements Component {
     rotSpeed:Vector3;
     constructor() {
         this.rotSpeed = new Vector3();
@@ -243,86 +210,7 @@ class Controller {
         this.rotSpeed.z = 0.1;
     }
 }
-// -----------------------------------------------------------------------------
-// plane
-// -----------------------------------------------------------------------------
-class Shape extends Behaviour {
-    mesh : THREE.Mesh;
-
-    constructor() {
-        super();
-    }
-}
-
-class Plane extends Shape {
-
-    constructor() {
-        super();
-
-        let geometry    = new GL.PlaneGeometry( 30, 30, 30 );
-        let material    = new GL.MeshLambertMaterial({color:0xffffff});
-        this.mesh       = new GL.Mesh( geometry, material );
-        this.mesh.rotation.x = -0.5 * Math.PI;
-        this.mesh.receiveShadow = true;
-        sceneView.add( this.mesh );
-    }
-}
-
-let plane = new Plane();
-
-
-// -----------------------------------------------------------------------------
-// cube
-// -----------------------------------------------------------------------------
-class Cube extends Shape {
-
-    controller : Controller;
-
-    constructor() {
-        super();
-
-        let geometry    = new GL.BoxGeometry( 5, 5, 5 );
-        let material    = new GL.MeshLambertMaterial({color:0xff3300});
-        this.mesh       = new GL.Mesh( geometry, material );
-        this.mesh.position.x = 2.5;
-        this.mesh.position.y = 2.5;
-        this.mesh.position.z = 2.5;
-        this.mesh.castShadow = true;
-        sceneView.add( this.mesh );
-
-        this.controller = new Controller();
-    }
-}
-
-let cube = new Cube();
-
-// -----------------------------------------------------------------------------
-// cube 생성
-// -----------------------------------------------------------------------------
-/*
-{
-    let geometry = new GL.BoxGeometry( 1, 1, 1 );
-
-    let texture = new GL.TextureLoader().load( "./textures/000.jpg" );
-    texture.wrapS = GL.RepeatWrapping;
-    texture.wrapT = GL.RepeatWrapping;
-    texture.repeat.set( 1, 1 );
-
-    let material = new GL.MeshLambertMaterial({color:0xff3300});
-    //let material = new GL.MeshBasicMaterial({color: 0xffffff, map: texture});
-
-    var cube = new GL.Mesh( geometry, material );
-    cube.position.x = 5.5;
-    cube.position.y = 2.5;
-    cube.position.z = 2.5;
-    frame.add( cube );
-}
-*/
-
-
-
-sceneView.render();
-
+cube.controller = new Controller();
 
 // -----------------------------------------------------------------------------
 // GUI

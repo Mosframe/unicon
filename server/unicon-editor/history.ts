@@ -32,7 +32,7 @@ export class History {
 
     // [ Public Functions ]
 
-	execute ( cmd:ICommand, optionalName:string ) {
+	execute ( cmd:ICommand, optionalName?:string ) {
 
 		let lastCmd = this.undos[ this.undos.length - 1 ];
 		let timeDifference = new Date().getTime() - this.lastCmdTime.getTime();

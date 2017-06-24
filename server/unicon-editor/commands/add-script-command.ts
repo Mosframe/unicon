@@ -83,9 +83,7 @@ export class AddScriptCommand extends Command {
 
         this.type   = 'AddScriptCommand';
         this.name   = 'Add Script';
-
         this.object = object;
         this.script = script;
     }
-
 }

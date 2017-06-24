@@ -1,46 +1,21 @@
 // -----------------------------------------------------------------------------
-// temp.ts
+// .ts
 // -----------------------------------------------------------------------------
-import * as GL  from '../engine/graphic';
-import {Ubject} from '../engine/ubject';
+import {UObject} from './uobject';
 
 /**
- * Temp
+ *
  *
  * @author mosframe ( https://github.com/mosframe )
  * @export
- * @class Temp
- * @extends {Ubject}
+ * @class
+ * @extends {UObject}
  */
-export class Temp extends Ubject {
+export class T extends UObject {
 
-    // [ Public Delegates ]
-
-    // [ Public Static Variables ]
-
-    // [ Public Variables ]
-
-    get core() : GL.Object3D { return this._core; }
-
-    // [ Constructors ]
-
-    // [ Public Static Functions ]
+    // [ Public Properties ]
 
     // [ Public Functions ]
 
-    // [ Public Operators ]
-
-    // [ Public Events ]
-
-    // [ Public Messages ]
-
-    // [ Protected Variables ]
-
-    protected _core : GL.Object3D;
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Functions ]
-
-    // [ Protected Static Functions ]
+    // [ Protected Members ]
 }

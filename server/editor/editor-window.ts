@@ -1,44 +1,28 @@
 // -----------------------------------------------------------------------------
 // editor-window.ts
 // -----------------------------------------------------------------------------
-import deprecated         from 'deprecated-decorator';
-import * as GL            from '../engine/graphic';
-import {ScriptableObject} from '../engine/scriptable-object';
-
 /**
- * Derive from this class to create an editor window.
+ * EditorWindow
  *
  * @author mosframe ( https://github.com/mosframe )
- *
  * @export
  * @class EditorWindow
- * @extends {ScriptableObject}
  */
-export class EditorWindow extends ScriptableObject {
+export class EditorWindow {
 
-    // [ Public Variables ]
-
-    // [ Constructors ]
+    // [ Public Properties ]
 
     // [ Public Functions ]
 
-    render() {
-
+    constructor( titleName:string='EditorWindow' ) {
+        let datGUI = require('../lib/dat.gui/build/dat.gui');
+        this._core = new datGUI.GUI({ width:300 });
+        this._root = this._core.addFolder(titleName);
+        this._root.open();
     }
 
-    update() {
+    // [ Protected Members ]
 
-    }
-
-    // [ Public Static Variables ]
-
-    // [ Public Static Functions ]
-
-    // [ Protected Variables ]
-
-    // [ Protected Functions ]
-
-    // [ Protected Static Variables ]
-
-    // [ Protected Static Functions ]
+    protected _core : any;
+    protected _root : any;
 }

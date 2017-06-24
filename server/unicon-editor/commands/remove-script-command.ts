@@ -21,7 +21,7 @@ export class RemoveScriptCommand extends Command {
 
     // [ Public Variables ]
 
-     index      : number;
+    index  : number;
 
     // [ Public Functions ]
 
@@ -35,7 +35,7 @@ export class RemoveScriptCommand extends Command {
 		if ( this.index !== - 1 ) {
 			this._editor.scripts[ this.object.uuid ].splice( this.index, 1 );
 		}
-		this._editor.signals.scriptRemoved.dispatch( this.script );
+        this._editor.signals.scriptRemoved.dispatch( this.script );
     }
     /**
      * undo
@@ -86,9 +86,8 @@ export class RemoveScriptCommand extends Command {
     constructor( object:THREE.Object3D, script:object ) {
         super();
 
-        this.type = 'RemoveScriptCommand';
-        this.name = 'Remove Script';
-
+        this.type   = 'RemoveScriptCommand';
+        this.name   = 'Remove Script';
         this.object = object;
         this.script = script;
         if ( this.object && this.script ) {

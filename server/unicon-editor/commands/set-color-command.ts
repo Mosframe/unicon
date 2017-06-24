@@ -88,10 +88,10 @@ export class SetColorCommand extends Command {
      * Creates an instance of SetColorCommand.
      * @param {THREE.Object3D} object
      * @param {string} attributeName
-     * @param {any} newValue
+     * @param {number} newValue
      * @memberof SetColorCommand
      */
-    constructor( object:THREE.Object3D, attributeName:string, newValue ) {
+    constructor( object:THREE.Object3D, attributeName:string, newValue:number ) {
         super();
 
         this.type = 'SetColorCommand';

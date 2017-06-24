@@ -1,1 +1,1 @@
-console.error("TypeScript error: server/unicon-editor/unicon-editor.ts(17,18): Error TS2304: Cannot find name 'Script'.");
+console.error("Error: Cannot find module 'file' from 'C:\\works\\Node.js\\unicon\\server\\lib\\jsonlint'");

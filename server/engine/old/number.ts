@@ -5,22 +5,7 @@
 export{}
 
 declare global {
-    /**
-     * NumberConstructor
-     *
-     * @author mosframe ( https://github.com/mosframe )
-     * @export
-     * @interface Number
-     */
-    export interface NumberConstructor {
-        /**
-         * number to string format
-         *
-         *
-         * @memberof NumberConstructor
-         */
-        format: () => string;
-    }
+
     /**
      * Number
      *
@@ -37,10 +22,29 @@ declare global {
          */
         format: () => string;
     }
+
+    /**
+     * NumberConstructor
+     *
+     * @author mosframe ( https://github.com/mosframe )
+     * @export
+     * @interface Number
+     */
+    export interface NumberConstructor {
+        /**
+         * number to string format
+         *
+         *
+         * @memberof NumberConstructor
+         */
+        format: ( number:number ) => string;
+    }
 }
-Number.format = () : string => {
+
+Number.prototype.format = () => {
     return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 };
-Number.prototype.format = function (){
-    return Number.format();
+
+Number.format = ( number:number ) : string => {
+    return number.format();
 };

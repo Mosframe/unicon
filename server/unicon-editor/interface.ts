@@ -85,7 +85,7 @@ export interface IEditor {
 	fromJSON        ( json:any );
 	toJSON          () : any;
 	objectByUuid    ( uuid:string ) : THREE.Object3D;
-    execute         ( cmd:ICommand, optionalName:string );
+    execute         ( cmd:ICommand, optionalName?:string );
 	undo            ();
 	redo            ();
 }

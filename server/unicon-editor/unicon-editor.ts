@@ -4,18 +4,19 @@
 import {                    } from '../engine/number';
 //import {Panel as GUIPanel 	} from '../editor/gui/panel';
 import {Editor              } from './editor';
+import {Script              } from './script';
 import {Viewport            } from './viewport';
 
 
 //
 
-var editor = new Editor();
+let editor = new Editor();
 
-var viewport = new Viewport( editor );
+let viewport = new Viewport( editor );
 document.body.appendChild( viewport.container.core );
 
-var script = new Script( editor );
-document.body.appendChild( script.dom );
+let script = new Script( editor );
+document.body.appendChild( script.container.core );
 
 /*
 var player = new Player( editor );
