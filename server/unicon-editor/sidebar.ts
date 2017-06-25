@@ -9,6 +9,7 @@ import {Span            as UISpan       }   from '../editor/gui/span';
 import {Text            as UIText       }   from '../editor/gui/text';
 import {Boolean         as UIBoolean    }   from '../editor/gui/boolean';
 import {Sidebar_Scene                   }   from './sidebar.scene';
+import {Sidebar_Project                 }   from './sidebar.project';
 
 
 /**
@@ -51,9 +52,7 @@ export class Sidebar {
         container.add( scene );
 
         var project = new UISpan().add(
-            /*
-            new Sidebar.Project( editor )
-            */
+            new Sidebar_Project( editor ).container
         );
         container.add( project );
 

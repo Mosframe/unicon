@@ -10,8 +10,8 @@ import {Text} from './text';
 
 export class Boolean extends Span {
 
-    getValue () { return this.checkbox.value; }
-    setValue ( value ) { this.checkbox.value = value; }
+    getValue () : boolean       { return this.checkbox.getValue(); }
+    setValue ( value:boolean )  { this.checkbox.setValue(value); return this; }
 
     constructor ( boolean, text ) {
         super();

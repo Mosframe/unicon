@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
 import {				            }   from './date';
+import { System                     }   from '../engine/system';
 import { Panel      as UIPanel      }   from '../editor/gui/panel';
 import { Button     as UIButton     }   from '../editor/gui/button';
 import { Number     as UINumber     }   from '../editor/gui/number';
@@ -15,6 +16,7 @@ import { Break      as UIBreak      }   from '../editor/gui/break';
 import { Select     as UISelect     }   from '../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../editor/gui/outliner';
+import { Checkbox   as UICheckbox   }   from '../editor/gui/checkbox';
 
 
 /**
@@ -23,291 +25,167 @@ import { Outliner   as UIOutliner   }   from '../editor/gui/outliner';
 
 export class Sidebar_Project {
 
+    editor : any;
+    config : any;
+    signals : any;
+    rendererTypes : {}
     container : UIPanel;
+    options : {};
+    rendererTypeRow : UIRow;
+    rendererType: UISelect;
+    rendererPropertiesRow: UIRow;
+    rendererAntialias : UIBoolean;
+    rendererShadows : UIBoolean;
+    rendererGammaInput : UIBoolean;
+    rendererGammaOutput : UIBoolean;
+    vrRow : UIRow;
+    vr : UICheckbox;
 
-    constructor ( editor ) {
 
-        var signals = editor.signals;
 
-        var container = this.container = new UIPanel();
-        container.setBorderTop( '0' );
-        container.setPaddingTop( '20px' );
+    constructor( editor ) {
 
-        // outliner
+        this.editor = editor;
+        this.config = editor.config;
+        this.signals = editor.signals;
 
-        function buildOption( object, draggable ) {
+        this.rendererTypes = {
+            'WebGLRenderer': THREE.WebGLRenderer,
+            'CanvasRenderer': THREE.CanvasRenderer,
+            //'SVGRenderer': THREE.SVGRenderer,
+            //'SoftwareRenderer': THREE.SoftwareRenderer,
+            //'RaytracingRenderer': THREE.RaytracingRenderer
+        };
 
-            var option = document.createElement( 'div' );
-            option.draggable = draggable;
-            option.innerHTML = buildHTML( object );
-            option['value'] = object.id;
+        this.container = new UIPanel();
+        this.container.setBorderTop( '0' );
+        this.container.setPaddingTop( '20px' );
 
-            return option;
+        // class
+
+        this.options = {};
+
+
+        for ( let key in this.rendererTypes ) {
+
+            console.log(System);
+            if ( key.indexOf( 'WebGL' ) >= 0 && System.Support.webgl === false ) continue;
+
+            this.options[ key ] = key;
         }
 
-        function getMaterialName( material ) {
+        this.rendererTypeRow = new UIRow();
+        this.rendererType = new UISelect().setOptions( this.options ).setWidth( '150px' ).onChange( ()=> {
 
-            if ( Array.isArray( material ) ) {
+            let value = this.rendererType.getValue();
 
-                var array:any = [];
+            this.config.setKey( 'project/renderer', value );
 
-                for ( var i = 0; i < material.length; i ++ ) {
-
-                    array.push( material[ i ].name );
-
-                }
-
-                return array.join( ',' );
-
-            }
-
-            return material.name;
-
-        }
-
-        function buildHTML( object ) {
-
-            var html = '<span class="type ' + object.type + '"></span> ' + object.name;
-
-            if ( object instanceof THREE.Mesh ) {
-
-                var geometry = object.geometry;
-                var material = object.material;
-
-                html += ' <span class="type ' + geometry.type + '"></span> ' + geometry.name;
-                html += ' <span class="type ' + material.type + '"></span> ' + getMaterialName( material );
-
-            }
-
-            html += getScript( object.uuid );
-
-            return html;
-
-        }
-
-        function getScript( uuid ) {
-
-            if ( editor.scripts[ uuid ] !== undefined ) {
-
-                return ' <span class="type Script"></span>';
-
-            }
-
-            return '';
-
-        }
-
-        var ignoreObjectSelectedSignal = false;
-
-        var outliner = new UIOutliner( editor );
-        outliner.setId( 'outliner' );
-        outliner.onChange( function () {
-
-            ignoreObjectSelectedSignal = true;
-
-            editor.selectById( parseInt( outliner.getValue() ) );
-
-            ignoreObjectSelectedSignal = false;
-
-        } );
-        outliner.onDblClick( function () {
-
-            editor.focusById( parseInt( outliner.getValue() ) );
-
-        } );
-        container.add( outliner );
-        container.add( new UIBreak() );
-
-        // background
-
-        function onBackgroundChanged() {
-
-            signals.sceneBackgroundChanged.dispatch( backgroundColor.getHexValue() );
-
-        }
-
-        var backgroundRow = new UIRow();
-
-        var backgroundColor = new UIColor().setValue( '#aaaaaa' ).onChange( onBackgroundChanged );
-
-        backgroundRow.add( new UIText( 'Background' ).setWidth( '90px' ) );
-        backgroundRow.add( backgroundColor );
-
-        container.add( backgroundRow );
-
-        // fog
-
-        function onFogChanged() {
-
-            signals.sceneFogChanged.dispatch(
-                fogType.getValue(),
-                fogColor.getHexValue(),
-                fogNear.getValue(),
-                fogFar.getValue(),
-                fogDensity.getValue()
-            );
-
-        }
-
-        var fogTypeRow = new UIRow();
-        var fogType = new UISelect().setOptions( {
-
-            'None': 'None',
-            'Fog': 'Linear',
-            'FogExp2': 'Exponential'
-
-        } ).setWidth( '150px' );
-        fogType.onChange( function () {
-
-            onFogChanged();
-            refreshFogUI();
-
-        } );
-
-        fogTypeRow.add( new UIText( 'Fog' ).setWidth( '90px' ) );
-        fogTypeRow.add( fogType );
-
-        container.add( fogTypeRow );
-
-        // fog color
-
-        var fogPropertiesRow = new UIRow();
-        fogPropertiesRow.setDisplay( 'none' );
-        fogPropertiesRow.setMarginLeft( '90px' );
-        container.add( fogPropertiesRow );
-
-        var fogColor = new UIColor().setValue( '#aaaaaa' );
-        fogColor.onChange( onFogChanged );
-        fogPropertiesRow.add( fogColor );
-
-        // fog near
-
-        var fogNear = new UINumber( 0.1 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogNear );
-
-        // fog far
-
-        var fogFar = new UINumber( 50 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogFar );
-
-        // fog density
-
-        var fogDensity = new UINumber( 0.05 ).setWidth( '40px' ).setRange( 0, 0.1 ).setPrecision( 3 ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogDensity );
-
-        //
-
-        function refreshUI() {
-
-            var camera = editor.camera;
-            var scene = editor.scene;
-
-            var options:any = [];
-
-            options.push( buildOption( camera, false ) );
-            options.push( buildOption( scene, false ) );
-
-            ( function addObjects( objects, pad ) {
-
-                for ( var i = 0, l = objects.length; i < l; i ++ ) {
-
-                    var object = objects[ i ];
-
-                    var option = buildOption( object, true );
-                    option.style.paddingLeft = ( pad * 10 ) + 'px';
-                    options.push( option );
-
-                    addObjects( object.children, pad + 1 );
-
-                }
-
-            } )( scene.children, 1 );
-
-            outliner.setOptions( options );
-
-            if ( editor.selected !== null ) {
-
-                outliner.setValue( editor.selected.id );
-
-            }
-
-            if ( scene.background ) {
-
-                backgroundColor.setHexValue( scene.background.getHex() );
-
-            }
-
-            if ( scene.fog ) {
-
-                fogColor.setHexValue( scene.fog.color.getHex() );
-
-                if ( scene.fog instanceof THREE.Fog ) {
-
-                    fogType.setValue( "Fog" );
-                    fogNear.setValue( scene.fog.near );
-                    fogFar.setValue( scene.fog.far );
-
-                } else if ( scene.fog instanceof THREE.FogExp2 ) {
-
-                    fogType.setValue( "FogExp2" );
-                    fogDensity.setValue( scene.fog.density );
-
-                }
-
-            } else {
-
-                fogType.setValue( "None" );
-
-            }
-
-            refreshFogUI();
-
-        }
-
-        function refreshFogUI() {
-
-            var type = fogType.getValue();
-
-            fogPropertiesRow.setDisplay( type === 'None' ? 'none' : '' );
-            fogNear.setDisplay( type === 'Fog' ? '' : 'none' );
-            fogFar.setDisplay( type === 'Fog' ? '' : 'none' );
-            fogDensity.setDisplay( type === 'FogExp2' ? '' : 'none' );
-
-        }
-
-        refreshUI();
-
-        // events
-
-        signals.editorCleared.add( refreshUI );
-
-        signals.sceneGraphChanged.add( refreshUI );
-
-        signals.objectChanged.add( function ( object ) {
-
-            var options = outliner.options;
-
-            for ( var i = 0; i < options.length; i ++ ) {
-
-                var option = options[ i ];
-
-                if ( option.value === object.id ) {
-
-                    option.innerHTML = buildHTML( object );
-                    return;
-
-                }
-
-            }
-
-        } );
-
-        signals.objectSelected.add( function ( object ) {
-
-            if ( ignoreObjectSelectedSignal === true ) return;
-
-            outliner.setValue( object !== null ? object.id : null );
+            this.updateRenderer();
 
         });
+
+        this.rendererTypeRow.add( new UIText( 'Renderer' ).setWidth( '90px' ) );
+        this.rendererTypeRow.add( this.rendererType );
+
+        this.container.add( this.rendererTypeRow );
+
+        if ( this.config.getKey( 'project/renderer' ) !== undefined ) {
+
+            this.rendererType.setValue( this.config.getKey( 'project/renderer' ) );
+
+        }
+
+        // antialiasing
+
+        this.rendererPropertiesRow = new UIRow().setMarginLeft( '90px' );
+
+        this.rendererAntialias = new UIBoolean( this.config.getKey( 'project/renderer/antialias' ), 'antialias' ).onChange( ()=> {
+
+            this.config.setKey( 'project/renderer/antialias', this.rendererAntialias.getValue() );
+            this.updateRenderer();
+
+        });
+        this.rendererPropertiesRow.add( this.rendererAntialias );
+
+        // shadow
+
+        this.rendererShadows = new UIBoolean( this.config.getKey( 'project/renderer/shadows' ), 'shadows' ).onChange( () => {
+
+            this.config.setKey( 'project/renderer/shadows', this.rendererShadows.getValue() );
+            this.updateRenderer();
+
+        });
+        this.rendererPropertiesRow.add( this.rendererShadows );
+
+        this.rendererPropertiesRow.add( new UIBreak() );
+
+        // gamma input
+
+        this.rendererGammaInput = new UIBoolean( this.config.getKey( 'project/renderer/gammaInput' ), 'γ input' ).onChange( () => {
+
+            this.config.setKey( 'project/renderer/gammaInput', this.rendererGammaInput.getValue() );
+            this.updateRenderer();
+
+        });
+        this.rendererPropertiesRow.add( this.rendererGammaInput );
+
+        // gamma output
+
+        this.rendererGammaOutput = new UIBoolean( this.config.getKey( 'project/renderer/gammaOutput' ), 'γ output' ).onChange( () => {
+
+            this.config.setKey( 'project/renderer/gammaOutput', this.rendererGammaOutput.getValue() );
+            this.updateRenderer();
+
+        } );
+        this.rendererPropertiesRow.add( this.rendererGammaOutput );
+
+        this.container.add( this.rendererPropertiesRow );
+
+        // VR
+
+        this.vrRow = new UIRow();
+        this.vr = new UICheckbox( this.config.getKey( 'project/vr' ) ).setLeft( '100px' ).onChange( () => {
+
+            this.config.setKey( 'project/vr', this.vr.getValue() );
+            // this.updateRenderer();
+        } );
+
+        this.vrRow.add( new UIText( 'VR' ).setWidth( '90px' ) );
+        this.vrRow.add( this.vr );
+
+        this.container.add( this.vrRow );
+
+        //
+        this.createRenderer( this.config.getKey( 'project/renderer' ), this.config.getKey( 'project/renderer/antialias' ), this.config.getKey( 'project/renderer/shadows' ), this.config.getKey( 'project/renderer/gammaInput' ), this.config.getKey( 'project/renderer/gammaOutput' ) );
+    }
+
+    updateRenderer () {
+
+        this.createRenderer( this.rendererType.getValue(), this.rendererAntialias.getValue(), this.rendererShadows.getValue(), this.rendererGammaInput.getValue(), this.rendererGammaOutput.getValue() );
+    }
+
+    createRenderer ( type, antialias, shadows, gammaIn, gammaOut ) {
+
+        if ( type === 'WebGLRenderer' && System.Support.webgl === false ) {
+
+            type = 'CanvasRenderer';
+
+        }
+
+        this.rendererPropertiesRow.setDisplay( type === 'WebGLRenderer' ? '' : 'none' );
+
+        let renderer = new this.rendererTypes[ type ]( { antialias: antialias} );
+        renderer.gammaInput = gammaIn;
+        renderer.gammaOutput = gammaOut;
+        if ( shadows && renderer.shadowMap ) {
+
+            renderer.shadowMap.enabled = true;
+            // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        }
+
+        this.signals.rendererChanged.dispatch( renderer );
+
     }
 }

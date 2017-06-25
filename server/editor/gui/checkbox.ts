@@ -22,8 +22,8 @@ export class Checkbox extends Element {
      * @type {boolean}
      * @memberof Checkbox
      */
-    get value () : boolean      { return this.core.checked; }
-    set value ( value:boolean ) { if( value !== undefined ) this.core.checked = value; }
+    getValue () : boolean      { return this.core.checked; }
+    setValue ( value:boolean ) { if( value !== undefined ) this.core.checked = value; return this; }
 
     // [ Constructors ]
 
@@ -41,7 +41,7 @@ export class Checkbox extends Element {
 
         super( element );
 
-        this.value = checked;
+        this.setValue( checked );
     }
 
     // [ core ]
