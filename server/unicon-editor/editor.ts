@@ -4,6 +4,7 @@
 import * as signals       from 'signals';
 import * as THREE         from 'three';
 import {Signal          } from 'signals';
+import {				} from './date';
 import {ICommand        } from './interface';
 import {IEditor         } from './interface';
 import {ISignals        } from './interface';
@@ -383,23 +384,6 @@ export class Editor implements IEditor {
 
     constructor() {
 
-        this.DEFAULT_CAMERA         = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
-        this.DEFAULT_CAMERA.name    = 'Camera';
-        this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
-        this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
-
-        this.camera                 = this.DEFAULT_CAMERA.clone();
-        this.config                 = new Config( 'unicon-editor' );
-        this.history                = new History( this );
-        this.storage                = new Storage();
-        this.loader                 = new Loader( this );
-
-        this.scene                  = new THREE.Scene();
-        this.scene.name             = 'Scene';
-        this.scene.background       = new THREE.Color( 0xaaaaaa );
-
-        this.sceneHelpers           = new THREE.Scene();
-
         // [ Signals ]
         this.signals = {
             editScript              : new Signal(),
@@ -438,6 +422,23 @@ export class Editor implements IEditor {
             refreshSidebarObject3D  : new Signal(),
             historyChanged          : new Signal(),
         };
+
+		this.DEFAULT_CAMERA         = new THREE.PerspectiveCamera( 50, 1, 0.1, 10000 );
+        this.DEFAULT_CAMERA.name    = 'Camera';
+        this.DEFAULT_CAMERA.position.set( 20, 10, 20 );
+        this.DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
+
+        this.camera                 = this.DEFAULT_CAMERA.clone();
+        this.config                 = new Config( 'unicon-editor' );
+        this.history                = new History( this );
+        this.storage                = new Storage();
+        this.loader                 = new Loader( this );
+
+        this.scene                  = new THREE.Scene();
+        this.scene.name             = 'Scene';
+        this.scene.background       = new THREE.Color( 0xaaaaaa );
+
+        this.sceneHelpers           = new THREE.Scene();
 
         this.object                 = {};
         this.geometries             = {};

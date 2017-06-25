@@ -17,10 +17,8 @@ import {Break   as GUIBreak } from '../editor/gui/break';
  */
 export class ViewportInfo {
 
-    container : GUIPanel;
-
-    scene : THREE.Scene;
-
+    container       : GUIPanel;
+    scene           : THREE.Scene;
     objectsText     : GUIText;
     verticesText    : GUIText;
     trianglesText   : GUIText;

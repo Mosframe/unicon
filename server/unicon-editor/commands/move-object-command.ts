@@ -20,11 +20,11 @@ export class MoveObjectCommand extends Command {
 
     // [ Public Variables ]
 
-     oldParent  : THREE.Object3D;
-     newParent  : THREE.Object3D;
-     newBefore  : THREE.Object3D;
-     oldIndex   : number;
-     newIndex   : number;
+     oldParent  ?: THREE.Object3D;
+     newParent  ?: THREE.Object3D;
+     newBefore  ?: THREE.Object3D;
+     oldIndex   ?: number;
+     newIndex   ?: number;
 
 
     // [ Public Functions ]
@@ -35,11 +35,13 @@ export class MoveObjectCommand extends Command {
      * @memberof MoveObjectCommand
      */
     execute () {
-		this.oldParent.remove( this.object );
-		let children = this.newParent.children;
-		children.splice( this.newIndex, 0, this.object );
-		this.object.parent = this.newParent;
-		this._editor.signals.sceneGraphChanged.dispatch();
+		if( this.oldParent ) this.oldParent.remove( this.object );
+        if( this.newParent && this.newIndex ) {
+            let children = this.newParent.children;
+            children.splice( this.newIndex, 0, this.object );
+            this.object.parent = this.newParent;
+        }
+        this._editor.signals.sceneGraphChanged.dispatch();
     }
     /**
      * undo
@@ -47,10 +49,12 @@ export class MoveObjectCommand extends Command {
      * @memberof MoveObjectCommand
      */
 	undo () {
-		this.newParent.remove( this.object );
-		let children = this.oldParent.children;
-		children.splice( this.oldIndex, 0, this.object );
-		this.object.parent = this.oldParent;
+        if( this.newParent ) this.newParent.remove( this.object );
+		if( this.oldParent && this.oldIndex ) {
+            let children = this.oldParent.children;
+            children.splice( this.oldIndex, 0, this.object );
+            this.object.parent = this.oldParent;
+        }
 		this._editor.signals.sceneGraphChanged.dispatch();
 	}
     /**
@@ -62,8 +66,8 @@ export class MoveObjectCommand extends Command {
     toJSON () : any {
 		let output              = super.toJSON();
 		output.objectUuid       = this.object.uuid;
-		output.newParentUuid    = this.newParent.uuid;
-		output.oldParentUuid    = this.oldParent.uuid;
+		output.newParentUuid    = this.newParent ? this.newParent.uuid : undefined;
+		output.oldParentUuid    = this.oldParent ? this.oldParent.uuid : undefined;
 		output.newIndex         = this.newIndex;
 		output.oldIndex         = this.oldIndex;
         return output;
@@ -98,7 +102,7 @@ export class MoveObjectCommand extends Command {
      * @param {THREE.Object3D} newBefore
      * @memberof MoveObjectCommand
      */
-    constructor( object:THREE.Object3D, newParent:THREE.Object3D, newBefore:THREE.Object3D ) {
+    constructor( object:THREE.Object3D, newParent?:THREE.Object3D, newBefore?:THREE.Object3D ) {
         super();
 
         this.type       = 'MoveObjectCommand';
@@ -114,11 +118,13 @@ export class MoveObjectCommand extends Command {
             this.newIndex = ( newParent !== undefined ) ? newParent.children.length : undefined;
         }
 
-        if ( this.oldParent === this.newParent && this.newIndex > this.oldIndex ) {
-            this.newIndex --;
+        if( this.newIndex && this.oldIndex) {
+            if ( this.oldParent === this.newParent && this.newIndex > this.oldIndex ) {
+                this.newIndex --;
+            }
         }
 
-        this.newBefore = newBefore;
+        if( newBefore ) this.newBefore = newBefore;
     }
 
 

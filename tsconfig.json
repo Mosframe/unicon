@@ -18,6 +18,7 @@
         "declaration": false,
         "removeComments": false,
         "baseUrl": ".",
+        "allowJs": false,
         "typeRoots":[
             "./node_modules/@types",
             "./types"

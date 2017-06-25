@@ -1,39 +1,46 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-import {                    } from '../engine/number';
-//import {Panel as GUIPanel 	} from '../editor/gui/panel';
-import {Editor              } from './editor';
-import {Script              } from './script';
-import {Viewport            } from './viewport';
+import * as THREE               from 'three';
+import {                    }   from '../engine/object';
+import {                    }   from '../engine/number';
+import {Editor              }   from './editor';
+//import {Script              } from './script';
+import {Viewport            }   from './viewport';
+import {Player              }   from './player';
+import {Toolbar             }   from './toolbar';
+import {Menubar             }   from './menubar';
+import {Sidebar             }   from './sidebar';
+import {Modal as UIModal    }   from '../editor/gui/modal';
+
 
 
 //
+var editor = new Editor();
 
-let editor = new Editor();
-
-let viewport = new Viewport( editor );
+var viewport = new Viewport( editor );
 document.body.appendChild( viewport.container.core );
 
+/*
 let script = new Script( editor );
 document.body.appendChild( script.container.core );
-
-/*
+*/
 var player = new Player( editor );
-document.body.appendChild( player.dom );
+document.body.appendChild( player.container.core );
 
 var toolbar = new Toolbar( editor );
-document.body.appendChild( toolbar.dom );
+document.body.appendChild( toolbar.container.core );
 
 var menubar = new Menubar( editor );
-document.body.appendChild( menubar.dom );
+document.body.appendChild( menubar.container.core );
 
 var sidebar = new Sidebar( editor );
-document.body.appendChild( sidebar.dom );
+document.body.appendChild( sidebar.container.core );
 
-var modal = new UI.Modal();
-document.body.appendChild( modal.dom );
+var modal = new UIModal();
+document.body.appendChild( modal.container.core );
 
+/*
 //
 
 editor.setTheme( editor.config.getKey( 'theme' ) );

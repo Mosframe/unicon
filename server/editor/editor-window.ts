@@ -19,6 +19,17 @@ export class EditorWindow {
         this._core = new datGUI.GUI({ width:300 });
         this._root = this._core.addFolder(titleName);
         this._root.open();
+
+        datGUI.GUI.prototype.removeFolder = function(name) {
+            let folder = this.__folders[name];
+            if (!folder) {
+                return;
+            }
+            folder.close();
+            this.__ul.removeChild(folder.domElement.parentNode);
+            delete this.__folders[name];
+            this.onResize();
+        }
     }
 
     // [ Protected Members ]

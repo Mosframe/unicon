@@ -126,8 +126,9 @@ export class Unicon {
         {
             this.inspector = new Inspector();
 
-            this.inspector.target = this.scene.getObjectByName("Cube");
             this.inspector.target = this.scene.getObjectByName("Plane");
+            this.inspector.target = this.scene.getObjectByName("Cube");
+            this.inspector.target = null;
         }
 
         this.isCreated = true;

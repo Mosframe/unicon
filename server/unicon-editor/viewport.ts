@@ -4,20 +4,18 @@
 import {Signal  				} from 'signals';
 import * as THREE     		  	  from 'three';
 import {						} from '../engine/object';
+import {WebVR					} from '../engine/vr/web-vr';
+import { VREffect				} from '../engine/vr/vr-effect';
+import { VRControls				} from '../engine/vr/vr-controls';
 import {Panel as UIPanel 		} from '../editor/gui/panel';
 import {EditorControls			} from '../editor/handles/editor-controls';
 import {TransformControls		} from '../editor/handles/transform-controls/transform-controls';
-//import {Editor  				} from './editor';
+import {IEditor					} from './interface';
 import {ViewportInfo			} from './viewport-info';
 
 let SetPositionCommand 	= require( '../lib/three.js/editor/js/commands/SetPositionCommand' );
 let SetRotationCommand	= require( '../lib/three.js/editor/js/commands/SetRotationCommand' );
 let SetScaleCommand		= require( '../lib/three.js/editor/js/commands/SetScaleCommand' );
-
-// TODO : VR 보류
-//let WEBVR 			= require( '../lib/three.js/examples/js/vr/WebVR' );
-//let VREffect 			= require( '../lib/three.js/examples/js/effects/VREffect' );
-//let VRControls 		= require( '../lib/three.js/examples/js/controls/VRControls' );
 
 
 /**
@@ -32,7 +30,7 @@ export class Viewport {
 
     // [ Public Variables ]
 
-	editor 				: any;
+	editor 				: IEditor;
     container 			: UIPanel;
 	renderer 			: THREE.WebGLRenderer | null;
 	camera 				: THREE.Camera;
@@ -42,8 +40,8 @@ export class Viewport {
 	controls 			: EditorControls;
 	transformControls 	: TransformControls;
 	selectionBox 		: THREE.BoxHelper;
-	vrEffect			: any;
-	vrControls			: any;
+	vrEffect			: VREffect;
+	vrControls			: VRControls;
 	vrCamera			: THREE.PerspectiveCamera;
 
     // [ Public Functions ]
@@ -80,23 +78,19 @@ export class Viewport {
 
     // [ Constructors ]
 
-    constructor( editor:any ) {
+    constructor( editor:IEditor ) {
 
-		this.editor = editor;
+		this.editor 		= editor;
+		this.camera 		= editor.camera;
+		this.scene 			= editor.scene;
+		this.sceneHelpers 	= editor.sceneHelpers;
+		this.renderer 		= null;
+		this.objects 		= [];
 
         this.container = new UIPanel();
         this.container.setId( 'viewport' );
         this.container.setPosition( 'absolute' );
         this.container.add( (new ViewportInfo( editor )).container );
-
-		//console.log( this.container );
-
-		this.renderer 		= null;
-		this.camera 		= editor.camera;
-		this.scene 			= editor.scene;
-		this.sceneHelpers 	= editor.sceneHelpers;
-
-		this.objects = [];
 
 		/*
 		// TODO : VR 보류
@@ -107,12 +101,12 @@ export class Viewport {
 		}
 		*/
 
-		// helpers
+		// [ helpers ]
 
 		let grid = new THREE.GridHelper( 60, 60 );
 		this.sceneHelpers.add( grid );
 
-		//
+		// [ box ]
 
 		let box = new THREE.Box3();
 
@@ -248,6 +242,8 @@ export class Viewport {
 
 		this.editor.signals.rendererChanged.add( ( newRenderer:THREE.WebGLRenderer ) => {
 
+			console.log( "rendererChanged" );
+
 			if ( this.renderer !== null ) {
 				this.container.core.removeChild( this.renderer.domElement );
 			}
@@ -262,11 +258,10 @@ export class Viewport {
 			this.container.core.appendChild( this.renderer.domElement );
 
 			// TODO : VR 보류
-			/*
-			if ( WEBVR.isAvailable() === true ) {
+			if ( WebVR.isAvailable() === true ) {
 
-				this.vrControls = new THREE.VRControls( vrCamera );
-				this.vrEffect = new THREE.VREffect( this.renderer );
+				this.vrControls = new VRControls( this.vrCamera );
+				this.vrEffect = new VREffect( this.renderer );
 
 				window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
@@ -274,7 +269,6 @@ export class Viewport {
 
 				}, false );
 			}
-			*/
 
 			this.render();
 
@@ -465,6 +459,8 @@ export class Viewport {
 
 	protected render() {
 
+		//console.log("render");
+
 		this.sceneHelpers.updateMatrixWorld(true);
 		this.scene.updateMatrixWorld(true);
 
@@ -478,6 +474,8 @@ export class Viewport {
 			this.vrEffect.render( this.sceneHelpers, this.vrCamera );
 
 		} else {
+
+			//console.log(this.renderer);
 
 			if( this.renderer ) {
 				this.renderer.render( this.scene, this.camera );

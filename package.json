@@ -51,6 +51,8 @@
     "three-editor-controls": "^1.0.0",
     "three-orbitcontrols-ts": "^0.1.2",
     "three-transformcontrols": "^0.78.1",
+    "three-vrcontrols": "^1.0.0",
+    "three-vreffect": "^1.0.0",
     "typescript": "^2.3.4",
     "typescript-dotnet-es6": "^4.9.6",
     "url": "^0.11.0",
