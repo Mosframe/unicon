@@ -22,26 +22,22 @@ export class Sidebar {
 
     constructor ( editor : any ) {
 
-        var container = this.container = new UIPanel();
-        container.setId( 'sidebar' );
+        this.container = new UIPanel();
+        this.container.setId( 'sidebar' );
 
-        //
+        // [ TAB ]
 
-        var sceneTab    = new UIText( 'SCENE' ).onClick( onClick );
-        var projectTab  = new UIText( 'PROJECT' ).onClick( onClick );
-        var settingsTab = new UIText( 'SETTINGS' ).onClick( onClick );
+        this.sceneTab    = new UIText( 'SCENE' ).onClick( this.onTabClick );
+        this.projectTab  = new UIText( 'PROJECT' ).onClick( this.onTabClick );
+        this.settingsTab = new UIText( 'SETTINGS' ).onClick( this.onTabClick );
 
-        var tabs = new UIDiv();
+        let tabs = new UIDiv();
         tabs.setId( 'tabs' );
-        tabs.add( sceneTab, projectTab, settingsTab );
-        container.add( tabs );
-
-        function onClick( event ) {
-            select( event.target.textContent );
-        }
+        tabs.add( this.sceneTab, this.projectTab, this.settingsTab );
+        this.container.add( tabs );
 
         //
-        var scene = new UISpan().add(
+        this.scene = new UISpan().add(
             new Sidebar_Scene( editor ).container,
             /*
             new Sidebar.Properties( editor ).container,
@@ -49,51 +45,60 @@ export class Sidebar {
             new Sidebar.Script( editor ).container
             */
         );
-        container.add( scene );
+        this.container.add( this.scene );
 
-        var project = new UISpan().add(
+        this.project = new UISpan().add(
             new Sidebar_Project( editor ).container
         );
-        container.add( project );
+        this.container.add( this.project );
 
-        var settings = new UISpan().add(
+        this.settings = new UISpan().add(
             /*
             new Sidebar.Settings( editor ),
             new Sidebar.History( editor )
             */
         );
-        container.add( settings );
+        this.container.add( this.settings );
 
         //
-
-        function select( section ) {
-
-            sceneTab.setClass( '' );
-            projectTab.setClass( '' );
-            settingsTab.setClass( '' );
-
-            scene.setDisplay( 'none' );
-            project.setDisplay( 'none' );
-            settings.setDisplay( 'none' );
-
-            switch ( section ) {
-                case 'SCENE':
-                    sceneTab.setClass( 'selected' );
-                    scene.setDisplay( '' );
-                    break;
-                case 'PROJECT':
-                    projectTab.setClass( 'selected' );
-                    project.setDisplay( '' );
-                    break;
-                case 'SETTINGS':
-                    settingsTab.setClass( 'selected' );
-                    settings.setDisplay( '' );
-                    break;
-            }
-
-        }
-
-        select( 'SCENE' );
+        this.select( 'SCENE' );
     }
 
+    sceneTab    : UIText;
+    projectTab  : UIText;
+    settingsTab : UIText;
+    scene       : UISpan;
+    project     : UISpan;
+    settings    : UISpan;
+
+    onTabClick = ( event:MouseEvent ) => {
+        this.select( event.target['textContent'] );
+    }
+
+    select ( section:string ) {
+
+        this.sceneTab.setClass( '' );
+        this.projectTab.setClass( '' );
+        this.settingsTab.setClass( '' );
+
+        this.scene.setDisplay( 'none' );
+        this.project.setDisplay( 'none' );
+        this.settings.setDisplay( 'none' );
+
+        switch ( section ) {
+
+        case 'SCENE':
+            this.sceneTab.setClass( 'selected' );
+            this.scene.setDisplay( '' );
+            break;
+        case 'PROJECT':
+            this.projectTab.setClass( 'selected' );
+            this.project.setDisplay( '' );
+            break;
+        case 'SETTINGS':
+            this.settingsTab.setClass( 'selected' );
+            this.settings.setDisplay( '' );
+            break;
+        }
+    }
 }
