@@ -1,53 +1,56 @@
 // -----------------------------------------------------------------------------
-// sidebar.ts
+// project-panel.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
-import {				            }   from './date';
-import { System                     }   from '../engine/system';
-import { Panel      as UIPanel      }   from '../editor/gui/panel';
-import { Button     as UIButton     }   from '../editor/gui/button';
-import { Number     as UINumber     }   from '../editor/gui/number';
-import { Div        as UIDiv        }   from '../editor/gui/div';
-import { Span       as UISpan       }   from '../editor/gui/span';
-import { Row        as UIRow        }   from '../editor/gui/row';
-import { Color      as UIColor      }   from '../editor/gui/color';
-import { Text       as UIText       }   from '../editor/gui/text';
-import { Break      as UIBreak      }   from '../editor/gui/break';
-import { Select     as UISelect     }   from '../editor/gui/select';
-import { Boolean    as UIBoolean    }   from '../editor/gui/boolean';
-import { Outliner   as UIOutliner   }   from '../editor/gui/outliner';
-import { Checkbox   as UICheckbox   }   from '../editor/gui/checkbox';
+import { System                     }   from '../../engine/system';
+import { Panel      as UIPanel      }   from '../../editor/gui/panel';
+import { Button     as UIButton     }   from '../../editor/gui/button';
+import { Number     as UINumber     }   from '../../editor/gui/number';
+import { Div        as UIDiv        }   from '../../editor/gui/div';
+import { Span       as UISpan       }   from '../../editor/gui/span';
+import { Row        as UIRow        }   from '../../editor/gui/row';
+import { Color      as UIColor      }   from '../../editor/gui/color';
+import { Text       as UIText       }   from '../../editor/gui/text';
+import { Break      as UIBreak      }   from '../../editor/gui/break';
+import { Select     as UISelect     }   from '../../editor/gui/select';
+import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
+import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
+import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
+import { IEditor                    }   from '../interface';
 
 
 /**
+ * project panel
+ *
  * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
+ * @export
+ * @class ProjectPanel
+ * @extends {UIPanel}
  */
+export class ProjectPanel extends UIPanel {
 
-export class Sidebar_Project {
+    editor                  : IEditor;
+    config                  : any;
+    signals                 : any;
+    rendererTypes           : {}
+    options                 : {};
+    rendererTypeRow         : UIRow;
+    rendererType            : UISelect;
+    rendererPropertiesRow   : UIRow;
+    rendererAntialias       : UIBoolean;
+    rendererShadows         : UIBoolean;
+    rendererGammaInput      : UIBoolean;
+    rendererGammaOutput     : UIBoolean;
+    vrRow                   : UIRow;
+    vr                      : UICheckbox;
 
-    editor : any;
-    config : any;
-    signals : any;
-    rendererTypes : {}
-    container : UIPanel;
-    options : {};
-    rendererTypeRow : UIRow;
-    rendererType: UISelect;
-    rendererPropertiesRow: UIRow;
-    rendererAntialias : UIBoolean;
-    rendererShadows : UIBoolean;
-    rendererGammaInput : UIBoolean;
-    rendererGammaOutput : UIBoolean;
-    vrRow : UIRow;
-    vr : UICheckbox;
+    constructor( editor:IEditor ) {
+        super();
 
-
-
-    constructor( editor ) {
-
-        this.editor = editor;
-        this.config = editor.config;
-        this.signals = editor.signals;
+        this.editor     = editor;
+        this.config     = editor.config;
+        this.signals    = editor.signals;
 
         this.rendererTypes = {
             'WebGLRenderer': THREE.WebGLRenderer,
@@ -57,9 +60,8 @@ export class Sidebar_Project {
             //'RaytracingRenderer': THREE.RaytracingRenderer
         };
 
-        this.container = new UIPanel();
-        this.container.setBorderTop( '0' );
-        this.container.setPaddingTop( '20px' );
+        this.setBorderTop( '0' );
+        this.setPaddingTop( '20px' );
 
         // class
 
@@ -88,7 +90,7 @@ export class Sidebar_Project {
         this.rendererTypeRow.add( new UIText( 'Renderer' ).setWidth( '90px' ) );
         this.rendererTypeRow.add( this.rendererType );
 
-        this.container.add( this.rendererTypeRow );
+        this.add( this.rendererTypeRow );
 
         if ( this.config.getKey( 'project/renderer' ) !== undefined ) {
 
@@ -140,7 +142,7 @@ export class Sidebar_Project {
         } );
         this.rendererPropertiesRow.add( this.rendererGammaOutput );
 
-        this.container.add( this.rendererPropertiesRow );
+        this.add( this.rendererPropertiesRow );
 
         // VR
 
@@ -149,12 +151,12 @@ export class Sidebar_Project {
 
             this.config.setKey( 'project/vr', this.vr.getValue() );
             // this.updateRenderer();
-        } );
+        });
 
         this.vrRow.add( new UIText( 'VR' ).setWidth( '90px' ) );
         this.vrRow.add( this.vr );
 
-        this.container.add( this.vrRow );
+        this.add( this.vrRow );
 
         //
         this.createRenderer( this.config.getKey( 'project/renderer' ), this.config.getKey( 'project/renderer/antialias' ), this.config.getKey( 'project/renderer/shadows' ), this.config.getKey( 'project/renderer/gammaInput' ), this.config.getKey( 'project/renderer/gammaOutput' ) );

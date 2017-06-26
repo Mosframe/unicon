@@ -1,37 +1,42 @@
 // -----------------------------------------------------------------------------
-// sidebar.ts
+// hierarchy-panel.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
-import {				            }   from './date';
-import { Panel      as UIPanel      }   from '../editor/gui/panel';
-import { Button     as UIButton     }   from '../editor/gui/button';
-import { Number     as UINumber     }   from '../editor/gui/number';
-import { Div        as UIDiv        }   from '../editor/gui/div';
-import { Span       as UISpan       }   from '../editor/gui/span';
-import { Row        as UIRow        }   from '../editor/gui/row';
-import { Color      as UIColor      }   from '../editor/gui/color';
-import { Text       as UIText       }   from '../editor/gui/text';
-import { Break      as UIBreak      }   from '../editor/gui/break';
-import { Select     as UISelect     }   from '../editor/gui/select';
-import { Boolean    as UIBoolean    }   from '../editor/gui/boolean';
-import { Outliner   as UIOutliner   }   from '../editor/gui/outliner';
+import { Panel      as UIPanel      }   from '../../editor/gui/panel';
+import { Button     as UIButton     }   from '../../editor/gui/button';
+import { Number     as UINumber     }   from '../../editor/gui/number';
+import { Div        as UIDiv        }   from '../../editor/gui/div';
+import { Span       as UISpan       }   from '../../editor/gui/span';
+import { Row        as UIRow        }   from '../../editor/gui/row';
+import { Color      as UIColor      }   from '../../editor/gui/color';
+import { Text       as UIText       }   from '../../editor/gui/text';
+import { Break      as UIBreak      }   from '../../editor/gui/break';
+import { Select     as UISelect     }   from '../../editor/gui/select';
+import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
+import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
+import { IEditor                    }   from '../interface';
 
 
 /**
+ * scene hierarchy panel
+ *
  * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
+ * @export
+ * @class HierarchyPanel
+ * @extends {UIPanel}
  */
+export class HierarchyPanel extends UIPanel {
 
-export class Sidebar_Scene {
+    // [ Constructor ]
 
-    container : UIPanel;
-
-    constructor ( editor ) {
+    constructor ( editor:IEditor ) {
+        super();
 
         var signals = editor.signals;
 
-        var container = this.container = new UIPanel();
-        container.setBorderTop( '0' );
-        container.setPaddingTop( '20px' );
+        this.setBorderTop( '0' );
+        this.setPaddingTop( '20px' );
 
         // outliner
 
@@ -115,25 +120,19 @@ export class Sidebar_Scene {
             editor.focusById( parseInt( outliner.getValue() ) );
 
         } );
-        container.add( outliner );
-        container.add( new UIBreak() );
+        this.add( outliner );
+        this.add( new UIBreak() );
 
         // background
 
-        function onBackgroundChanged() {
-
-            signals.sceneBackgroundChanged.dispatch( backgroundColor.getHexValue() );
-
-        }
-
-        var backgroundRow = new UIRow();
-
-        var backgroundColor = new UIColor().setValue( '#aaaaaa' ).onChange( onBackgroundChanged );
+        let backgroundRow = new UIRow();
 
         backgroundRow.add( new UIText( 'Background' ).setWidth( '90px' ) );
+        let backgroundColor = new UIColor().setValue( '#aaaaaa' ).onChange( () => {
+            signals.sceneBackgroundChanged.dispatch( backgroundColor.getHexValue() );
+        });
         backgroundRow.add( backgroundColor );
-
-        container.add( backgroundRow );
+        this.add( backgroundRow );
 
         // fog
 
@@ -146,7 +145,6 @@ export class Sidebar_Scene {
                 fogFar.getValue(),
                 fogDensity.getValue()
             );
-
         }
 
         var fogTypeRow = new UIRow();
@@ -157,24 +155,22 @@ export class Sidebar_Scene {
             'FogExp2': 'Exponential'
 
         } ).setWidth( '150px' );
-        fogType.onChange( function () {
-
+        fogType.onChange( () => {
             onFogChanged();
             refreshFogUI();
-
-        } );
+        });
 
         fogTypeRow.add( new UIText( 'Fog' ).setWidth( '90px' ) );
         fogTypeRow.add( fogType );
 
-        container.add( fogTypeRow );
+        this.add( fogTypeRow );
 
         // fog color
 
         var fogPropertiesRow = new UIRow();
         fogPropertiesRow.setDisplay( 'none' );
         fogPropertiesRow.setMarginLeft( '90px' );
-        container.add( fogPropertiesRow );
+        this.add( fogPropertiesRow );
 
         var fogColor = new UIColor().setValue( '#aaaaaa' );
         fogColor.onChange( onFogChanged );

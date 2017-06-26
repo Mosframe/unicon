@@ -93,8 +93,8 @@ export class ViewportInfo {
 
         }
 
-        this.objectsText.value      = objects.format();
-        this.verticesText.value     = vertices.format();
-        this.trianglesText.value    = triangles.format();
+        this.objectsText.setValue( objects.format() );
+        this.verticesText.setValue( vertices.format() );
+        this.trianglesText.setValue( triangles.format() );
     }
 }

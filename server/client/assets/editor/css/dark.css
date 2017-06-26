@@ -181,18 +181,18 @@ select {
 		margin-bottom: 10px;
 	}
 
-#tabs {
+#tab {
 	background-color: #1b1b1b;
 	border-top: 1px solid #222;
 }
 
-	#tabs span {
+	#tab span {
 		color: #555;
 		border-right: 1px solid #222;
 		padding: 10px;
 	}
 
-	#tabs span.selected {
+	#tab span.selected {
 		color: #888;
 		background-color: #111;
 	}

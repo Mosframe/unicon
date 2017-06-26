@@ -10,34 +10,34 @@ import {Viewport            }   from './viewport';
 import {Player              }   from './player';
 import {Toolbar             }   from './toolbar';
 import {Menubar             }   from './menubar';
-import {Sidebar             }   from './sidebar';
+import {RightSidebar        }   from './right-sidebar';
 import {Modal as UIModal    }   from '../editor/gui/modal';
 
 
 
 //
-var editor = new Editor();
+let editor = new Editor();
 
-var viewport = new Viewport( editor );
+let viewport = new Viewport( editor );
 document.body.appendChild( viewport.container.core );
 
 /*
 let script = new Script( editor );
 document.body.appendChild( script.container.core );
 */
-var player = new Player( editor );
+let player = new Player( editor );
 document.body.appendChild( player.container.core );
 
-var toolbar = new Toolbar( editor );
+let toolbar = new Toolbar( editor );
 document.body.appendChild( toolbar.container.core );
 
-var menubar = new Menubar( editor );
+let menubar = new Menubar( editor );
 document.body.appendChild( menubar.container.core );
 
-var sidebar = new Sidebar( editor );
-document.body.appendChild( sidebar.container.core );
+let rightSidebar = new RightSidebar( editor );
+document.body.appendChild( rightSidebar.core );
 
-var modal = new UIModal();
+let modal = new UIModal();
 document.body.appendChild( modal.container.core );
 
 /*
@@ -57,7 +57,7 @@ editor.storage.init( function () {
 
         }
 
-        var selected = editor.config.getKey( 'selected' );
+        let selected = editor.config.getKey( 'selected' );
 
         if ( selected !== undefined ) {
 
@@ -69,7 +69,7 @@ editor.storage.init( function () {
 
     //
 
-    var timeout;
+    let timeout;
 
     function saveState( scene ) {
 
@@ -97,7 +97,7 @@ editor.storage.init( function () {
 
     };
 
-    var signals = editor.signals;
+    let signals = editor.signals;
 
     signals.geometryChanged.add( saveState );
     signals.objectAdded.add( saveState );
@@ -149,11 +149,11 @@ document.addEventListener( 'keydown', function ( event ) {
 
         case 46: // delete
 
-            var object = editor.selected;
+            let object = editor.selected;
 
             if ( confirm( 'Delete ' + object.name + '?' ) === false ) return;
 
-            var parent = object.parent;
+            let parent = object.parent;
             if ( parent !== null ) editor.execute( new RemoveObjectCommand( object ) );
 
             break;
@@ -206,16 +206,16 @@ onWindowResize();
 
 //
 
-var isLoadingFromHash = false;
-var hash = window.location.hash;
+let isLoadingFromHash = false;
+let hash = window.location.hash;
 
 if ( hash.substr( 1, 5 ) === 'file=' ) {
 
-    var file = hash.substr( 6 );
+    let file = hash.substr( 6 );
 
     if ( confirm( 'Any unsaved data will be lost. Are you sure?' ) ) {
 
-        var loader = new THREE.FileLoader();
+        let loader = new THREE.FileLoader();
         loader.crossOrigin = '';
         loader.load( file, function ( text ) {
 
@@ -243,7 +243,7 @@ window.addEventListener( 'message', function ( event ) {
 /*
 // VR
 
-var groupVR;
+let groupVR;
 
 // TODO: Use editor.signals.enteredVR (WebVR 1.0)
 
@@ -254,12 +254,12 @@ editor.signals.enterVR.add( function () {
         groupVR = new THREE.HTMLGroup( viewport.dom );
         editor.sceneHelpers.add( groupVR );
 
-        var mesh = new THREE.HTMLMesh( sidebar.dom );
+        let mesh = new THREE.HTMLMesh( sidebar.dom );
         mesh.position.set( 15, 0, 15 );
         mesh.rotation.y = - 0.5;
         groupVR.add( mesh );
 
-        var signals = editor.signals;
+        let signals = editor.signals;
 
         function updateTexture() {
 

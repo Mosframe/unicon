@@ -174,18 +174,18 @@ select {
 		margin-bottom: 10px;
 	}
 
-#tabs {
+#tab {
 	background-color: #ddd;
 	border-top: 1px solid #ccc;
 }
 
-	#tabs span {
+	#tab span {
 		color: #aaa;
 		border-right: 1px solid #ccc;
 		padding: 10px;
 	}
 
-	#tabs span.selected {
+	#tab span.selected {
 		color: #888;
 		background-color: #eee;
 	}

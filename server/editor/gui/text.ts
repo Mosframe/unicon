@@ -22,8 +22,8 @@ export class Text extends Element {
      * @type {(string|null)}
      * @memberof Text
      */
-    get value () : string|null      { return this.core.textContent; }
-    set value ( value:string|null ) { if( value !== undefined ) this.core.textContent = value; }
+    getValue () : string|null      { return this.core.textContent; }
+    setValue ( value:string|null ) { if( value !== undefined ) this.core.textContent = value; return this; }
 
     // [ Constructors ]
 
@@ -43,7 +43,7 @@ export class Text extends Element {
 
         super( element );
 
-        this.value = text;
+        this.setValue( text );
     }
 
     // [ core ]

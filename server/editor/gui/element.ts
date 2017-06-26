@@ -13,16 +13,12 @@ import {} from '../../engine/object';
  */
 export class Element {
 
+
     // [ Public Functions ]
 
-    /**
-     * append child elements
-     *
-     * @param {...Element[]} elements
-     * @returns
-     *
-     * @memberof Element
-     */
+    getName()               { return this._name; }
+    setName( name:string )  { this._name = name; return this; }
+
     add ( ...elements:Element[] ) {
 
         for( let i=0; i < elements.length; ++i ) {
@@ -30,14 +26,7 @@ export class Element {
         }
         return this;
     }
-    /**
-     * remove child elements
-     *
-     * @param {...any[]} elements
-     * @returns
-     *
-     * @memberof Element
-     */
+
     remove ( ...elements:Element[] ) {
 
         for( let i=0; i < elements.length; ++i ) {
@@ -45,12 +34,7 @@ export class Element {
         }
         return this;
     }
-    /**
-     * clear children elements
-     *
-     *
-     * @memberof Element
-     */
+
     clear () {
 
         while( this._core.children.length ) {
@@ -60,41 +44,19 @@ export class Element {
         }
         return this;
     }
-    /**
-     * set id
-     *
-     * @param {string} id
-     * @returns
-     *
-     * @memberof Element
-     */
+
     setId ( id:string ) {
 
         this._core.id = id;
         return this;
     }
-    /**
-     * set class
-     *
-     * @param {string} name
-     * @returns
-     *
-     * @memberof Element
-     */
+
     setClass ( name:string ) {
 
         this._core.className = name;
         return this;
     }
-    /**
-     * set style
-     *
-     * @param {string} style
-     * @param {string[]} values
-     * @returns
-     *
-     * @memberof Element
-     */
+
     setStyle ( style:string, values:string[] ) {
 
         for( let i = 0; i < values.length; ++i ) {
@@ -102,27 +64,13 @@ export class Element {
         }
         return this;
     }
-    /**
-     * set disabled
-     *
-     * @param {boolean} value
-     * @returns
-     *
-     * @memberof Element
-     */
+
     setDisabled ( value:boolean ) {
 
         if( Object.hasProterty( this._core, 'disabled' ) ) this._core['disabled'] = value;
         return this;
     }
-    /**
-     * set text content
-     *
-     * @param {string} value
-     * @returns
-     *
-     * @memberof Element
-     */
+
     setTextContent ( value:string ) {
 
         this._core.textContent = value;
@@ -170,12 +118,6 @@ export class Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Element.
-     * @param {HTMLElement} element
-     *
-     * @memberof Element
-     */
     constructor ( element:HTMLElement|SVGSVGElement ) {
         this._core = element;
     }
@@ -190,6 +132,13 @@ export class Element {
     onClick     ( callback:Function ) { this._core.addEventListener( 'click'      , callback.bind( this ), false ); return this; }
     onDblClick  ( callback:Function ) { this._core.addEventListener( 'dblclick'   , callback.bind( this ), false ); return this; }
     onChange    ( callback:Function ) { this._core.addEventListener( 'change'     , callback.bind( this ), false ); return this; }
+
+    releaseEvent( type:'keyup'|'keyuown'|'mouseover'|'mouseout'|'click'|'dblclick'|'change' ) {
+       this._core.removeEventListener(type);
+    }
+
+
+    protected _name : string;
 
     // [ core ]
 
