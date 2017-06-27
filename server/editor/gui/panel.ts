@@ -16,11 +16,6 @@ export class Panel extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Panel.
-     *
-     * @memberof Panel
-     */
     constructor() {
         let element = document.createElement( 'div' );
         element.className = 'Panel';

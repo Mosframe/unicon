@@ -16,11 +16,6 @@ export class Break extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Break.
-     *
-     * @memberof Break
-     */
     constructor() {
         let element = document.createElement( 'br' );
         element.className = 'Break';

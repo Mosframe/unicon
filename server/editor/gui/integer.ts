@@ -16,37 +16,14 @@ export class Integer extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * min
-     *
-     * @type {number}
-     * @memberof Integer
-     */
-    min         : number;
-    /**
-     * max
-     *
-     * @type {number}
-     * @memberof Integer
-     */
-    max         : number;
-    /**
-     * step
-     *
-     * @type {number}
-     * @memberof Integer
-     */
-    get step() : number { return this._step; }
-    set step( value:number ) { this._step = parseInt( value.toString() ); }
+    min : number;
+    max : number;
 
-    /**
-     * value
-     *
-     * @type {number}
-     * @memberof Integer
-     */
-    get value () : number        { return this._value; }
-    set value ( value:number )   {
+    getStep() : number      { return this._step; }
+    setStep( value:number ) { this._step = parseInt( value.toString() ); return this; }
+
+    getValue () : number        { return this._value; }
+    setValue ( value:number )   {
         if( value !== undefined ) {
 
             value = parseInt( value.toString() );
@@ -56,6 +33,8 @@ export class Integer extends Element {
 
             this._value = value;
             this.core.value = value.toString();
+
+            return this;
         }
     }
 
@@ -68,12 +47,6 @@ export class Integer extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Integer.
-     * @param {number} number
-     *
-     * @memberof Integer
-     */
     constructor ( number:number ) {
 
         let element = document.createElement( 'input' );
@@ -89,9 +62,8 @@ export class Integer extends Element {
         this._value     = 0;
         this.min        =-Infinity;
         this.max        = Infinity;
-        this.step       = 1;
-
-        this.value = number;
+        this.setStep(1);
+        this.setValue(number);
 
         this._changeEvent = document.createEvent( 'HTMLEvents' );
         this._changeEvent.initEvent( 'change', true, true );
@@ -145,11 +117,11 @@ export class Integer extends Element {
 		this._pointer = [ event.clientX, event.clientY ];
 		this._distance += ( this._pointer[ 0 ] - this._prevPointer[ 0 ] ) - ( this._pointer[ 1 ] - this._prevPointer[ 1 ] );
 
-		let value = this._onMouseDownValue + ( this._distance / ( event.shiftKey ? 5 : 50 ) ) * this.step;
+		let value = this._onMouseDownValue + ( this._distance / ( event.shiftKey ? 5 : 50 ) ) * this._step;
 		value = Math.min( this.max, Math.max( this.min, value ) ) | 0;
 
 		if( currentValue !== value ) {
-			this.value = value;
+			this.setValue(value);
 			this.core.dispatchEvent( this._changeEvent );
 		}
 
@@ -166,7 +138,7 @@ export class Integer extends Element {
 		}
 	}
     protected _onChange( event:Event ) {
-        this.value = parseInt( this.core.value );
+        this.setValue( parseInt( this.core.value ) );
     }
 	protected _onFocus( event:FocusEvent ) {
 		this._core.style.backgroundColor    = '';

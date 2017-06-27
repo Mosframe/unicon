@@ -16,23 +16,11 @@ export class Button extends Element {
 
     // [ Public Variables ]
 
-    /**
-     *
-     *
-     * @type {string}
-     * @memberof Button
-     */
-    get label() : string|null       { return this.core.textContent; }
-    set label( value:string|null )  { this.core.textContent = value; }
+    getLabel() : string|null       { return this.core.textContent; }
+    setLabel( value:string|null )  { this.core.textContent = value; return this; }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Button.
-     * @param {string} value
-     *
-     * @memberof Button
-     */
     constructor( value:string ) {
         let element = document.createElement( 'button' );
         element.className   = 'Button';

@@ -113,6 +113,7 @@ export class Texture  extends Element {
 
         }
         this.form.reset();
+        return this;
     }
 
     getValue () {
@@ -158,7 +159,7 @@ export class Texture  extends Element {
         }
 
         this.texture = texture;
-
+        return this;
     }
 
     onChange ( callback ) {

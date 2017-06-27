@@ -1,18 +1,17 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-import * as THREE               from 'three';
+//import * as THREE               from 'three';
 import {                    }   from '../engine/object';
 import {                    }   from '../engine/number';
-import {Editor              }   from './editor';
-//import {Script              } from './script';
-import {Viewport            }   from './viewport';
-import {Player              }   from './player';
-import {Toolbar             }   from './toolbar';
-import {Menubar             }   from './menubar';
-import {RightSidebar        }   from './right-sidebar';
+import {Editor              }   from '../editor/editor';
+//import {Script              } from '../editor/script';
+import {Viewport            }   from '../editor/viewport';
+import {Player              }   from '../editor/player';
+import {Toolbar             }   from '../editor/toolbar';
+import {Menubar             }   from '../editor/menubar';
+import {RightSidebar        }   from '../editor/right-sidebar';
 import {Modal as UIModal    }   from '../editor/gui/modal';
-
 
 
 //

@@ -16,12 +16,6 @@ export class Number extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {number}
-     * @memberof Number
-     */
     getValue () : number        { return this._value; }
     setValue ( value:number )   {
         if( value !== undefined ) {
@@ -64,12 +58,6 @@ export class Number extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Number.
-     * @param {number} number
-     *
-     * @memberof Number
-     */
     constructor ( number:number ) {
 
         let element = document.createElement( 'input' );

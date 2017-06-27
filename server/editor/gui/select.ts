@@ -16,28 +16,12 @@ export class Select extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {string}
-     * @memberof Select
-     */
     getValue () : string            { return this.core.value; }
     setValue ( value:string )       { if( value !== undefined ) this.core.value = value; return this; }
-    /**
-     * multiple
-     *
-     * @type {boolean}
-     * @memberof Select
-     */
+
     getMultiple () : boolean        { return this.core.multiple; }
     setMultiple ( value:boolean )   { this.core.multiple = value; return this; }
-    /**
-     * options
-     *
-     * @type {string[]}
-     * @memberof Select
-     */
+
     getOptions () : string[] {
         let options:string[] = [];
 
@@ -70,11 +54,6 @@ export class Select extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Select.
-     *
-     * @memberof Select
-     */
     constructor () {
 
         let element = document.createElement( 'select' );

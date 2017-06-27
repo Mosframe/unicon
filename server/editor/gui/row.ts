@@ -16,11 +16,6 @@ export class Row extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Row.
-     *
-     * @memberof Row
-     */
     constructor() {
         let element = document.createElement( 'div' );
         element.className = 'Row';

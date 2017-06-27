@@ -16,11 +16,6 @@ export class Span extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Span.
-     *
-     * @memberof Span
-     */
     constructor() {
         super( document.createElement( 'span' ) );
     }

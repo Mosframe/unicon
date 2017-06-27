@@ -16,23 +16,11 @@ export class Input extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {string}
-     * @memberof Text
-     */
-    get value () : string        { return this.core.value; }
-    set value ( value:string )   { if( value !== undefined ) this.core.value = value; }
+    getValue () : string        { return this.core.value; }
+    setValue ( value:string )   { if( value !== undefined ) this.core.value = value; return this; }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Input.
-     * @param {string} Input
-     *
-     * @memberof Input
-     */
     constructor ( text:string ) {
         let element = document.createElement( 'input' );
         element.className         = 'Input';
@@ -44,7 +32,7 @@ export class Input extends Element {
 
         super( element );
 
-        this.value = text;
+        this.setValue( text );
     }
 
     // [ core ]

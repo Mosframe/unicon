@@ -16,8 +16,8 @@ export class Element {
 
     // [ Public Functions ]
 
-    getName()               { return this._name; }
-    setName( name:string )  { this._name = name; return this; }
+    getTitle() : string         { return ( this._core instanceof HTMLElement ) ? this._core.title : ''; }
+    setTitle( title:string )    { if( this._core instanceof HTMLElement ) this._core.title = title; return this; }
 
     add ( ...elements:Element[] ) {
 
@@ -136,9 +136,6 @@ export class Element {
     releaseEvent( type:'keyup'|'keyuown'|'mouseover'|'mouseout'|'click'|'dblclick'|'change' ) {
        this._core.removeEventListener(type);
     }
-
-
-    protected _name : string;
 
     // [ core ]
 

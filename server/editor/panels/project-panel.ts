@@ -17,6 +17,7 @@ import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
 import { IEditor                    }   from '../interface';
+import { EditorPanel                }   from '../editor-panel';
 
 
 /**
@@ -26,9 +27,9 @@ import { IEditor                    }   from '../interface';
  * @author mosframe / https://github.com/mosframe
  * @export
  * @class ProjectPanel
- * @extends {UIPanel}
+ * @extends {EditorPanel}
  */
-export class ProjectPanel extends UIPanel {
+export class ProjectPanel extends EditorPanel {
 
     editor                  : IEditor;
     config                  : any;
@@ -46,7 +47,7 @@ export class ProjectPanel extends UIPanel {
     vr                      : UICheckbox;
 
     constructor( editor:IEditor ) {
-        super();
+        super( 'project' );
 
         this.editor     = editor;
         this.config     = editor.config;

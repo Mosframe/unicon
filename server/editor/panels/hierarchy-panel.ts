@@ -15,6 +15,7 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
+import { EditorPanel                }   from '../editor-panel';
 
 
 /**
@@ -24,14 +25,14 @@ import { IEditor                    }   from '../interface';
  * @author mosframe / https://github.com/mosframe
  * @export
  * @class HierarchyPanel
- * @extends {UIPanel}
+ * @extends {EditorPanel}
  */
-export class HierarchyPanel extends UIPanel {
+export class HierarchyPanel extends EditorPanel {
 
     // [ Constructor ]
 
     constructor ( editor:IEditor ) {
-        super();
+        super( 'hierarchy' );
 
         var signals = editor.signals;
 

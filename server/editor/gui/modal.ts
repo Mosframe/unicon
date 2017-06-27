@@ -25,10 +25,12 @@ export class Modal extends Element {
         this.container.clear();
         this.container.add( content );
         this.core.style.display = 'flex';
+        return this;
     }
 
     hide () {
         this.core.style.display = 'none';
+        return this;
     }
 
     // [ Constructors ]

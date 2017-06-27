@@ -16,23 +16,11 @@ export class Text extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {(string|null)}
-     * @memberof Text
-     */
     getValue () : string|null      { return this.core.textContent; }
     setValue ( value:string|null ) { if( value !== undefined ) this.core.textContent = value; return this; }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Text.
-     * @param {string} text
-     *
-     * @memberof Text
-     */
     constructor ( text:string='' ) {
 
         let element = document.createElement( 'span' );

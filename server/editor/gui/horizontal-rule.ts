@@ -16,11 +16,6 @@ export class HorizontalRule extends Element {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of HorizontalRule.
-     *
-     * @memberof HorizontalRule
-     */
     constructor() {
         let element = document.createElement( 'hr' );
         element.className = 'HorizontalRule';

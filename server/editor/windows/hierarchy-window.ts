@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// project-window.ts
+// hierarchy-window.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
 import { Panel      as UIPanel      }   from '../../editor/gui/panel';
@@ -15,28 +15,31 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
-import { ProjectPanel               }   from '../panels/project-panel';
+import { EditorWindow               }   from '../editor-window';
+import { HierarchyPanel             }   from '../panels/hierarchy-panel';
 
 
 /**
- * project window
+ * scene hierarchy window
  *
  * @author mrdoob / http://mrdoob.com/
  * @author mosframe / https://github.com/mosframe
  * @export
- * @class ProjectWindow
- * @extends {UIPanel}
+ * @class HierarchyWindow
+ * @extends {EditorWindow}
  */
-export class ProjectWindow extends UISpan {
-
-    projectPanel : ProjectPanel;
+export class HierarchyWindow extends EditorWindow {
 
     // [ Constructor ]
 
     constructor ( editor:IEditor ) {
-        super();
 
-        this.projectPanel = new ProjectPanel( editor );
-        this.add( this.projectPanel );
+        super( 'hierarchy', new HierarchyPanel( editor ) );
+
+        /*
+        new Sidebar.Properties( editor ).container,
+        new Sidebar.Animation( editor ).container,
+        new Sidebar.Script( editor ).container
+        */
     }
 }

@@ -1,32 +1,38 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-import {				    }   from './date';
-import {                    }   from '../../engine/object';
+// -----------------------------------------------------------------------------
+// outliner.ts
+// -----------------------------------------------------------------------------
 import * as THREE               from 'three';
+import { IEditor            }   from '../interface';
+import { MoveObjectCommand  }   from '../commands/move-object-command'
+import { TGALoader          }   from '../loaders/tga-loader';
 import { Element            }   from './element';
 import { Span               }   from './span';
 import { Checkbox           }   from './checkbox';
 import { Text               }   from './text';
-import { MoveObjectCommand  }   from '../../unicon-editor/commands/move-object-command'
-import { TGALoader          }   from '../loaders/tga-loader';
 
 
-    // Outliner
-
+/**
+ * Outliner
+ *
+ * @author mrdoob / http://mrdoob.com/
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @class Outliner
+ * @extends {Element}
+ */
 export class Outliner extends Element {
 
-    editor:any;
-    scene:any;
-    selectedIndex:any;
-    selectedValue:any;
-    options:any;
-    className:any;
-    value:any;
-    clientHeight:any;
-    nextSibling:any;
+    editor          : IEditor;
+    scene           : THREE.Scene;
+    selectedIndex   : number;
+    selectedValue   : any;
+    options         : any;
+    className       : string;
+    value           : any;
+    clientHeight    : any;
+    nextSibling     : any;
 
-    constructor ( editor:any ) {
+    constructor ( editor:IEditor ) {
 
         let element = document.createElement( 'div' );
         element.className   = 'Outliner';

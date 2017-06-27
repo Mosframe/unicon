@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// history-panel.ts
+// setting-panel.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
 import { System                     }   from '../../engine/system';
@@ -17,21 +17,22 @@ import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
 import { IEditor                    }   from '../interface';
+import { EditorPanel                }   from '../editor-panel';
 
 
 /**
- * history panel
+ * setting panel
  *
  * @author mrdoob / http://mrdoob.com/
  * @author mosframe / https://github.com/mosframe
  * @export
- * @class HistoryPanel
- * @extends {UIPanel}
+ * @class SettingPanel
+ * @extends {EditorPanel}
  */
-export class HistoryPanel extends UIPanel {
+export class SettingPanel extends EditorPanel {
 
     constructor( editor:IEditor ) {
-        super();
+        super('setting');
 
         let config = editor.config;
 

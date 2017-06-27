@@ -16,22 +16,11 @@ export class TextArea extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {string}
-     * @memberof Text
-     */
-    get value () : string        { return this.core.value; }
-    set value ( value:string )   { if( value !== undefined ) this.core.value = value; }
+    getValue () : string        { return this.core.value; }
+    setValue ( value:string )   { if( value !== undefined ) this.core.value = value; return this; }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of TextArea.
-     *
-     * @memberof TextArea
-     */
     constructor () {
         let element = document.createElement( 'textarea' );
         element.className         = 'TextArea';

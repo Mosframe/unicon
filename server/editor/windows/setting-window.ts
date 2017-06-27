@@ -15,6 +15,7 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
+import { EditorWindow               }   from '../editor-window';
 import { SettingPanel               }   from '../panels/setting-panel';
 import { HistoryPanel               }   from '../panels/history-panel';
 
@@ -28,20 +29,14 @@ import { HistoryPanel               }   from '../panels/history-panel';
  * @class SettingWindow
  * @extends {UIPanel}
  */
-export class SettingWindow extends UISpan {
-
-    settingPanel : SettingPanel;
-    historyPanel : HistoryPanel;
+export class SettingWindow extends EditorWindow {
 
     // [ Constructor ]
 
     constructor ( editor:IEditor ) {
-        super();
-
-        this.settingPanel = new SettingPanel( editor );
-        this.add( this.settingPanel );
-
-        this.historyPanel = new HistoryPanel( editor );
-        this.add( this.historyPanel );
+        super( 'setting',
+            new SettingPanel( editor ),
+            new HistoryPanel( editor ),
+        );
     }
 }

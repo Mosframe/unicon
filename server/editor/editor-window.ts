@@ -1,39 +1,49 @@
 // -----------------------------------------------------------------------------
 // editor-window.ts
 // -----------------------------------------------------------------------------
+import *            as THREE            from 'three';
+import { Panel      as UIPanel      }   from './gui/panel';
+import { Button     as UIButton     }   from './gui/button';
+import { Number     as UINumber     }   from './gui/number';
+import { Div        as UIDiv        }   from './gui/div';
+import { Span       as UISpan       }   from './gui/span';
+import { Row        as UIRow        }   from './gui/row';
+import { Color      as UIColor      }   from './gui/color';
+import { Text       as UIText       }   from './gui/text';
+import { Break      as UIBreak      }   from './gui/break';
+import { Select     as UISelect     }   from './gui/select';
+import { Boolean    as UIBoolean    }   from './gui/boolean';
+import { Outliner   as UIOutliner   }   from './gui/outliner';
+import { IEditor                    }   from './interface';
+import { EditorPanel                }   from './editor-panel';
+
 /**
- * EditorWindow
+ * editor window
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class EditorWindow
+ * @extends {UISpan}
  */
-export class EditorWindow {
+export class EditorWindow extends UISpan {
 
-    // [ Public Properties ]
+    getPanel ( title:string ) : EditorPanel {
+        return this._panels[title];
+    }
 
-    // [ Public Functions ]
+    // [ Constructor ]
 
-    constructor( titleName:string='EditorWindow' ) {
-        let datGUI = require('../lib/dat.gui/build/dat.gui');
-        this._core = new datGUI.GUI({ width:300 });
-        this._root = this._core.addFolder(titleName);
-        this._root.open();
+    constructor ( title:string, ...panels:EditorPanel[] ) {
+        super();
 
-        datGUI.GUI.prototype.removeFolder = function(name) {
-            let folder = this.__folders[name];
-            if (!folder) {
-                return;
-            }
-            folder.close();
-            this.__ul.removeChild(folder.domElement.parentNode);
-            delete this.__folders[name];
-            this.onResize();
+        this.setTitle( title );
+
+        for( let panel of panels ) {
+            this._panels[panel.getTitle()] = panel;
+            this.add( panel );
         }
     }
 
-    // [ Protected Members ]
-
-    protected _core : any;
-    protected _root : any;
+    protected _panels : {[title:string]:EditorPanel} = {}
 }
