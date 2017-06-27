@@ -63,13 +63,8 @@ export class AddObjectCommand extends Command {
 		}
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of AddObjectCommand.
-     * @param {THREE.Object3D} object
-     * @memberof AddObjectCommand
-     */
     constructor( object:THREE.Object3D ) {
         super();
 

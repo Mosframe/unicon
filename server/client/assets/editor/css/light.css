@@ -33,7 +33,7 @@ select {
 	color: #666;
 	background-color: #ddd;
 	border: 0px;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	cursor: pointer;
 	outline: none;
 }

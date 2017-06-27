@@ -23,17 +23,8 @@ import {SetUuidCommand      } from './set-uuid-command';
  */
 export class SetSceneCommand extends Command {
 
-    // [ Public Variables ]
+    // [ public ]
 
-    cmdArray    : ICommand[];
-
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetSceneCommand
-     */
     execute () {
 		this._editor.signals.sceneGraphChanged.active = false;
 		for ( let i = 0; i < this.cmdArray.length; i ++ ) {
@@ -42,11 +33,7 @@ export class SetSceneCommand extends Command {
 		this._editor.signals.sceneGraphChanged.active = true;
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * undo
-     *
-     * @memberof SetSceneCommand
-     */
+
     undo () {
 		this._editor.signals.sceneGraphChanged.active = false;
 		for ( let i = this.cmdArray.length - 1; i >= 0; i -- ) {
@@ -55,36 +42,21 @@ export class SetSceneCommand extends Command {
 		this._editor.signals.sceneGraphChanged.active = true;
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * update
-     *
-     * @param {SetSceneCommand} command
-     * @memberof SetSceneCommand
-     */
+
 	update ( command:SetSceneCommand ) {
         super.update(command);
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetSceneCommand
-     */
+
     toJSON () : any {
         let output = super.toJSON();
-		let cmds = [];
+		let cmds : any = [];
 		for ( let i = 0; i < this.cmdArray.length; i ++ ) {
-			cmds.push( this.cmdArray[ i ].toJSON() );
+            cmds.push( this.cmdArray[ i ].toJSON() );
 		}
 		output.cmds = cmds;
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetSceneCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 		let cmds = json.cmds;
@@ -97,18 +69,11 @@ export class SetSceneCommand extends Command {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of SetSceneCommand.
-     * @param {THREE.Object3D} object
-     * @param {THREE.Scene} scene
-     * @memberof SetSceneCommand
-     */
-    constructor( object:THREE.Object3D, scene:THREE.Scene ) {
+    constructor( object:THREE.Object3D, scene?:THREE.Scene ) {
         super();
 
-        this.type       = 'SetSceneCommand';
-        this.name       = 'Set Scene';
-        this.cmdArray   = [];
+        this.type   = 'SetSceneCommand';
+        this.name   = 'Set Scene';
 
         if ( scene !== undefined ) {
             this.cmdArray.push( new SetUuidCommand( this._editor.scene, scene.uuid ) );
@@ -117,8 +82,12 @@ export class SetSceneCommand extends Command {
 
             while ( scene.children.length > 0 ) {
                 let child = scene.children.pop();
-                this.cmdArray.push( new AddObjectCommand( child ) );
+                if( child ) {
+                    this.cmdArray.push( new AddObjectCommand( child ) );
+                }
             }
         }
     }
+
+    private cmdArray : ICommand[] = [];
 }

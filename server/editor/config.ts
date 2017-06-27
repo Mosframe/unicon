@@ -1,14 +1,9 @@
 // -----------------------------------------------------------------------------
 // config.ts
 // -----------------------------------------------------------------------------
-import {} from './date';
 import {Debug   } from '../engine/debug';
 /**
- * Config data
- *
- * [save/load] localStorage
- *
- * JSON format
+ * config
  *
  * @author mrdoob ( http://mrdoob.com/ )
  * @author mosframe ( https://github.com/mosframe )
@@ -17,24 +12,10 @@ import {Debug   } from '../engine/debug';
  */
 export class Config {
 
-    // [ Public Variables ]
+    // [ public ]
 
-    /**
-     * get value
-     *
-     * @param {string} key
-     * @returns
-     *
-     * @memberof Config
-     */
     getKey ( key:string ) { return this._storage[ key ]; }
-    /**
-     * set value
-     *
-     * @param {...any[]} args key, value, key, value ...
-     *
-     * @memberof Config
-     */
+
     setKey ( ...args:any[] ) {
 
         for( var i = 0, l = args.length; i < l; i += 2 ) {
@@ -45,51 +26,38 @@ export class Config {
 
         Debug.log( 'Saved config to LocalStorage.' );
     }
-    /**
-     * clear localStorage
-     *
-     *
-     * @memberof Config
-     */
+
     clear () {
         delete window.localStorage[ this._name ];
     }
 
-    // [ Constructors ]
+    // [ constructor ]
 
-    /**
-     * Creates an instance of Config.
-     * @param {string} name config name
-     *
-     * @memberof Config
-     */
     constructor( name:string ) {
 
         this._name = name;
         if ( window.localStorage[ name ] === undefined ) {
             window.localStorage[ name ] = JSON.stringify( this._storage );
         } else {
-            var data = JSON.parse( window.localStorage[ name ] );
-            for ( var key in data ) {
+            let data = JSON.parse( window.localStorage[ name ] );
+            for ( let key in data ) {
                 this._storage[ key ] = data[ key ];
             }
         }
     }
 
-    // [ Protected Variables ]
+    // [ private ]
 
-    protected _name : string;
-    protected _storage = {
-		'autosave': true,
-		'theme': 'css/dark.css',
-
-		'project/renderer': 'WebGLRenderer',
-		'project/renderer/antialias': true,
-		'project/renderer/gammaInput': false,
-		'project/renderer/gammaOutput': false,
-		'project/renderer/shadows': true,
-		'project/vr': false,
-
-		'settings/history': false
+    private _name : string;
+    private _storage = {
+		'autosave'                      : true,
+		'theme'                         : 'css/light.css',
+		'project/renderer'              : 'WebGLRenderer',
+		'project/renderer/antialias'    : true,
+		'project/renderer/gammaInput'   : false,
+		'project/renderer/gammaOutput'  : false,
+		'project/renderer/shadows'      : true,
+		'project/vr'                    : false,
+		'settings/history'              : false
 	};
 }

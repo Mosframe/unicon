@@ -36,8 +36,14 @@ export class Command implements ICommand {
 
     // [ Public Functions ]
 
-    execute () {}
-    undo    () {}
+    execute () {
+
+    }
+
+    undo    () {
+
+    }
+
     toJSON  () : any {
         return {
             type             : this.type,
@@ -45,30 +51,29 @@ export class Command implements ICommand {
             name             : this.name,
         }
     }
+
     fromJSON ( json:any ) {
         this.inMemory       = true;
         this.type           = json.type;
         this.id             = json.id;
         this.name           = json.name;
     }
-    update ( cmd:ICommand ) {}
+
+    update ( cmd:ICommand ) {
+
+    }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Command.
-     * @param {IEditor} [editorRef] editorRef pointer to main editor object used to initialize each command object with a reference to the editor
-     * @memberof Command
-     */
-    constructor( editorRef?:IEditor ) {
+    constructor( editor?:IEditor ) {
         this.id         = - 1;
         this.inMemory   = false;
         this.updatable  = false;
         this.type       = '';
         this.name       = '';
 
-        if( editorRef !== undefined ) {
-            Command.editor = editorRef;
+        if( editor !== undefined ) {
+            Command.editor = editor;
         }
         this._editor = Command.editor;
     }

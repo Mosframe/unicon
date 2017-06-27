@@ -1,53 +1,48 @@
 // -----------------------------------------------------------------------------
 // player.ts
 // -----------------------------------------------------------------------------
-import {}          from '../engine/object';
-import *      as THREE          from 'three';
-import {Panel as UIPanel    }   from '../editor/gui/panel';
-import {AppPlayer   }   from './app';
+import * as THREE               from 'three';
+import { Panel as UIPanel   }   from '../editor/gui/panel';
+import { AppPlayer          }   from './app-player';
+import { IEditor            }   from './interface';
+/**
+ * player
+ *
+ * @export
+ * @class Player
+ * @extends {UIPanel}
+ */
+export class Player extends UIPanel {
 
-export class Player {
+    constructor( editor:IEditor ) {
+        super();
 
-    container : UIPanel;
+        this.setId( 'player' );
+        this.setPosition( 'absolute' );
+        this.setDisplay( 'none' );
 
-    constructor( editor:any ) {
-        var signals = editor.signals;
-
-        var container = new UIPanel();
-        container.setId( 'player' );
-        container.setPosition( 'absolute' );
-        container.setDisplay( 'none' );
+        let signals = editor.signals;
 
         //
 
-        var player :any = new AppPlayer();
-        container.core.appendChild( player.dom );
+        let player = new AppPlayer();
+        this.core.appendChild( player.core );
 
-        window.addEventListener( 'resize', function () {
+        window.addEventListener( 'resize', () => {
+            player.setSize( this.core.clientWidth, this.core.clientHeight );
+        });
 
-            player.setSize( container.core.clientWidth, container.core.clientHeight );
-
-        } );
-
-        signals.startPlayer.add( function () {
-
-            container.setDisplay( '' );
-
+        signals.startPlayer.add( () => {
+            this.setDisplay( '' );
             player.load( editor.toJSON() );
-            player.setSize( container.core.clientWidth, container.core.clientHeight );
+            player.setSize( this.core.clientWidth, this.core.clientHeight );
             player.play();
+        });
 
-        } );
-
-        signals.stopPlayer.add( function () {
-
-            container.setDisplay( 'none' );
-
+        signals.stopPlayer.add( () => {
+            this.setDisplay( 'none' );
             player.stop();
             player.dispose();
-
-        } );
-
-        this.container = container;
+        });
     }
 }

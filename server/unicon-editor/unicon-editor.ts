@@ -18,20 +18,20 @@ import {Modal as UIModal    }   from '../editor/gui/modal';
 let editor = new Editor();
 
 let viewport = new Viewport( editor );
-document.body.appendChild( viewport.container.core );
+document.body.appendChild( viewport.core );
 
 /*
 let script = new Script( editor );
 document.body.appendChild( script.container.core );
 */
 let player = new Player( editor );
-document.body.appendChild( player.container.core );
+document.body.appendChild( player.core );
 
 let toolbar = new Toolbar( editor );
 document.body.appendChild( toolbar.container.core );
 
 let menubar = new Menubar( editor );
-document.body.appendChild( menubar.container.core );
+document.body.appendChild( menubar.core );
 
 let rightSidebar = new RightSidebar( editor );
 document.body.appendChild( rightSidebar.core );

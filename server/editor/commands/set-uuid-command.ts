@@ -20,84 +20,53 @@ import {Command             } from '../command';
  */
 export class SetUuidCommand extends Command {
 
-    // [ Public Variables ]
+    // [ public ]
 
-    oldUuid    : string;
-    newUuid    : string;
-
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetUuidCommand
-     */
     execute () {
-		this.object.uuid = this.newUuid;
+		this.object.uuid = this._newUuid;
 		this._editor.signals.objectChanged.dispatch( this.object );
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * undo
-     *
-     * @memberof SetUuidCommand
-     */
+
     undo () {
-		this.object.uuid = this.oldUuid;
+		this.object.uuid = this._oldUuid;
 		this._editor.signals.objectChanged.dispatch( this.object );
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * update
-     *
-     * @param {SetUuidCommand} cmd
-     * @memberof SetUuidCommand
-     */
+
 	update ( cmd:SetUuidCommand ) {
         super.update(cmd);
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetUuidCommand
-     */
+
     toJSON () : any {
         let output = super.toJSON();
-		output.oldUuid = this.oldUuid;
-		output.newUuid = this.newUuid;
+		output.oldUuid = this._oldUuid;
+		output.newUuid = this._newUuid;
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetUuidCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
-		this.oldUuid = json.oldUuid;
-		this.newUuid = json.newUuid;
+		this._oldUuid = json.oldUuid;
+		this._newUuid = json.newUuid;
 		this.object = this._editor.objectByUuid( json.oldUuid );
 		if ( this.object === undefined ) {
 			this.object = this._editor.objectByUuid( json.newUuid );
 		}
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetUuidCommand.
-     * @param {THREE.Object3D} object
-     * @param {string} newUuid
-     * @memberof SetUuidCommand
-     */
     constructor( object:THREE.Object3D, newUuid:string ) {
         super();
         this.type       = 'SetUuidCommand';
         this.name       = 'Update UUID'
         this.object     = object;
-        this.oldUuid    = ( object !== undefined ) ? object.uuid : undefined;
-        this.newUuid    = newUuid;
+        this._oldUuid   = object.uuid;
+        this._newUuid   = newUuid;
     }
+
+    private _oldUuid : string;
+    private _newUuid : string;
+
 }

@@ -36,7 +36,7 @@ select {
 	color: #aaa;
 	background-color: #222;
 	border: 0px;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	cursor: pointer;
 	outline: none;
 }

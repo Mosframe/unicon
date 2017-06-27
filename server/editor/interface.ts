@@ -91,11 +91,25 @@ export interface IEditor {
 }
 
 export interface IHistory {
+    undos           : ICommand[];
+    redos           : ICommand[];
 
+    lastCmdTime     : Date;
+    idCounter       : number;
+    historyDisabled : boolean;
+
+	execute ( cmd:ICommand, optionalName?:string );
+	undo () : ICommand|undefined;
+	redo () : ICommand|undefined;
+	toJSON () : any;
+	fromJSON ( json:any );
+	clear ();
+	goToState ( id:number );
+	enableSerialization ( id:number );
 }
 
 export interface ILoader {
-
+    loadFile ( file:File );
 }
 
 /**

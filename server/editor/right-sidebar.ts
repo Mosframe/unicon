@@ -10,9 +10,9 @@ import { Text            as UIText      }   from './gui/text';
 import { Boolean         as UIBoolean   }   from './gui/boolean';
 import { IEditor                        }   from './interface';
 import { EditorWindow                   }   from './editor-window';
-import { HierarchyWindow                }   from './windows/hierarchy-window';
-import { ProjectWindow                  }   from './windows/project-window';
-import { SettingWindow                  }   from './windows/setting-window';
+import { HierarchyWindow                }   from './windows/hierarchy';
+import { ProjectWindow                  }   from './windows/project';
+import { SettingsWindow                 }   from './windows/settings';
 
 
 /**
@@ -72,7 +72,7 @@ export class RightSidebar extends UIPanel {
 
         this.attach ( new HierarchyWindow( editor ) );
         this.attach ( new ProjectWindow  ( editor ) );
-        this.attach ( new SettingWindow  ( editor ) );
+        this.attach ( new SettingsWindow ( editor ) );
 
         // default tab
         this._select( 'hierarchy' );
@@ -85,7 +85,6 @@ export class RightSidebar extends UIPanel {
     protected _windows      : {[title:string]:UISpan} = {};
 
     protected _onTabClick = ( event:MouseEvent ) => {
-        console.log( event.target );
         this._select( event.target['title'] );
     }
 

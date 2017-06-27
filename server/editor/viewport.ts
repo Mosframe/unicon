@@ -1,21 +1,20 @@
 // -----------------------------------------------------------------------------
 // viewport.ts
 // -----------------------------------------------------------------------------
-import {Signal  				} from 'signals';
 import * as THREE     		  	  from 'three';
+import { Signal  				} from 'signals';
 import {						} from '../engine/object';
-import {WebVR					} from '../engine/vr/web-vr';
+import { WebVR					} from '../engine/vr/web-vr';
 import { VREffect				} from '../engine/vr/vr-effect';
 import { VRControls				} from '../engine/vr/vr-controls';
-import {Panel as UIPanel 		} from '../editor/gui/panel';
-import {EditorControls			} from '../editor/handles/editor-controls';
-import {TransformControls		} from '../editor/handles/transform-controls/transform-controls';
-import {IEditor					} from './interface';
-import {ViewportInfo			} from './viewport-info';
-
-let SetPositionCommand 	= require( '../lib/three.js/editor/js/commands/SetPositionCommand' );
-let SetRotationCommand	= require( '../lib/three.js/editor/js/commands/SetRotationCommand' );
-let SetScaleCommand		= require( '../lib/three.js/editor/js/commands/SetScaleCommand' );
+import { Panel as UIPanel 		} from '../editor/gui/panel';
+import { SetPositionCommand		} from '../editor/commands/set-position-command';
+import { SetRotationCommand		} from '../editor/commands/set-rotation-command';
+import { SetScaleCommand		} from '../editor/commands/set-scale-command';
+import { EditorControls			} from '../editor/handles/editor-controls';
+import { TransformControls		} from '../editor/handles/transform-controls/transform-controls';
+import { IEditor				} from './interface';
+import { ViewportInfo			} from './viewport-info';
 
 
 /**
@@ -25,13 +24,13 @@ let SetScaleCommand		= require( '../lib/three.js/editor/js/commands/SetScaleComm
  * @author mosframe ( https://github.com/mosframe )
  * @export
  * @class Viewport
+ * @extends {UIPanel}
  */
-export class Viewport {
+export class Viewport extends UIPanel{
 
     // [ Public Variables ]
 
 	editor 				: IEditor;
-    container 			: UIPanel;
 	renderer 			: THREE.WebGLRenderer | null;
 	camera 				: THREE.Camera;
 	scene 				: THREE.Scene;
@@ -79,6 +78,11 @@ export class Viewport {
     // [ Constructors ]
 
     constructor( editor:IEditor ) {
+		super();
+
+        this.setId( 'viewport' );
+        this.setPosition( 'absolute' );
+        this.add( (new ViewportInfo( editor )).container );
 
 		this.editor 		= editor;
 		this.camera 		= editor.camera;
@@ -86,11 +90,6 @@ export class Viewport {
 		this.sceneHelpers 	= editor.sceneHelpers;
 		this.renderer 		= null;
 		this.objects 		= [];
-
-        this.container = new UIPanel();
-        this.container.setId( 'viewport' );
-        this.container.setPosition( 'absolute' );
-        this.container.add( (new ViewportInfo( editor )).container );
 
 		/*
 		// TODO : VR 보류
@@ -120,10 +119,7 @@ export class Viewport {
 		this.objectRotationOnDown = null;
 		this.objectScaleOnDown = null;
 
-		console.log( this.camera );
-		console.log( this.container.core );
-
-		this.transformControls = new TransformControls( this.camera, this.container.core );
+		this.transformControls = new TransformControls( this.camera, this.core );
 		this.transformControls.addEventListener( 'change', ()=> {
 
 			let object = this.transformControls.object;
@@ -190,14 +186,14 @@ export class Viewport {
 
 		// [ events ]
 
-		this.container.core.addEventListener( 'mousedown'	, this._onMouseDown		, false );
-		this.container.core.addEventListener( 'touchstart'	, this._onTouchStart	, false );
-		this.container.core.addEventListener( 'dblclick'	, this._onDoubleClick	, false );
+		this.core.addEventListener( 'mousedown'		, this._onMouseDown		, false );
+		this.core.addEventListener( 'touchstart'	, this._onTouchStart	, false );
+		this.core.addEventListener( 'dblclick'		, this._onDoubleClick	, false );
 
 		// controls need to be added *after* main logic,
 		// otherwise controls.enabled doesn't work.
 
-		this.controls = new EditorControls( this.camera, this.container.core );
+		this.controls = new EditorControls( this.camera, this.core );
 		this.controls.addEventListener( 'change', () => {
 			this.transformControls.update();
 			this.editor.signals.cameraChanged.dispatch( this.camera );
@@ -245,7 +241,7 @@ export class Viewport {
 			console.log( "rendererChanged" );
 
 			if ( this.renderer !== null ) {
-				this.container.core.removeChild( this.renderer.domElement );
+				this.core.removeChild( this.renderer.domElement );
 			}
 
 			this.renderer = newRenderer;
@@ -253,9 +249,9 @@ export class Viewport {
 			this.renderer.autoClear = false;
 			//this.renderer.autoUpdateScene = false;
 			this.renderer.setPixelRatio( window.devicePixelRatio );
-			this.renderer.setSize( this.container.core.offsetWidth, this.container.core.offsetHeight );
+			this.renderer.setSize( this.core.offsetWidth, this.core.offsetHeight );
 
-			this.container.core.appendChild( this.renderer.domElement );
+			this.core.appendChild( this.renderer.domElement );
 
 			// TODO : VR 보류
 			if ( WebVR.isAvailable() === true ) {
@@ -410,16 +406,16 @@ export class Viewport {
 
 			// TODO: Move this out?
 
-			editor.DEFAULT_CAMERA.aspect = this.container.core.offsetWidth / this.container.core.offsetHeight;
+			editor.DEFAULT_CAMERA.aspect = this.core.offsetWidth / this.core.offsetHeight;
 			editor.DEFAULT_CAMERA.updateProjectionMatrix();
 
 			if( this.camera instanceof THREE.PerspectiveCamera ) {
-				this.camera.aspect = this.container.core.offsetWidth / this.container.core.offsetHeight;
+				this.camera.aspect = this.core.offsetWidth / this.core.offsetHeight;
 				this.camera.updateProjectionMatrix();
 			}
 
 			if( this.renderer ) {
-				this.renderer.setSize( this.container.core.offsetWidth, this.container.core.offsetHeight );
+				this.renderer.setSize( this.core.offsetWidth, this.core.offsetHeight );
 			}
 
 			this.render();
@@ -513,7 +509,7 @@ export class Viewport {
 
 		event.preventDefault();
 
-		let array = this.getMousePosition( this.container.core, event.clientX, event.clientY );
+		let array = this.getMousePosition( this.core, event.clientX, event.clientY );
 		this._onDownPosition.fromArray( array );
 
 		document.addEventListener( 'mouseup', this._onMouseUp, false );
@@ -521,7 +517,7 @@ export class Viewport {
 
 	protected _onMouseUp = ( event:MouseEvent ) => {
 
-		let array = this.getMousePosition( this.container.core, event.clientX, event.clientY );
+		let array = this.getMousePosition( this.core, event.clientX, event.clientY );
 		this._onUpPosition.fromArray( array );
 
 		this._onHandleClick();
@@ -533,7 +529,7 @@ export class Viewport {
 
 		let touch = event.changedTouches[ 0 ];
 
-		let array = this.getMousePosition( this.container.core, touch.clientX, touch.clientY );
+		let array = this.getMousePosition( this.core, touch.clientX, touch.clientY );
 		this._onDownPosition.fromArray( array );
 
 		document.addEventListener( 'touchend', this._onTouchEnd, false );
@@ -544,7 +540,7 @@ export class Viewport {
 
 		let touch = event.changedTouches[ 0 ];
 
-		let array = this.getMousePosition( this.container.core, touch.clientX, touch.clientY );
+		let array = this.getMousePosition( this.core, touch.clientX, touch.clientY );
 		this._onUpPosition.fromArray( array );
 
 		this._onHandleClick();
@@ -555,7 +551,7 @@ export class Viewport {
 
 	protected _onDoubleClick = ( event ) => {
 
-		let array = this.getMousePosition( this.container.core, event.clientX, event.clientY );
+		let array = this.getMousePosition( this.core, event.clientX, event.clientY );
 		this._onDoubleClickPosition.fromArray( array );
 
 		let intersects = this.getIntersects( this._onDoubleClickPosition, this.objects );
