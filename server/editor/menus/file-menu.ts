@@ -11,8 +11,8 @@ import { Boolean        as UIBoolean        }   from '../../editor/gui/boolean' 
 import { HorizontalRule as UIHorizontalRule }   from '../../editor/gui/horizontal-rule'     ;
 import { OBJExporter                        }   from '../../editor/exporters/obj-exporter'  ;
 import { STLExporter                        }   from '../../editor/exporters/stl-exporter'  ;
-import { IEditor                            }   from '../interface';
-import { EditorPanel                        }   from '../editor-panel';
+import { IEditor                            }   from '../interface'                         ;
+import { EditorPanel                        }   from '../editor-panel'                      ;
 
 
 let JSZip = require('../../lib/three.js/examples/js/libs/jszip.min');

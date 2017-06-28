@@ -107,7 +107,7 @@ export class RemoveObjectCommand extends Command {
         this.type   = 'RemoveObjectCommand';
         this.name   = 'Remove Object';
         this.object = object;
-        this.parent = ( object !== undefined ) ? object.parent : undefined;
+        this.parent = object.parent;
         if ( this.parent !== undefined ) {
             this.index = this.parent.children.indexOf( this.object );
         }

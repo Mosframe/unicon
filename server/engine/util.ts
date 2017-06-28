@@ -54,4 +54,5 @@ export class Util {
 
         throw new Error("Unable to clone object! Its type isn't supported.");
     }
+
 }

@@ -63,7 +63,7 @@ export class MultiCmdsCommand extends Command {
      */
     toJSON () : any {
 		let output = super.toJSON();
-		let cmds = [];
+		let cmds : any = [];
 		for ( let i = 0; i < this.cmdArray.length; i ++ ) {
 			cmds.push( this.cmdArray[ i ].toJSON() );
 		}

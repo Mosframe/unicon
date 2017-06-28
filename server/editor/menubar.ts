@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 import { Panel  as UIPanel  }   from '../editor/gui/panel';
 import { FileMenu           }   from './menus/file-menu';
+import { EditMenu           }   from './menus/edit-menu';
 
 /**
  * menubar
@@ -21,7 +22,7 @@ export class Menubar extends UIPanel {
         this.setId( 'menubar' );
 
         this.add( new FileMenu( editor ) );
-        //this.add( new Menubar.Edit( editor ) );
+        this.add( new EditMenu( editor ) );
         //this.add( new Menubar.Add( editor ) );
         //this.add( new Menubar.Play( editor ) );
         //// this.add( new Menubar.View( editor ) );
