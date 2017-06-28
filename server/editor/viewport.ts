@@ -82,7 +82,6 @@ export class Viewport extends UIPanel{
 
         this.setId( 'viewport' );
         this.setPosition( 'absolute' );
-        this.add( (new ViewportInfo( editor )).container );
 
 		this.editor 		= editor;
 		this.camera 		= editor.camera;
@@ -91,21 +90,22 @@ export class Viewport extends UIPanel{
 		this.renderer 		= null;
 		this.objects 		= [];
 
-		/*
-		// TODO : VR 보류
-		if( WEBVR.isAvailable() === true ) {
-			var vrCamera = new THREE.PerspectiveCamera();
-			vrCamera.projectionMatrix = this.camera.projectionMatrix;
-			this.camera.add( vrCamera );
-		}
-		*/
+		// [ Viewport Info ]
+        this.add( new ViewportInfo( editor ) );
 
-		// [ helpers ]
+		// [ Web VR ]
+		if( WebVR.isAvailable() ) {
+			this.vrCamera = new THREE.PerspectiveCamera();
+			this.vrCamera.projectionMatrix = this.camera.projectionMatrix;
+			this.camera.add( this.vrCamera );
+		}
+
+		// [ Helper - Grid  ]
 
 		let grid = new THREE.GridHelper( 60, 60 );
 		this.sceneHelpers.add( grid );
 
-		// [ box ]
+		// [ Helper - Box ]
 
 		let box = new THREE.Box3();
 
@@ -115,12 +115,12 @@ export class Viewport extends UIPanel{
 		this.selectionBox.visible = false;
 		this.sceneHelpers.add( this.selectionBox );
 
-		this.objectPositionOnDown = null;
-		this.objectRotationOnDown = null;
-		this.objectScaleOnDown = null;
+		this.objectPositionOnDown 	= null;
+		this.objectRotationOnDown 	= null;
+		this.objectScaleOnDown 		= null;
 
 		this.transformControls = new TransformControls( this.camera, this.core );
-		this.transformControls.addEventListener( 'change', ()=> {
+		this.transformControls.addEventListener( 'change', () => {
 
 			let object = this.transformControls.object;
 			if( object !== undefined ) {
@@ -129,9 +129,8 @@ export class Viewport extends UIPanel{
 				this.selectionBox = new THREE.BoxHelper( object );
 
 				let helper = editor.helpers[ object.id ];
-
-				if( helper !== undefined ) {
-					if( Object.hasFunction( helper, 'update') ) {
+				if( helper ) {
+					if( Object.hasProterty( helper, 'update') ) {
 						helper['update']();
 					}
 				}
@@ -253,16 +252,16 @@ export class Viewport extends UIPanel{
 
 			this.core.appendChild( this.renderer.domElement );
 
-			// TODO : VR 보류
-			if ( WebVR.isAvailable() === true ) {
+			if ( WebVR.isAvailable() ) {
 
 				this.vrControls = new VRControls( this.vrCamera );
 				this.vrEffect = new VREffect( this.renderer );
 
-				window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
+				window.addEventListener( 'vrdisplaypresentchange', ( event ) => {
 
-					this.effect.isPresenting ? this.editor.signals.enteredVR.dispatch() : this.editor.signals.exitedVR.dispatch();
-
+					if( window.hasProterty('effect') ) {
+						window['effect'].isPresenting ? this.editor.signals.enteredVR.dispatch() : this.editor.signals.exitedVR.dispatch();
+					}
 				}, false );
 			}
 
@@ -288,7 +287,6 @@ export class Viewport extends UIPanel{
 				box.setFromObject( object );
 
 				if ( box.isEmpty() === false ) {
-					//this.selectionBox.setFromObject( object );
 					this.selectionBox = new THREE.BoxHelper( object );
 					this.selectionBox.visible = true;
 				}
@@ -305,7 +303,6 @@ export class Viewport extends UIPanel{
 
 		this.editor.signals.geometryChanged.add( ( object:THREE.Object3D ) => {
 			if( object !== undefined ) {
-				//this.selectionBox.setFromObject( object );
 				this.selectionBox = new THREE.BoxHelper( object );
 			}
 			this.render();

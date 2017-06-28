@@ -1,11 +1,12 @@
 // -----------------------------------------------------------------------------
 // viewport-info.ts
 // -----------------------------------------------------------------------------
-import *        as THREE      from 'three';
-import {                    } from '../engine/number';
-import {Panel   as GUIPanel } from '../editor/gui/panel';
-import {Text    as GUIText  } from '../editor/gui/text';
-import {Break   as GUIBreak } from '../editor/gui/break';
+import *            as THREE      from 'three';
+import {                        } from '../engine/number';
+import { Panel      as GUIPanel } from '../editor/gui/panel';
+import { Text       as GUIText  } from '../editor/gui/text';
+import { Break      as GUIBreak } from '../editor/gui/break';
+import { IEditor                } from './interface';
 
 /**
  * ViewportInfo
@@ -15,39 +16,35 @@ import {Break   as GUIBreak } from '../editor/gui/break';
  * @export
  * @class ViewportInfo
  */
-export class ViewportInfo {
+export class ViewportInfo extends GUIPanel {
 
-    container       : GUIPanel;
     scene           : THREE.Scene;
     objectsText     : GUIText;
     verticesText    : GUIText;
     trianglesText   : GUIText;
 
-
-    constructor( editor:any ) {
+    constructor( editor:IEditor ) {
+        super();
 
         // [ scene ]
         this.scene = editor.scene;
 
         // [ container ]
 
-        let container = new GUIPanel();
-        container.setId( 'info' );
-        container.setPosition( 'absolute' );
-        container.setLeft( '10px' );
-        container.setBottom( '10px' );
-        container.setFontSize( '12px' );
-        container.setColor( '#fff' );
+        this.setId( 'info' );
+        this.setPosition( 'absolute' );
+        this.setLeft( '10px' );
+        this.setBottom( '10px' );
+        this.setFontSize( '12px' );
+        this.setColor( '#fff' );
 
         this.objectsText = new GUIText( '0' ).setMarginLeft( '6px' );
         this.verticesText = new GUIText( '0' ).setMarginLeft( '6px' );
         this.trianglesText = new GUIText( '0' ).setMarginLeft( '6px' );
 
-        container.add( new GUIText( 'objects' ), this.objectsText, new GUIBreak() );
-        container.add( new GUIText( 'vertices' ), this.verticesText, new GUIBreak() );
-        container.add( new GUIText( 'triangles' ), this.trianglesText, new GUIBreak() );
-
-        this.container = container;
+        this.add( new GUIText( 'objects' ), this.objectsText, new GUIBreak() );
+        this.add( new GUIText( 'vertices' ), this.verticesText, new GUIBreak() );
+        this.add( new GUIText( 'triangles' ), this.trianglesText, new GUIBreak() );
 
         // [ signals ]
         let signals = editor.signals;
@@ -58,43 +55,43 @@ export class ViewportInfo {
 
     update() {
 
-        let objects = 0, vertices = 0, triangles = 0;
+        let objects     = 0;
+        let vertices    = 0;
+        let triangles   = 0;
 
-        for ( let i = 0, l = this.scene.children.length; i < l; i ++ ) {
+        for( let i=0, l=this.scene.children.length; i < l; i++ ) {
 
             let object = this.scene.children[ i ];
 
-            object.traverseVisible( function ( object ) {
+            object.traverseVisible( ( object ) => {
 
                 objects++;
 
                 if ( object instanceof THREE.Mesh ) {
 
                     let geometry = object.geometry;
-
                     if ( geometry instanceof THREE.Geometry ) {
 
-                        vertices += geometry.vertices.length;
-                        triangles += geometry.faces.length;
-
-                    } else if ( geometry instanceof THREE.BufferGeometry ) {
+                        vertices    += geometry.vertices.length;
+                        triangles   += geometry.faces.length;
+                    }
+                    else
+                    if ( geometry instanceof THREE.BufferGeometry ) {
 
                         if ( geometry.index !== null ) {
-                            vertices += geometry.index.count * 3;
-                            triangles += geometry.index.count;
+                            vertices    += geometry.index.count * 3;
+                            triangles   += geometry.index.count;
                         } else {
-                            vertices += geometry.attributes.length;
-                            triangles += geometry.attributes.length / 3;
+                            vertices    += geometry.attributes.length;
+                            triangles   += geometry.attributes.length / 3;
                         }
                     }
                 }
-
-            } );
-
+            });
         }
 
-        this.objectsText.setValue( objects.format() );
-        this.verticesText.setValue( vertices.format() );
-        this.trianglesText.setValue( triangles.format() );
+        this.objectsText    .setValue( objects.format() );
+        this.verticesText   .setValue( vertices.format() );
+        this.trianglesText  .setValue( triangles.format() );
     }
 }
