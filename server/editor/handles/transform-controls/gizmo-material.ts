@@ -24,16 +24,10 @@ export class GizmoMaterial extends THREE.MeshBasicMaterial {
             this.color.copy( this._oldColor );
             this.opacity = this._oldOpacity;
         }
-    };
+    }
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of GizmoMaterial.
-     * @param {THREE.MeshBasicMaterialParameters} [parameters]
-     *
-     * @memberof GizmoMaterial
-     */
     constructor(parameters?: THREE.MeshBasicMaterialParameters) {
         super(parameters);
 

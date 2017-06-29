@@ -1,16 +1,20 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-//import * as THREE               from 'three';
-import {Global              }   from '../engine/global';
-import {Editor              }   from '../editor/editor';
-//import {Script              } from '../editor/script';
-import {Viewport            }   from '../editor/viewport';
-import {Player              }   from '../editor/player';
-import {Toolbar             }   from '../editor/toolbar';
-import {Menubar             }   from '../editor/menubar';
-import {RightSidebar        }   from '../editor/right-sidebar';
-import {Modal as UIModal    }   from '../editor/gui/modal';
+import  * as THREE                  from 'three';
+import { Global                 }   from '../engine/global';
+import { hasProperty            }   from '../engine/object';
+import { HTMLGroup              }   from '../editor/html/group';
+import { HTMLMesh               }   from '../editor/html/mesh';
+import { Editor                 }   from '../editor/editor';
+//import {Script                } from '../editor/script';
+import { Viewport               }   from '../editor/viewport';
+import { Player                 }   from '../editor/player';
+import { Toolbar                }   from '../editor/toolbar';
+import { Menubar                }   from '../editor/menubar';
+import { RightSidebar           }   from '../editor/right-sidebar';
+import { Modal as UIModal       }   from '../editor/gui/modal';
+import { RemoveObjectCommand    }   from '../editor/commands/remove-object-command';
 
 // global
 let global = new Global();
@@ -40,32 +44,25 @@ document.body.appendChild( rightSidebar.core );
 let modal = new UIModal();
 document.body.appendChild( modal.container.core );
 
-/*
-//
-
 editor.setTheme( editor.config.getKey( 'theme' ) );
 
-editor.storage.init( function () {
 
-    editor.storage.get( function ( state ) {
+editor.storage.init( function() {
+
+    editor.storage.get( function( state ) {
 
         if ( isLoadingFromHash ) return;
 
         if ( state !== undefined ) {
-
             editor.fromJSON( state );
-
         }
 
         let selected = editor.config.getKey( 'selected' );
 
         if ( selected !== undefined ) {
-
             editor.selectByUuid( selected );
-
         }
-
-    } );
+    });
 
     //
 
@@ -87,7 +84,7 @@ editor.storage.init( function () {
 
             timeout = setTimeout( function () {
 
-                editor.storage.set( editor.toJSON() );
+                editor.storage.set( editor.toJSON(), ()=>{} );
 
                 editor.signals.savingFinished.dispatch();
 
@@ -117,6 +114,7 @@ editor.storage.init( function () {
     } );
 
 } );
+
 
 //
 
@@ -202,7 +200,7 @@ function onWindowResize( event ) {
 
 window.addEventListener( 'resize', onWindowResize, false );
 
-onWindowResize();
+onWindowResize( null );
 
 //
 
@@ -216,20 +214,15 @@ if ( hash.substr( 1, 5 ) === 'file=' ) {
     if ( confirm( 'Any unsaved data will be lost. Are you sure?' ) ) {
 
         let loader = new THREE.FileLoader();
-        loader.crossOrigin = '';
+        if( hasProperty(loader,'crossOrigin') ) loader['crossOrigin'] = '';
         loader.load( file, function ( text ) {
-
             editor.clear();
             editor.fromJSON( JSON.parse( text ) );
-
-        } );
-
+        });
         isLoadingFromHash = true;
-
     }
 
 }
-*/
 
 /*
 window.addEventListener( 'message', function ( event ) {
@@ -240,7 +233,6 @@ window.addEventListener( 'message', function ( event ) {
 }, false );
 */
 
-/*
 // VR
 
 let groupVR;
@@ -251,10 +243,10 @@ editor.signals.enterVR.add( function () {
 
     if ( groupVR === undefined ) {
 
-        groupVR = new THREE.HTMLGroup( viewport.dom );
+        groupVR = new HTMLGroup( viewport.core );
         editor.sceneHelpers.add( groupVR );
 
-        let mesh = new THREE.HTMLMesh( sidebar.dom );
+        let mesh = new HTMLMesh( sidebar.core );
         mesh.position.set( 15, 0, 15 );
         mesh.rotation.y = - 0.5;
         groupVR.add( mesh );
@@ -285,5 +277,3 @@ editor.signals.exitedVR.add( function () {
     if ( groupVR !== undefined ) groupVR.visible = false;
 
 } );
-
-*/

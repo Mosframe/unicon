@@ -24,16 +24,10 @@ export class GizmoLineMaterial extends THREE.LineBasicMaterial {
             this.color.copy( this._oldColor );
             this.opacity = this._oldOpacity;
         }
-    };
+    }
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of GizmoLineMaterial.
-     * @param {THREE.LineBasicMaterialParameters} [parameters]
-     *
-     * @memberof GizmoLineMaterial
-     */
     constructor(parameters?: THREE.LineBasicMaterialParameters) {
         super(parameters);
 

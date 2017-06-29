@@ -633,12 +633,7 @@ export class TransformControls extends THREE.Object3D {
 	 */
 	protected _intersectObjects( pointer:any, objects:THREE.Object3D[] ) {
 
-		let rect = new ClientRect();
-
-		if( hasFunction( this._domElement, 'getBoundingClientRect' ) ) {
-			rect = this._domElement['getBoundingClientRect']();
-		}
-
+		let rect = this._domElement.getBoundingClientRect();
 		let x = ( pointer.clientX - rect.left ) / rect.width;
 		let y = ( pointer.clientY - rect.top ) / rect.height;
 

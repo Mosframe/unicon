@@ -20,14 +20,6 @@ export class TransformGizmoTranslate extends TransformGizmo {
 
     // [ Public Functions ]
 
-    /**
-     * set active plane
-     *
-     * @param {string} axis
-     * @param {THREE.Vector3} eye
-     *
-     * @memberof TransformGizmoTranslate
-     */
     setActivePlane ( axis:string, eye:THREE.Vector3 ) {
 
         let tempMatrix = new THREE.Matrix4();
@@ -70,11 +62,6 @@ export class TransformGizmoTranslate extends TransformGizmo {
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of TransformGizmoTranslate.
-     *
-     * @memberof TransformGizmoTranslate
-     */
     constructor() {
         super();
 
@@ -160,6 +147,7 @@ export class TransformGizmoTranslate extends TransformGizmo {
 			]
 
 		};
+
 
 		this.init();
     }
