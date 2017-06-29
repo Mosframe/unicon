@@ -1,12 +1,12 @@
 // -----------------------------------------------------------------------------
 // viewport-info.ts
 // -----------------------------------------------------------------------------
-import *            as THREE      from 'three';
-import {                        } from '../engine/number';
-import { Panel      as GUIPanel } from '../editor/gui/panel';
-import { Text       as GUIText  } from '../editor/gui/text';
-import { Break      as GUIBreak } from '../editor/gui/break';
-import { IEditor                } from './interface';
+import *            as THREE                from 'three';
+import { toString   as numberToString	}   from '../engine/number';
+import { Panel      as GUIPanel         }   from '../editor/gui/panel';
+import { Text       as GUIText          }   from '../editor/gui/text';
+import { Break      as GUIBreak         }   from '../editor/gui/break';
+import { IEditor                        }   from './interface';
 
 /**
  * ViewportInfo
@@ -53,7 +53,7 @@ export class ViewportInfo extends GUIPanel {
         signals.geometryChanged.add( this.update );
     }
 
-    update() {
+    update = () => {
 
         let objects     = 0;
         let vertices    = 0;
@@ -90,8 +90,11 @@ export class ViewportInfo extends GUIPanel {
             });
         }
 
-        this.objectsText    .setValue( objects.format() );
-        this.verticesText   .setValue( vertices.format() );
-        this.trianglesText  .setValue( triangles.format() );
+        //this.objectsText    .setValue( objects.format() );
+        //this.verticesText   .setValue( vertices.format() );
+        //this.trianglesText  .setValue( triangles.format() );
+        this.objectsText    .setValue( numberToString(objects) );
+        this.verticesText   .setValue( numberToString(vertices) );
+        this.trianglesText  .setValue( numberToString(triangles) );
     }
 }

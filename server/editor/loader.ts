@@ -1,13 +1,14 @@
 // -----------------------------------------------------------------------------
 // loader.ts
 // -----------------------------------------------------------------------------
-import * as THREE               from 'three';
-import { ILoader            }   from './interface';
-import { IEditor            }   from './interface';
-import { ISignals           }   from './interface';
-import { Config             }   from './config';
-import { AddObjectCommand   }   from './commands/add-object-command';
-import { SetSceneCommand    }   from './commands/set-scene-command';
+import  *           as THREE                from 'three';
+import { toString   as numberToString	}   from '../engine/number';
+import { ILoader                        }   from './interface';
+import { IEditor                        }   from './interface';
+import { ISignals                       }   from './interface';
+import { Config                         }   from './config';
+import { AddObjectCommand               }   from './commands/add-object-command';
+import { SetSceneCommand                }   from './commands/set-scene-command';
 /**
  * Loader
  *
@@ -27,7 +28,7 @@ export class Loader implements ILoader {
 
         reader.addEventListener( 'progress', ( event ) => {
 
-            let size = '(' + Math.floor( event.total / 1000 ).format() + ' KB)';
+            let size = '(' + numberToString( Math.floor( event.total / 1000 ) ) + ' KB)';
             let progress = Math.floor( ( event.loaded / event.total ) * 100 ) + '%';
             console.log( 'Loading', filename, size, progress );
         });

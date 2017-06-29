@@ -2,7 +2,6 @@
 // transform-gizmo-scale.ts
 // -----------------------------------------------------------------------------
 import * as THREE             from 'three';
-import {                    } from '../../engine/object';
 import {GizmoLineMaterial   } from './gizmo-line-material';
 import {GizmoMaterial       } from './gizmo-material';
 import {pickerMaterial      } from './gizmo-material';

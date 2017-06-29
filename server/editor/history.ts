@@ -23,7 +23,6 @@ export class History {
 
     undos           : ICommand[];
     redos           : ICommand[];
-
     editor          : IEditor;
     lastCmdTime     : Date;
     idCounter       : number;
@@ -217,7 +216,6 @@ export class History {
 			while ( cmd !== undefined && id > cmd.id ) {
 
 				cmd = this.redo();
-
 			}
 
 		} else {
@@ -229,9 +227,7 @@ export class History {
 				if ( cmd === undefined || id === cmd.id ) break;
 
 				this.undo();
-
 			}
-
 		}
 
 		this.editor.signals.sceneGraphChanged.active = true;
@@ -289,6 +285,8 @@ export class History {
 
         //Set editor-reference in Command
         let cmd = new Command( editor );
+
+		console.log( cmd );
 
         // signals
         this.editor.signals.startPlayer.add( ()=> {

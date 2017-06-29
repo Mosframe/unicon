@@ -1,17 +1,22 @@
+// -----------------------------------------------------------------------------
+// texture.ts
+// -----------------------------------------------------------------------------
+import * as THREE               from 'three';
+import { MoveObjectCommand  }   from '../../editor/commands/move-object-command'
+import { TGALoader          }   from '../loaders/tga-loader';
+import { Element            }   from './element';
+import { Span               }   from './span';
+import { Checkbox           }   from './checkbox';
+import { Text               }   from './text';
 /**
- * @author mrdoob / http://mrdoob.com/
+ * Texture
+ *
+ * @author mrdoob ( http://mrdoob.com/ )
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @class Texture
+ * @extends {Element}
  */
-
-import {} from '../../engine/object';
-
-import * as THREE from 'three';
-import {Element} from './element';
-import {Span} from './span';
-import {Checkbox} from './checkbox';
-import {Text} from './text';
-import {MoveObjectCommand} from '../../unicon-editor/commands/move-object-command'
-import {TGALoader} from '../loaders/tga-loader';
-
 export class Texture  extends Element {
 
     mapping             : THREE.Mapping;

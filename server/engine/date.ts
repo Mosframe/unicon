@@ -1,101 +1,97 @@
 // -----------------------------------------------------------------------------
 // date.ts
 // -----------------------------------------------------------------------------
-
-export {}
-
-declare global {
-    /**
-     * Date
-     *
-     * @author mosframe ( https://github.com/mosframe )
-     * @export
-     * @interface Date
-     */
-    export interface Date {
-        /**
-         * 일수(days)를 더하기
-         *
-         * @param {number} 일수(days)
-         * @returns {Date}
-         *
-         * @memberOf Date
-         */
-        addDays(days: number): Date;
-        /**
-         * 오늘인지 확인
-         *
-         * @returns {boolean}
-         *
-         * @memberOf Date
-         */
-        isToday(): boolean;
-        /**
-         * 복제
-         *
-         * @returns {Date}
-         *
-         * @memberOf Date
-         */
-        clone(): Date;
-        /**
-         * 다른 달인지 확인
-         *
-         * @param {Date} date
-         * @returns {boolean}
-         *
-         * @memberOf Date
-         */
-        isAnotherMonth(date: Date): boolean;
-        /**
-         * 주말(토,일)인지 확인
-         *
-         * @returns {boolean}
-         *
-         * @memberOf Date
-         */
-        isWeekend(): boolean;
-        /**
-         * 날짜가 같은지 비교
-         *
-         * @param {Date} date
-         * @returns {boolean}
-         *
-         * @memberOf Date
-         */
-        isSameDate(date: Date): boolean;
-    }
+/**
+ * add days
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date
+ * @param {number} days
+ * @returns {Date}
+ */
+export function addDays ( date:Date, days:number ) : Date {
+   if (!days) return date;
+   let out = clone(date);
+   out.setDate(out.getDate() + days);
+   return out;
 }
+/**
+ * is today
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date
+ * @returns {boolean}
+ */
+export function isToday ( date:Date ) : boolean {
+   return isSameDate( date, new Date() );
+}
+/**
+ * clone date
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date
+ * @returns {Date}
+ */
+export function clone ( date:Date ): Date {
+   return new Date(+date);
+}
+/**
+ * date is another month
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date1
+ * @param {Date} date2
+ * @returns {boolean}
+ */
+export function isAnotherMonth ( date1:Date, date2:Date ) : boolean {
+   return date1 && date2 && date1.getMonth() !== date2.getMonth();
+}
+/**
+ * date is weekend
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date
+ * @returns {boolean}
+ */
+export function isWeekend ( date:Date ): boolean {
+   return date && date.getDay() === 0 || date.getDay() === 6;
+}
+/**
+ * date is same date
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @param {Date} date1
+ * @param {Date} date2
+ * @returns {boolean}
+ */
+export function isSameDate ( date1:Date, date2:Date ): boolean {
+   return date1 && date2 && date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
+}
+/**
+ * now to log
+ *
+ * @author mosframe ( https://github.com/mosframe )
+ * @export
+ * @returns {string}
+ */
+export function nowToLog () : string {
 
-Date.prototype.addDays = (days: number): Date => {
-   if (!days) return this;
-   let date = this;
-   date.setDate(date.getDate() + days);
-   return date;
-};
+    let date = new Date();
+    let yyyy = date.getFullYear().toString();
+    let MM = pad(date.getMonth()+1,2);
+    let dd = pad(date.getDate(), 2);
+    let hh = pad(date.getHours(), 2);
+    let mm = pad(date.getMinutes(), 2)
+    let ss = pad(date.getSeconds(), 2)
 
-Date.prototype.isToday = (): boolean => {
-   let today = new Date();
-   return this.isSameDate(today);
-};
-
-Date.prototype.clone = (): Date => {
-   return new Date(+this);
-};
-
-Date.prototype.isAnotherMonth = (date: Date): boolean => {
-   return date && this.getMonth() !== date.getMonth();
-};
-
-Date.prototype.isWeekend = (): boolean => {
-   return this.getDay() === 0 || this.getDay() === 6;
-};
-
-Date.prototype.isSameDate = (date: Date): boolean => {
-   return date && this.getFullYear() === date.getFullYear() && this.getMonth() === date.getMonth() && this.getDate() === date.getDate();
-};
-
-
+    return yyyy + '-' + MM + '-' + dd + ' ' + hh + '-' + mm + '-' + ss;
+}
 
 /** 10진수 숫자길이만큼 앞에 0을 입력한다. */
 let pad = (num:any, length:number) => {
@@ -104,23 +100,5 @@ let pad = (num:any, length:number) => {
         str = '0' + str;
     }
     return str;
-}
+};
 
-/**
- * Now to Log string
- *
- * @export
- * @returns {string}
- */
-export function nowToLogString() : string {
-
-    let now = new Date();
-    let yyyy = now.getFullYear().toString();
-    let MM = pad(now.getMonth()+1,2);
-    let dd = pad(now.getDate(), 2);
-    let hh = pad(now.getHours(), 2);
-    let mm = pad(now.getMinutes(), 2)
-    let ss = pad(now.getSeconds(), 2)
-
-    return yyyy + '-' + MM + '-' + dd + ' ' + hh + '-' + mm + '-' + ss;
-}

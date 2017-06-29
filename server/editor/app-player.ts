@@ -2,7 +2,6 @@
 // app-player.ts
 // -----------------------------------------------------------------------------
 import * as THREE   	from 'three';
-import {			}   from '../engine/object';
 import { WebVR 		}   from '../engine/vr/web-vr';
 /**
  * app player

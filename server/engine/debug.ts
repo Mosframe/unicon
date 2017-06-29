@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // debug.ts
 // -----------------------------------------------------------------------------
-import {nowToLogString} from './date';
+import {nowToLog} from './date';
 /**
  * Class containing methods to ease debugging while developing a game.
  *
@@ -44,7 +44,7 @@ export class Debug {
      * @memberof Debug
      */
     static log( message:any ) {
-        console.log( '[' + nowToLogString() + '] ' + message );
+        console.log( '[' + nowToLog() + '] ' + message );
     }
     /*
     static LogAssertion	A variant of Debug.Log that logs an assertion message to the console.

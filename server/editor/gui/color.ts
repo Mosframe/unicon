@@ -16,30 +16,13 @@ export class Color extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {string}
-     * @memberof Color
-     */
     getValue () : string            { return this.core.value; }
     setValue ( value:string )       { this.core.value=value; return this; }
-    /**
-     * hexa value
-     *
-     * @type {number}
-     * @memberof Color
-     */
     getHexValue () : number         { return parseInt(this.core.value.substr(1), 16); }
     setHexValue ( value:number )    { this.core.value = '#' + ('000000'+value.toString(16)).slice(-6); return this }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Color.
-     *
-     * @memberof Color
-     */
     constructor () {
 
         let element = document.createElement( 'input' );

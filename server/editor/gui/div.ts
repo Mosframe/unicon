@@ -14,13 +14,8 @@ import {Element} from './element';
  */
 export class Div extends Element {
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of Div.
-     *
-     * @memberof Div
-     */
     constructor() {
         super( document.createElement( 'div' ) );
     }

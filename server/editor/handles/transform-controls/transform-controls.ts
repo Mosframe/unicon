@@ -1,15 +1,15 @@
 // -----------------------------------------------------------------------------
 // transform-controls.ts
 // -----------------------------------------------------------------------------
-import * as THREE             	  	  from 'three';
-import {                    		} from '../../engine/object';
-import {GizmoLineMaterial   		} from './gizmo-line-material';
-import {GizmoMaterial       		} from './gizmo-material';
-import {pickerMaterial      		} from './gizmo-material';
-import {TransformGizmo      		} from './transform-gizmo';
-import {TransformGizmoTranslate		} from './transform-gizmo-translate';
-import {TransformGizmoRotate		} from './transform-gizmo-rotate';
-import {TransformGizmoScale			} from './transform-gizmo-scale';
+import 	* as THREE             	  	  	from 'three';
+import { hasFunction    			}   from '../../../engine/object';
+import { GizmoLineMaterial   		} 	from './gizmo-line-material';
+import { GizmoMaterial       		} 	from './gizmo-material';
+import { pickerMaterial      		} 	from './gizmo-material';
+import { TransformGizmo      		} 	from './transform-gizmo';
+import { TransformGizmoTranslate	} 	from './transform-gizmo-translate';
+import { TransformGizmoRotate		} 	from './transform-gizmo-rotate';
+import { TransformGizmoScale		} 	from './transform-gizmo-scale';
 
 /**
  * TransformControls
@@ -635,7 +635,7 @@ export class TransformControls extends THREE.Object3D {
 
 		let rect = new ClientRect();
 
-		if( Object.hasProterty( this._domElement, 'getBoundingClientRect' ) ) {
+		if( hasFunction( this._domElement, 'getBoundingClientRect' ) ) {
 			rect = this._domElement['getBoundingClientRect']();
 		}
 

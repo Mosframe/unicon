@@ -2,7 +2,6 @@
 // remove-script-command.ts
 // -----------------------------------------------------------------------------
 import * as THREE     from 'three';
-import {            } from '../../engine/object';
 import {IEditor     } from '../interface';
 import {Command     } from '../command';
 

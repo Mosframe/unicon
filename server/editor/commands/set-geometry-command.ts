@@ -2,7 +2,6 @@
 // set-geometry-command.ts
 // -----------------------------------------------------------------------------
 import * as THREE     from 'three';
-import {            } from '../../engine/object';
 import {ICommand    } from '../interface';
 import {IEditor     } from '../interface';
 import {Command     } from '../command';

@@ -1,8 +1,7 @@
 // -----------------------------------------------------------------------------
 // element.ts
 // -----------------------------------------------------------------------------
-import {} from '../../engine/object';
-
+import { hasProperty }   from '../../engine/object';
 /**
  * Element
  *
@@ -67,7 +66,7 @@ export class Element {
 
     setDisabled ( value:boolean ) {
 
-        if( Object.hasProterty( this._core, 'disabled' ) ) this._core['disabled'] = value;
+        if( hasProperty( this._core, 'disabled' ) ) this._core['disabled'] = value;
         return this;
     }
 
@@ -116,7 +115,7 @@ export class Element {
     setWidth            ( ...values:string[] ) { return this.setStyle('width'             ,values); }
     setZIndex           ( ...values:string[] ) { return this.setStyle('zIndex'            ,values); }
 
-    // [ Constructors ]
+    // [ Constructor ]
 
     constructor ( element:HTMLElement|SVGSVGElement ) {
         this._core = element;

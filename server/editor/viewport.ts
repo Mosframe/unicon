@@ -1,9 +1,10 @@
 // -----------------------------------------------------------------------------
 // viewport.ts
 // -----------------------------------------------------------------------------
-import * as THREE     		  	  from 'three';
+import 	* as THREE     		  	  from 'three';
 import { Signal  				} from 'signals';
-import {						} from '../engine/object';
+import { hasProperty			} from '../engine/object';
+import { hasFunction			} from '../engine/object';
 import { WebVR					} from '../engine/vr/web-vr';
 import { VREffect				} from '../engine/vr/vr-effect';
 import { VRControls				} from '../engine/vr/vr-controls';
@@ -130,7 +131,7 @@ export class Viewport extends UIPanel{
 
 				let helper = editor.helpers[ object.id ];
 				if( helper ) {
-					if( Object.hasProterty( helper, 'update') ) {
+					if( hasFunction( helper, 'update') ) {
 						helper['update']();
 					}
 				}
@@ -259,7 +260,7 @@ export class Viewport extends UIPanel{
 
 				window.addEventListener( 'vrdisplaypresentchange', ( event ) => {
 
-					if( window.hasProterty('effect') ) {
+					if( hasProperty(window,'effect') ) {
 						window['effect'].isPresenting ? this.editor.signals.enteredVR.dispatch() : this.editor.signals.exitedVR.dispatch();
 					}
 				}, false );
@@ -334,7 +335,7 @@ export class Viewport extends UIPanel{
 			let helper = editor.helpers[ object.id ];
 			if ( helper !== undefined ) {
 
-				if( Object.hasFunction( helper, 'update' ) ) {
+				if( hasFunction( helper, 'update' ) ) {
 					helper['update']();
 				}
 			}

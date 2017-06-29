@@ -1,12 +1,11 @@
 // -----------------------------------------------------------------------------
 // transform-gizmo-rotate.ts
 // -----------------------------------------------------------------------------
-import * as THREE             from 'three';
-import {                    } from '../../engine/object';
-import {GizmoLineMaterial   } from './gizmo-line-material';
-import {GizmoMaterial       } from './gizmo-material';
-import {pickerMaterial      } from './gizmo-material';
-import {TransformGizmo      } from './transform-gizmo';
+import 	* as THREE            from 'three';
+import { GizmoLineMaterial 	} from './gizmo-line-material';
+import { GizmoMaterial     	} from './gizmo-material';
+import { pickerMaterial    	} from './gizmo-material';
+import { TransformGizmo    	} from './transform-gizmo';
 
 /**
  * TransformGizmoRotate

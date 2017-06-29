@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // remove-object-command.ts
 // -----------------------------------------------------------------------------
-import * as THREE     from 'three';
-import {            } from '../../engine/object';
-import {IEditor     } from '../interface';
-import {Command     } from '../command';
+import * as THREE           from 'three';
+import { hasProperty    }   from '../../engine/object';
+import { IEditor        }   from '../interface';
+import { Command        }   from '../command';
 
 /**
  * RemoveObjectCommand
@@ -49,8 +49,8 @@ export class RemoveObjectCommand extends Command {
      */
 	undo () {
 		this.object.traverse( ( child:THREE.Object3D ) => {
-            if( child.hasProterty( 'geometry' ) ) this._editor.addGeometry( child['geometry'] );
-            if( child.hasProterty( 'material' ) ) this._editor.addMaterial( child['material'] );
+            if( hasProperty( child, 'geometry' ) ) this._editor.addGeometry( child['geometry'] );
+            if( hasProperty( child, 'material' ) ) this._editor.addMaterial( child['material'] );
 			this._editor.addHelper( child );
 		});
 

@@ -19,11 +19,11 @@ export class Integer extends Element {
     min : number;
     max : number;
 
-    getStep() : number      { return this._step; }
-    setStep( value:number ) { this._step = parseInt( value.toString() ); return this; }
-
+    getStep() : number          { return this._step; }
+    setStep( value:number )     { this._step = parseInt( value.toString() ); return this; }
     getValue () : number        { return this._value; }
     setValue ( value:number )   {
+
         if( value !== undefined ) {
 
             value = parseInt( value.toString() );

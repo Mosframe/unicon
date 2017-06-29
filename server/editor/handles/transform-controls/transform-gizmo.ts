@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 // transform-gizmo.ts
 // -----------------------------------------------------------------------------
-import * as THREE from 'three';
-import {        } from '../../engine/object';
+import  * as THREE          from 'three';
+import { hasFunction    }   from '../../../engine/object';
 
 /**
  * TransformGizmo
@@ -40,6 +40,7 @@ export class TransformGizmo extends THREE.Object3D {
 
         let planeGeometry = new THREE.PlaneBufferGeometry( 50, 50, 2, 2 );
         let planeMaterial = new THREE.MeshBasicMaterial( { visible:false, side:THREE.DoubleSide } );
+
 
         let planes = {
             "XY":   new THREE.Mesh( planeGeometry, planeMaterial ),
@@ -119,7 +120,7 @@ export class TransformGizmo extends THREE.Object3D {
         this.traverse( ( child:THREE.Object3D ) => {
             if( child instanceof THREE.Mesh ) {
                 if ( child.material ) {
-                    if( Object.hasProterty( child.material, 'highlight') ) {
+                    if( hasFunction( child.material, 'highlight') ) {
                         if ( child.name === axis ) {
                             child.material['highlight']( true );
                         } else {

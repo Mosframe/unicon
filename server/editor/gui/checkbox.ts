@@ -16,23 +16,11 @@ export class Checkbox extends Element {
 
     // [ Public Variables ]
 
-    /**
-     * value
-     *
-     * @type {boolean}
-     * @memberof Checkbox
-     */
     getValue () : boolean      { return this.core.checked; }
     setValue ( value:boolean ) { if( value !== undefined ) this.core.checked = value; return this; }
 
     // [ Constructors ]
 
-    /**
-     * Creates an instance of Checkbox.
-     * @param {boolean} checked
-     *
-     * @memberof Checkbox
-     */
     constructor ( checked:boolean ) {
 
         let element = document.createElement( 'input' );

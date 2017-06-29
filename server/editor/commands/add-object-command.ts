@@ -18,42 +18,23 @@ import {Command     } from '../command';
  */
 export class AddObjectCommand extends Command {
 
-    // [ Public Functions ]
+    // [ Public Properties ]
 
-    /**
-     * execute
-     *
-     * @memberof AddObjectCommand
-     */
     execute () {
         this._editor.addObject( this.object );
     }
-    /**
-     * undo
-     *
-     * @memberof AddObjectCommand
-     */
+
 	undo () {
 		this._editor.removeObject( this.object );
 		this._editor.deselect();
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof AddObjectCommand
-     */
+
     toJSON () : any {
 		let output = super.toJSON();
 		output.object = this.object.toJSON();
 		return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof AddObjectCommand
-     */
+
 	fromJSON ( json:any ) {
 		super.fromJSON( json );
 		this.object = this._editor.objectByUuid( json.object.object.uuid );

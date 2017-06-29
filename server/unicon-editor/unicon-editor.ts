@@ -2,8 +2,7 @@
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
 //import * as THREE               from 'three';
-import {                    }   from '../engine/object';
-import {                    }   from '../engine/number';
+import {Global              }   from '../engine/global';
 import {Editor              }   from '../editor/editor';
 //import {Script              } from '../editor/script';
 import {Viewport            }   from '../editor/viewport';
@@ -13,8 +12,10 @@ import {Menubar             }   from '../editor/menubar';
 import {RightSidebar        }   from '../editor/right-sidebar';
 import {Modal as UIModal    }   from '../editor/gui/modal';
 
+// global
+let global = new Global();
 
-//
+// editor
 let editor = new Editor();
 
 let viewport = new Viewport( editor );

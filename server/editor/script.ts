@@ -1,16 +1,14 @@
 // -----------------------------------------------------------------------------
 // script.ts
 // -----------------------------------------------------------------------------
-import *        as esprima        from 'esprima';
-//import *        as CodeMirror     from 'codemirror';
-import *        as THREE          from 'three';
-import {                        } from '../engine/object';
-import {Element as UIElement    } from '../editor/gui/element';
-import {Panel   as UIPanel      } from '../editor/gui/panel';
-import {Text    as UIText       } from '../editor/gui/text';
-import {IEditor                 } from './interface';
-import {SetMaterialValueCommand } from './commands/set-material-value-command';
-import {SetScriptValueCommand   } from './commands/set-script-value-command';
+import  *           as esprima      from 'esprima';
+import  *           as THREE        from 'three';
+import { Element    as UIElement}   from '../editor/gui/element';
+import { Panel      as UIPanel  }   from '../editor/gui/panel';
+import { Text       as UIText   }   from '../editor/gui/text';
+import { IEditor                }   from './interface';
+import { SetMaterialValueCommand}   from './commands/set-material-value-command';
+import { SetScriptValueCommand  }   from './commands/set-script-value-command';
 
 //let jsonlint    = require( 'jsonlint' );
 let jsonlint    = require( '../lib/jsonlint/jsonlint' );
