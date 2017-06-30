@@ -342,6 +342,7 @@ export class TransformControls extends THREE.Object3D {
 			if ( pointer.button === 0 || pointer.button === undefined ) {
 
 				let intersect = this._intersectObjects( pointer, this._gizmo[ this._mode ].pickers.children );
+				console.log( intersect );
 
 				if ( intersect ) {
 

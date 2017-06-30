@@ -148,24 +148,19 @@ document.addEventListener( 'keydown', function ( event ) {
         case 46: // delete
 
             let object = editor.selected;
-
-            if ( confirm( 'Delete ' + object.name + '?' ) === false ) return;
-
-            let parent = object.parent;
-            if ( parent !== null ) editor.execute( new RemoveObjectCommand( object ) );
+            if( object ) {
+                if ( confirm( 'Delete ' + object.name + '?' ) === false ) return;
+                if ( object.parent ) editor.execute( new RemoveObjectCommand( object ) );
+            }
 
             break;
 
         case 90: // Register Ctrl-Z for Undo, Ctrl-Shift-Z for Redo
 
             if ( event.ctrlKey && event.shiftKey ) {
-
                 editor.redo();
-
             } else if ( event.ctrlKey ) {
-
                 editor.undo();
-
             }
 
             break;
@@ -246,7 +241,7 @@ editor.signals.enterVR.add( function () {
         groupVR = new HTMLGroup( viewport.core );
         editor.sceneHelpers.add( groupVR );
 
-        let mesh = new HTMLMesh( sidebar.core );
+        let mesh = new HTMLMesh( rightSidebar.core );
         mesh.position.set( 15, 0, 15 );
         mesh.rotation.y = - 0.5;
         groupVR.add( mesh );
@@ -254,9 +249,7 @@ editor.signals.enterVR.add( function () {
         let signals = editor.signals;
 
         function updateTexture() {
-
-            mesh.material.map.update();
-
+            mesh.material.update();
         }
 
         signals.objectSelected.add( updateTexture );
@@ -265,7 +258,6 @@ editor.signals.enterVR.add( function () {
         signals.objectRemoved.add( updateTexture );
         signals.sceneGraphChanged.add( updateTexture );
         signals.historyChanged.add( updateTexture );
-
     }
 
     groupVR.visible = true;

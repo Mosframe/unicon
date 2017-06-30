@@ -12,7 +12,7 @@ import {htmlToCanvas} from './html-to-canvas';
  * @class HTMLTexture
  * @extends {THREE.CanvasTexture}
  */
-export class HTMLMesh extends THREE.CanvasTexture {
+export class HTMLTexture extends THREE.CanvasTexture {
 
  	update () {
 

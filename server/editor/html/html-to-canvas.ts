@@ -15,9 +15,9 @@ export function htmlToCanvas( element:HTMLElement ) {
 
 	let range = document.createRange();
 
-	function Clipper( context ) {
+	function Clipper( context:CanvasRenderingContext2D ) {
 
-		let clips = [];
+		let clips : any = [];
 		let isClipping = false;
 
 		function doClip() {
@@ -26,7 +26,6 @@ export function htmlToCanvas( element:HTMLElement ) {
 
 				isClipping = false;
 				context.restore();
-
 			}
 
 			if ( clips.length === 0 ) return;
@@ -70,14 +69,13 @@ export function htmlToCanvas( element:HTMLElement ) {
 	function drawText( style, x, y, string ) {
 
 		if ( string !== '' ) {
-
-			context.font = style.fontSize + ' ' + style.fontFamily;
-			context.textBaseline = 'top';
-			context.fillStyle = style.color;
-			context.fillText( string, x, y );
-
+			if( context ) {
+				context.font = style.fontSize + ' ' + style.fontFamily;
+				context.textBaseline = 'top';
+				context.fillStyle = style.color;
+				context.fillText( string, x, y );
+			}
 		}
-
 	}
 
 	function drawBorder( style, which, x, y, width, height ) {
@@ -88,14 +86,14 @@ export function htmlToCanvas( element:HTMLElement ) {
 
 		if ( borderWidth !== '0px' && borderStyle !== 'none' && borderColor !== 'transparent' && borderColor !== 'rgba(0, 0, 0, 0)' ) {
 
-			context.strokeStyle = borderColor;
-			context.beginPath();
-			context.moveTo( x, y );
-			context.lineTo( x + width, y + height );
-			context.stroke();
-
+			if( context ) {
+				context.strokeStyle = borderColor;
+				context.beginPath();
+				context.moveTo( x, y );
+				context.lineTo( x + width, y + height );
+				context.stroke();
+			}
 		}
-
 	}
 
 	function drawElement( element, style?:any ) {
@@ -134,9 +132,10 @@ export function htmlToCanvas( element:HTMLElement ) {
 
 			if ( backgroundColor !== 'transparent' && backgroundColor !== 'rgba(0, 0, 0, 0)' ) {
 
-				context.fillStyle = backgroundColor;
-				context.fillRect( x, y, width, height );
-
+				if( context ) {
+					context.fillStyle = backgroundColor;
+					context.fillRect( x, y, width, height );
+				}
 			}
 
 			drawBorder( style, 'borderTop', x, y, width, 0 );
@@ -184,6 +183,7 @@ export function htmlToCanvas( element:HTMLElement ) {
 	canvas.height = offset.height;
 
 	let context = canvas.getContext( '2d'/*, { alpha: false }*/ );
+	if( !context ) return canvas;
 
 	let clipper = Clipper( context );
 
@@ -194,5 +194,4 @@ export function htmlToCanvas( element:HTMLElement ) {
 	console.timeEnd( 'drawElement' );
 
 	return canvas;
-
 }

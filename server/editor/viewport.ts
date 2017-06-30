@@ -27,7 +27,7 @@ import { ViewportInfo			} from './viewport-info';
  * @class Viewport
  * @extends {UIPanel}
  */
-export class Viewport extends UIPanel{
+export class Viewport extends UIPanel {
 
     // [ Public Variables ]
 
@@ -123,15 +123,19 @@ export class Viewport extends UIPanel{
 		this.transformControls = new TransformControls( this.camera, this.core );
 		this.transformControls.addEventListener( 'change', () => {
 
+			console.log('transformControls.change');
+
 			let object = this.transformControls.object;
 			if( object !== undefined ) {
 
 				//this.selectionBox.setFromObject( object );
-				this.selectionBox = new THREE.BoxHelper( object );
+				//this.selectionBox = new THREE.BoxHelper( object );
+				this.selectionBox.update( object );
 
 				let helper = editor.helpers[ object.id ];
 				if( helper ) {
 					if( hasFunction( helper, 'update') ) {
+						console.log( helper );
 						helper['update']();
 					}
 				}
@@ -142,6 +146,9 @@ export class Viewport extends UIPanel{
 		});
 
 		this.transformControls.addEventListener( 'mouseDown', () => {
+
+			console.log( 'transformControls mouseDown' );
+
 			let object = this.transformControls.object;
 			if( object ) {
 				this.objectPositionOnDown 	= object.position.clone();
@@ -238,8 +245,6 @@ export class Viewport extends UIPanel{
 
 		this.editor.signals.rendererChanged.add( ( newRenderer:THREE.WebGLRenderer ) => {
 
-			console.log( "rendererChanged" );
-
 			if ( this.renderer !== null ) {
 				this.core.removeChild( this.renderer.domElement );
 			}
@@ -280,6 +285,8 @@ export class Viewport extends UIPanel{
 
 		this.editor.signals.objectSelected.add( ( object:THREE.Object3D ) => {
 
+			console.log('signals.objectSelected.add');
+
 			this.selectionBox.visible = false;
 			this.transformControls.detach();
 
@@ -290,6 +297,7 @@ export class Viewport extends UIPanel{
 				if ( box.isEmpty() === false ) {
 					this.selectionBox = new THREE.BoxHelper( object );
 					this.selectionBox.visible = true;
+					console.log( this.selectionBox );
 				}
 
 				this.transformControls.attach( object );
