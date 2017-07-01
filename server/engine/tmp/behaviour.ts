@@ -10,7 +10,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * Behaviours are Components that can be enabled or disabled.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Behaviour
  * @extends {Component}

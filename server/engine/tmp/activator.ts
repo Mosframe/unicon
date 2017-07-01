@@ -11,7 +11,7 @@
  * var example = activator.createInstance('ClassA');
  *
  * }
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Activator
  * @template T

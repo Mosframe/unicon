@@ -6,7 +6,7 @@ import {UObject} from './uobject';
 /**
  * Component
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Component
  * @extends {UObject}

@@ -13,7 +13,7 @@ import { SetSceneCommand                }   from './commands/set-scene-command';
  * Loader
  *
  * @author mrdoob / http://mrdoob.com/
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Loader
  */

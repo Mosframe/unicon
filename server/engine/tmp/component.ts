@@ -9,7 +9,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * Component type
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @interface ComponentType
  * @template T
@@ -25,7 +25,7 @@ export interface ComponentType<T> {
  * Instead, you write script code, and attach the script to a GameObject.
  * See Also: ScriptableObject as a way to create scripts that do not attach to any GameObject.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Temp

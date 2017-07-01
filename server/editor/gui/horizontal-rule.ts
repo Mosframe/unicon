@@ -6,8 +6,8 @@ import {Element} from './element';
 /**
  * HorizontalRule
  *
- * @author mrdoob ( http://mrdoob.com/ )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class HorizontalRule
  * @extends {Element}

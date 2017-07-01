@@ -4,7 +4,7 @@
 /**
  * object has property
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {object} object
  * @param {string} propertyName

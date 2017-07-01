@@ -6,8 +6,8 @@ import {Element} from './element';
 /**
  * Input
  *
- * @author mrdoob ( http://mrdoob.com/ )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Input
  * @extends {Element}

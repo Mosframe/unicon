@@ -7,7 +7,7 @@ import {EditorWindow    }  from './editor-window';
 /**
  * Inspector
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Inspector
  * @extends {EditorWindow}

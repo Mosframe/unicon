@@ -10,7 +10,7 @@ import {GameObject  } from '../engine/game-Object';
  *
  * Use this to control all aspects of Unicon's lights. The properties are an exact match for the values shown in the Inspector.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Light
  * @extends {Behaviour}

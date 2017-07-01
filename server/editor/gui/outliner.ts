@@ -15,7 +15,7 @@ import { Text               }   from './text';
  * Outliner
  *
  * @author mrdoob / http://mrdoob.com/
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Outliner
  * @extends {Element}

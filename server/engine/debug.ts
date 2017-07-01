@@ -5,7 +5,7 @@ import {nowToLog} from './date';
 /**
  * Class containing methods to ease debugging while developing a game.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Debug
  */

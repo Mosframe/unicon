@@ -16,7 +16,7 @@ import {Vector3     } from '../engine/vector3';
  * This is the hierarchy seen in the Hierarchy pane.
  * They also support enumerators so you can loop through children using
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Transform
  * @extends {Component}

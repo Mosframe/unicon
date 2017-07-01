@@ -19,7 +19,7 @@ import {Storage         } from './storage';
  * Editor
  *
  * @author mrdoob ( http://mrdoob.com )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Editor
  * @implements {IEditor}

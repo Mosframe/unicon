@@ -14,7 +14,7 @@ import { TransformGizmoScale		} 	from './transform-gizmo-scale';
  * TransformControls
  *
  * @author arodic ( https://github.com/arodic )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class TransformControls
  * @extends {THREE.Object3D}

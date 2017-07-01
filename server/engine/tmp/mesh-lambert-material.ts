@@ -10,7 +10,7 @@ import {Ubject              } from '../engine/ubject';
 /**
  * The MeshLambertMaterial class.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class MeshLambertMaterial

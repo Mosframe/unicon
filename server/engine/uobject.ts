@@ -6,7 +6,7 @@ import {v1} from 'uuid';
 /**
  * UObject
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class UObject
  */

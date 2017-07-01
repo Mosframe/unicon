@@ -11,7 +11,7 @@ import { TransformGizmo    	} from './transform-gizmo';
  * TransformGizmoTranslate
  *
  * @author arodic ( https://github.com/arodic )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class TransformGizmoTranslate
  * @extends {TransformGizmo}

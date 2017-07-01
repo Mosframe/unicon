@@ -7,7 +7,7 @@ import {Component   } from './component';
 /**
  * GameObject
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class GameObject
  * @extends {UObject}

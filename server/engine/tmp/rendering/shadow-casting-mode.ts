@@ -4,7 +4,7 @@
 /**
  * How shadows are cast from this object.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @enum {number}
  */

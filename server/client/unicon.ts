@@ -10,7 +10,7 @@ import { Inspector      } from '../editor/inspector';
 /**
  * Unicon
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Unicon
  */

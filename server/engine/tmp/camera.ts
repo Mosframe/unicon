@@ -16,7 +16,7 @@ import {Vector3     } from '../engine/vector3';
  *
  * A world space point is defined in global coordinates (for example, Transform.position).
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Camera
  * @extends {Behaviour}

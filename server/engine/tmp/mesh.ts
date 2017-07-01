@@ -8,7 +8,7 @@ import {Ubject      } from '../engine/ubject';
 /**
  * A class that allows creating or modifying meshes from scripts.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Mesh

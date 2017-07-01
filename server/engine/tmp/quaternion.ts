@@ -6,7 +6,7 @@ import * as GL  from '../engine/graphic';
 /**
  * Quaternion
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Quaternion
  * @extends {GL.Quaternion}

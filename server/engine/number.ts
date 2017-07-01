@@ -4,7 +4,7 @@
 /**
  * number to string
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {number} number
  * @returns {string}

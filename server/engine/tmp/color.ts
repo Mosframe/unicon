@@ -13,7 +13,7 @@ import * as GL  from '../engine/graphic';
  *
  * Components (r,g,b) define a color in RGB color space. Alpha component (a) defines transparency - alpha of one is completely opaque, alpha of zero is completely transparent.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Color
  * @extends {Ubject}

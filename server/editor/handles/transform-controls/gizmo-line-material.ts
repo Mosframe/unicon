@@ -7,7 +7,7 @@ import * as THREE from 'three';
  * GizmoLineMaterial
  *
  * @author arodic ( https://github.com/arodic )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class GizmoLineMaterial
  * @extends {THREE.LineBasicMaterial}

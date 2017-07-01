@@ -7,7 +7,7 @@ import { WebVR 		}   from '../engine/vr/web-vr';
  * app player
  *
  * @author mrdoob / http://mrdoob.com/
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class AppPlayer
  */

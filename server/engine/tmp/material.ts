@@ -13,7 +13,7 @@ import {Ubject              } from '../engine/ubject';
  *
  * In order to get the material used by an object, use the Renderer.material property.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Material

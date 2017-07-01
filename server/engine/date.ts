@@ -4,7 +4,7 @@
 /**
  * add days
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date
  * @param {number} days
@@ -19,7 +19,7 @@ export function addDays ( date:Date, days:number ) : Date {
 /**
  * is today
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date
  * @returns {boolean}
@@ -30,7 +30,7 @@ export function isToday ( date:Date ) : boolean {
 /**
  * clone date
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date
  * @returns {Date}
@@ -41,7 +41,7 @@ export function clone ( date:Date ): Date {
 /**
  * date is another month
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date1
  * @param {Date} date2
@@ -53,7 +53,7 @@ export function isAnotherMonth ( date1:Date, date2:Date ) : boolean {
 /**
  * date is weekend
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date
  * @returns {boolean}
@@ -64,7 +64,7 @@ export function isWeekend ( date:Date ): boolean {
 /**
  * date is same date
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @param {Date} date1
  * @param {Date} date2
@@ -76,7 +76,7 @@ export function isSameDate ( date1:Date, date2:Date ): boolean {
 /**
  * now to log
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @returns {string}
  */

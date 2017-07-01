@@ -10,7 +10,7 @@ import {Mesh        } from '../engine/mesh';
 /**
  * A class to access the Mesh of the mesh filter.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class MeshFilter

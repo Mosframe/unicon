@@ -9,7 +9,7 @@ import { GizmoLineMaterial  }   from './gizmo-line-material';
  * TransformGizmo
  *
  * @author arodic ( https://github.com/arodic )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class TransformGizmo
  * @extends {THREE.Object3D}

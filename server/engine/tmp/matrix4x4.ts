@@ -18,7 +18,7 @@ import {Ubject} from '../engine/ubject';
  * Matrices in Unicon are column major. Data is accessed as: row + (column*4).
  * Matrices can be indexed like 2D arrays but in an expression like mat[a, b], a refers to the row index, while b refers to the column index (note that this is the opposite way round to Cartesian coordinates).
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Matrix4x4
  * @extends {GL.Matrix4}

@@ -17,7 +17,7 @@ import {ShaderType          } from '../engine/shader-type';
  * Use this class to access the renderer of any object, mesh or particle system.
  * Renderers can be disabled to make objects invisible (see enabled), and the materials can be accessed and modified through them (see material).
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class Renderer

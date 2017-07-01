@@ -10,7 +10,7 @@ import * as THREE from 'three';
  * @author mrdoob ( http://mrdoob.com )
  * @author alteredq ( http://alteredqualia.com/ )
  * @author WestLangley ( http://github.com/WestLangley )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class EditorControls
  * @extends {THREE.EventDispatcher}

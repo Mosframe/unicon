@@ -7,7 +7,7 @@ import {Ubject}         from '../engine/ubject';
 /**
  * A class you can derive from if you want to create objects that don't need to be attached to game objects.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class ScriptableObject

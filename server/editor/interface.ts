@@ -10,7 +10,7 @@ import {Config  } from './config';
  * Command interface
  *
  * @author mrdoob ( http://mrdoob.com )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @interface ICommand
  */
@@ -37,7 +37,7 @@ export interface ICommand {
  * Editor interface
  *
  * @author mrdoob ( http://mrdoob.com )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @interface IEditor
  */
@@ -116,7 +116,7 @@ export interface ILoader {
  * Editor Signals interface
  *
  * @author mrdoob ( http://mrdoob.com )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @interface ISignals
  */

@@ -8,7 +8,7 @@ import {Ubject  } from '../../engine/ubject';
 /**
  * Scene management at run-time.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class SceneManager
  */

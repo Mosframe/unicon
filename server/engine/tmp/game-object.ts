@@ -26,7 +26,7 @@ import {Vector3             } from '../engine/vector3';
 /**
  * Base class for all entities in Unicon scenes.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class GameObject

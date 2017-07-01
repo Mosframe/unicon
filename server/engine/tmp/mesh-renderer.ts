@@ -13,7 +13,7 @@ import {ShaderType  } from '../engine/shader-type';
 /**
  * Renders meshes inserted by the MeshFilter or TextMesh.
  *
- * @author mosframe ( https://github.com/mosframe )
+ * @author mosframe / https://github.com/mosframe
  *
  * @export
  * @class MeshRenderer

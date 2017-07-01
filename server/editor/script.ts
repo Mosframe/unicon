@@ -22,8 +22,8 @@ let glslprep    = require( '../lib/glslprep/glslprep.min' );
  * Script
  *
  *
- * @author mrdoob ( http://mrdoob.com/ )
- * @author mosframe ( https://github.com/mosframe )
+ * @author mrdoob / http://mrdoob.com/
+ * @author mosframe / https://github.com/mosframe
  * @export
  * @class Config
  */
