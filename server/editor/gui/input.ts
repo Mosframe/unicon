@@ -21,7 +21,7 @@ export class Input extends Element {
 
     // [ Constructors ]
 
-    constructor ( text:string ) {
+    constructor ( text?:string ) {
         let element = document.createElement( 'input' );
         element.className         = 'Input';
         element.style.padding     = '2px';

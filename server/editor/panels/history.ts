@@ -17,7 +17,7 @@ import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
 import { IEditor                    }   from '../interface';
-import { EditorPanel                }   from '../editor-panel';
+import { EditorPanel                }   from './editor';
 
 
 /**
@@ -85,7 +85,7 @@ export class HistoryPanel extends EditorPanel {
 
         //
 
-        let refreshUI = function () {
+        let refreshUI = () => {
 
             let options : any = [];
             let enumerator = 1;
@@ -141,10 +141,8 @@ export class HistoryPanel extends EditorPanel {
         signals.editorCleared.add( refreshUI );
 
         signals.historyChanged.add( refreshUI );
-        signals.historyChanged.add( function ( cmd ) {
-
+        signals.historyChanged.add( ( cmd ) => {
             outliner.setValue( cmd !== undefined ? cmd.id : null );
-
-        } );
+        });
     }
 }

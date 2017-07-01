@@ -17,7 +17,7 @@ import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
 import { IEditor                    }   from '../interface';
-import { EditorPanel                }   from '../editor-panel';
+import { EditorPanel                }   from './editor';
 
 
 /**

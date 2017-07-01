@@ -53,7 +53,7 @@ export class ViewportInfo extends GUIPanel {
         signals.geometryChanged.add( this.update );
     }
 
-    update = () => {
+    private update = () => {
 
         let objects     = 0;
         let vertices    = 0;

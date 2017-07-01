@@ -117,7 +117,7 @@ export class Storage implements IStorage {
         let transaction = this.database.transaction( [ 'states' ], 'readwrite' );
         let objectStore = transaction.objectStore( 'states' );
         let request = objectStore.clear();
-        request.onsuccess = function ( event ) {
+        request.onsuccess = ( event ) => {
             Debug.log( 'Cleared IndexedDB.' );
         };
     }

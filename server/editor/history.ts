@@ -286,8 +286,6 @@ export class History {
         //Set editor-reference in Command
         let cmd = new Command( editor );
 
-		console.log( cmd );
-
         // signals
         this.editor.signals.startPlayer.add( ()=> {
             this.historyDisabled = true;

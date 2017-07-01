@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// right-sidebar.ts
+// right-sidebar.3.ts
 // -----------------------------------------------------------------------------
 import { Panel           as UIPanel     }   from './gui/panel';
 import { Button          as UIButton    }   from './gui/button';
@@ -10,28 +10,29 @@ import { Text            as UIText      }   from './gui/text';
 import { Boolean         as UIBoolean   }   from './gui/boolean';
 import { IEditor                        }   from './interface';
 import { TabPanel                       }   from './panels/tab';
-import { EditorWindow                   }   from './windows/editor';
 import { HierarchyWindow                }   from './windows/hierarchy';
 import { ProjectWindow                  }   from './windows/project';
 import { SettingsWindow                 }   from './windows/settings';
 
 
 /**
- * right sidebar
+ * right sidebar 3
  *
  * @author mrdoob / http://mrdoob.com/
  * @author mosframe / https://github.com/mosframe
  * @export
  * @class Sidebar
- * @extends {UIPanel}
+ * @extends {TabPanel}
  */
-export class RightSidebar extends TabPanel {
+export class RightSidebar3 extends TabPanel {
+
 
     // [ Constructor ]
 
     constructor ( editor : IEditor ) {
-        super('sidebar',editor);
+        super('sidebar-3',editor);
 
+        // [ TAB ]
         this.attach ( new HierarchyWindow( editor ) );
         this.attach ( new ProjectWindow  ( editor ) );
         this.attach ( new SettingsWindow ( editor ) );
@@ -39,4 +40,5 @@ export class RightSidebar extends TabPanel {
         // default tab
         this._select( 'hierarchy' );
     }
+
 }

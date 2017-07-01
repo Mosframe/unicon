@@ -15,7 +15,8 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
-import { EditorPanel                }   from '../editor-panel';
+import { ObjectWindow               }   from '../windows/object';
+import { TabPanel                   }   from './tab';
 
 
 /**
@@ -25,81 +26,29 @@ import { EditorPanel                }   from '../editor-panel';
  * @author mosframe / https://github.com/mosframe
  * @export
  * @class PropertiesPanel
- * @extends {EditorPanel}
+ * @extends {TabPanel}
  */
-export class PropertiesPanel extends EditorPanel {
+export class PropertiesPanel extends TabPanel {
 
     // [ Constructor ]
 
     constructor ( editor:IEditor ) {
-        super( 'properties' );
+        super( 'properties', editor );
 
-        var signals = editor.signals;
+        this.attach ( new ObjectWindow( editor ) );
+        //this.attach ( new GeometryWindow( editor ) );
+        //this.attach ( new MaterialWindow( editor ) );
 
-        var container = new UISpan();
-
-        var objectTab = new UIText( 'OBJECT' ).onClick( onClick );
-        var geometryTab = new UIText( 'GEOMETRY' ).onClick( onClick );
-        var materialTab = new UIText( 'MATERIAL' ).onClick( onClick );
-
-        var tabs = new UIDiv();
-        tabs.setId( 'tabs' );
-        tabs.add( objectTab, geometryTab, materialTab );
-        container.add( tabs );
-
-        function onClick( event ) {
-
-            select( event.target.textContent );
-
-        }
-
-        //
-
-        var object = new UISpan().add(
-            //new Sidebar.Object( editor )
-        );
-        container.add( object );
-
-        var geometry = new UISpan().add(
-            //new Sidebar.Geometry( editor )
-        );
-        container.add( geometry );
-
-        var material = new UISpan().add(
-            //new Sidebar.Material( editor )
-        );
-        container.add( material );
-
-        //
-
-        function select( section ) {
-
-            objectTab.setClass( '' );
-            geometryTab.setClass( '' );
-            materialTab.setClass( '' );
-
-            object.setDisplay( 'none' );
-            geometry.setDisplay( 'none' );
-            material.setDisplay( 'none' );
-
-            switch ( section ) {
-                case 'OBJECT':
-                    objectTab.setClass( 'selected' );
-                    object.setDisplay( '' );
-                    break;
-                case 'GEOMETRY':
-                    geometryTab.setClass( 'selected' );
-                    geometry.setDisplay( '' );
-                    break;
-                case 'MATERIAL':
-                    materialTab.setClass( 'selected' );
-                    material.setDisplay( '' );
-                    break;
-            }
-
-        }
-
-        select( 'OBJECT' );
-
+        this._select( 'object' );
     }
+
+    // [ Private ]
+    private _objectTab      : UIText;
+    private _geometryTab    : UIText;
+    private _materialTab    : UIText;
+
+    private _object         : UISpan;
+    private _geometry       : UISpan;
+    private _material       : UISpan;
+
 }

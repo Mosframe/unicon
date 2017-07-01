@@ -15,9 +15,9 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
-import { EditorWindow               }   from '../editor-window';
 import { HierarchyPanel             }   from '../panels/hierarchy';
 import { PropertiesPanel            }   from '../panels/properties';
+import { EditorWindow               }   from './editor';
 
 
 /**

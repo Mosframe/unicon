@@ -54,7 +54,7 @@ export class Toolbar  {
         } );
         buttons.add( scale );
 
-        signals.transformModeChanged.add( function ( mode ) {
+        signals.transformModeChanged.add( ( mode ) => {
 
             translate.core.classList.remove( 'selected' );
             rotate.core.classList.remove( 'selected' );
@@ -65,7 +65,6 @@ export class Toolbar  {
                 case 'translate': translate.core.classList.add( 'selected' ); break;
                 case 'rotate': rotate.core.classList.add( 'selected' ); break;
                 case 'scale': scale.core.classList.add( 'selected' ); break;
-
             }
 
         });

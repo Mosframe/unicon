@@ -19,78 +19,42 @@ import {Command     } from '../command';
  */
 export class SetScaleCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    oldScale    : THREE.Vector3;
-    newScale    : THREE.Vector3;
-
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetScaleCommand
-     */
     execute () {
-		this.object.scale.copy( this.newScale );
+		this.object.scale.copy( this._newScale );
 		this.object.updateMatrixWorld( true );
 		this._editor.signals.objectChanged.dispatch( this.object );
     }
-    /**
-     * undo
-     *
-     * @memberof SetScaleCommand
-     */
+
     undo () {
-		this.object.scale.copy( this.oldScale );
+		this.object.scale.copy( this._oldScale );
 		this.object.updateMatrixWorld( true );
 		this._editor.signals.objectChanged.dispatch( this.object );
     }
-    /**
-     * update
-     *
-     * @param {SetScaleCommand} command
-     * @memberof SetScaleCommand
-     */
+
 	update ( command:SetScaleCommand ) {
-		this.newScale.copy( command.newScale );
+		this._newScale.copy( command._newScale );
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetScaleCommand
-     */
+
     toJSON () : any {
         let output          = super.toJSON();
 		output.objectUuid   = this.object.uuid;
-		output.oldScale     = this.oldScale.toArray();
-		output.newScale     = this.newScale.toArray();
+		output.oldScale     = this._oldScale.toArray();
+		output.newScale     = this._newScale.toArray();
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetScaleCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 		this.object     = this._editor.objectByUuid( json.objectUuid );
-		this.oldScale   = new THREE.Vector3().fromArray( json.oldScale );
-		this.newScale   = new THREE.Vector3().fromArray( json.newScale );
+		this._oldScale   = new THREE.Vector3().fromArray( json.oldScale );
+		this._newScale   = new THREE.Vector3().fromArray( json.newScale );
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetScaleCommand.
-     * @param {THREE.Object3D} object
-     * @param {THREE.Vector3} newScale
-     * @param {THREE.Vector3} optionalOldScale
-     * @memberof SetScaleCommand
-     */
-    constructor( object:THREE.Object3D, newScale:THREE.Vector3, optionalOldScale:THREE.Vector3 ) {
+    constructor( object:THREE.Object3D, newScale:THREE.Vector3, optionalOldScale?:THREE.Vector3 ) {
         super();
 
         this.type       = 'SetScaleCommand';
@@ -99,12 +63,17 @@ export class SetScaleCommand extends Command {
         this.object     = object;
 
         if ( object !== undefined && newScale !== undefined ) {
-            this.oldScale = object.scale.clone();
-            this.newScale = newScale.clone();
+            this._oldScale = object.scale.clone();
+            this._newScale = newScale.clone();
         }
 
         if ( optionalOldScale !== undefined ) {
-            this.oldScale = optionalOldScale.clone();
+            this._oldScale = optionalOldScale.clone();
         }
     }
+
+    // [ Private ]
+
+    private _oldScale    : THREE.Vector3;
+    private _newScale    : THREE.Vector3;
 }

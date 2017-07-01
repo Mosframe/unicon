@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
-// editor-panel.ts
+// editor.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
-import { Panel      as UIPanel      }   from '../editor/gui/panel';
+import { Panel      as UIPanel      }   from '../gui/panel';
 /**
  * editor panel
  *

@@ -17,10 +17,11 @@ export class Number extends Element {
     // [ Public Variables ]
 
     getValue () : number        { return this._value; }
-    setValue ( value:number )   {
+    setValue ( value:number|string )   {
         if( value !== undefined ) {
-
-            value = parseFloat( value.toString() );
+            if( typeof value === 'string' ) {
+                value = parseFloat( value );
+            }
 
             if( value < this._min ) value = this._min;
             if( value > this._max ) value = this._max;
@@ -30,7 +31,7 @@ export class Number extends Element {
 
             if( this._unit !== '' ) this.core.value += ' ' + this._unit;
         }
-        return true;
+        return this;
     }
 
     // [ Public Functions ]
@@ -58,18 +59,11 @@ export class Number extends Element {
 
     // [ Constructors ]
 
-    constructor ( number:number ) {
+    constructor ( number?:number ) {
 
-        let element = document.createElement( 'input' );
-        element.className   = 'Number'  ;
-        element.value       = '0.00'    ;
-
-        element.addEventListener( 'keydown', ( event:KeyboardEvent ) => {
-            event.stopPropagation();
-            if( event.keyCode === 13 ) element.blur();
-        }, false );
-
-        super( element );
+        super( document.createElement( 'input' ) );
+        this.core.className   = 'Number'  ;
+        this.core.value       = '0.00'    ;
 
         this._value     = 0;
         this._min        =-Infinity;
@@ -88,7 +82,12 @@ export class Number extends Element {
         this._pointer           = [ 0, 0 ];
         this._prevPointer       = [ 0, 0 ];
 
-        this.__onBlur();
+        this.blur();
+
+        this._core.addEventListener( 'keydown', ( event:KeyboardEvent ) => {
+            event.stopPropagation();
+            if( event.keyCode === 13 ) this.core.blur();
+        }, false );
 
         this._core.addEventListener( 'mousedown', this._onMouseDown  , false );
         this._core.addEventListener( 'focus'    , this._onFocus      , false );
@@ -118,7 +117,7 @@ export class Number extends Element {
 
     // [ Protected Events ]
 
-	protected _onMouseDown ( event:MouseEvent ) {
+	protected _onMouseDown = ( event:MouseEvent ) => {
 
 		event.preventDefault();
 
@@ -130,7 +129,7 @@ export class Number extends Element {
 		document.addEventListener( 'mouseup'    , this._onMouseUp     , false );
 	}
 
-	protected _onMouseMove( event:MouseEvent ) {
+	protected _onMouseMove = ( event:MouseEvent ) => {
 
 		let currentValue = this._value;
 
@@ -142,34 +141,38 @@ export class Number extends Element {
 
 		if( currentValue !== value ) {
 			this.setValue( value );
-			this.core.dispatchEvent( this._changeEvent );
+			//this.core.dispatchEvent( this._changeEvent );
 		}
 
 		this._prevPointer = [ event.clientX, event.clientY ];
 	}
 
-	protected _onMouseUp( event:MouseEvent ) {
+	protected _onMouseUp = ( event:MouseEvent ) => {
 		document.removeEventListener( 'mousemove'   , this._onMouseMove  , false );
 		document.removeEventListener( 'mouseup'     , this._onMouseUp    , false );
+
+        if( this._onMouseDownValue !== this._value ) {
+            this.core.dispatchEvent( this._changeEvent );
+        }
 
 		if( Math.abs( this._distance ) < 2 ) {
 			this.core.focus();
 			this.core.select();
 		}
 	}
-    protected _onChange( event:Event ) {
-        this.setValue( parseInt( this.core.value ) );
+    protected _onChange = ( event:Event ) => {
+        this.setValue( this.core.value );
     }
-	protected _onFocus( event:FocusEvent ) {
+	protected _onFocus = ( event:FocusEvent ) => {
         if( this._core.style ) {
             this._core.style.backgroundColor    = '';
             this._core.style.cursor             = '';
         }
 	}
-	protected _onBlur( event:FocusEvent ) {
-        this.__onBlur();
+	protected _onBlur = ( event:FocusEvent ) => {
+        this.blur();
 	}
-	protected __onBlur() {
+	protected blur = () => {
         if( this._core.style ) {
             this._core.style.backgroundColor    = 'transparent';
             this._core.style.cursor             = 'col-resize';

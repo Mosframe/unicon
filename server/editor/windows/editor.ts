@@ -1,15 +1,15 @@
 // -----------------------------------------------------------------------------
-// editor-window.ts
+// editor.ts
 // -----------------------------------------------------------------------------
-import { Panel      as UIPanel      }   from './gui/panel';
-import { Span       as UISpan       }   from './gui/span';
-import { EditorPanel                }   from './editor-panel';
+import { Panel      as UIPanel      }   from '../gui/panel';
+import { Span       as UISpan       }   from '../gui/span';
+import { EditorPanel                }   from '../panels/editor';
 /**
- * editor window
+ * window
  *
  * @author mosframe / https://github.com/mosframe
  * @export
- * @class EditorWindow
+ * @class Window
  * @extends {UISpan}
  */
 export class EditorWindow extends UISpan {

@@ -21,7 +21,7 @@ export class Checkbox extends Element {
 
     // [ Constructors ]
 
-    constructor ( checked:boolean ) {
+    constructor ( checked?:boolean ) {
 
         let element = document.createElement( 'input' );
         element.className   = 'Checkbox';

@@ -19,78 +19,42 @@ import {Command     } from '../command';
  */
 export class SetPositionCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    oldPosition    : THREE.Vector3;
-    newPosition    : THREE.Vector3;
-
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetPositionCommand
-     */
     execute () {
-		this.object.position.copy( this.newPosition );
+		this.object.position.copy( this._newPosition );
 		this.object.updateMatrixWorld( true );
 		this._editor.signals.objectChanged.dispatch( this.object );
     }
-    /**
-     * undo
-     *
-     * @memberof SetPositionCommand
-     */
+
     undo () {
-		this.object.position.copy( this.oldPosition );
+		this.object.position.copy( this._oldPosition );
 		this.object.updateMatrixWorld( true );
 		this._editor.signals.objectChanged.dispatch( this.object );
     }
-    /**
-     * update
-     *
-     * @param {SetPositionCommand} command
-     * @memberof SetPositionCommand
-     */
+
 	update ( command:SetPositionCommand ) {
-		this.newPosition.copy( command.newPosition );
+		this._newPosition.copy( command._newPosition );
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetPositionCommand
-     */
+
     toJSON () : any {
         let output          = super.toJSON();
 		output.objectUuid   = this.object.uuid;
-		output.oldPosition  = this.oldPosition.toArray();
-		output.newPosition  = this.newPosition.toArray();
+		output.oldPosition  = this._oldPosition.toArray();
+		output.newPosition  = this._newPosition.toArray();
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetPositionCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 		this.object         = this._editor.objectByUuid( json.objectUuid );
-		this.oldPosition    = new THREE.Vector3().fromArray( json.oldPosition );
-		this.newPosition    = new THREE.Vector3().fromArray( json.newPosition );
+		this._oldPosition    = new THREE.Vector3().fromArray( json.oldPosition );
+		this._newPosition    = new THREE.Vector3().fromArray( json.newPosition );
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetPositionCommand.
-     * @param {THREE.Object3D} object
-     * @param {THREE.Vector3} newPosition
-     * @param {THREE.Vector3} optionalOldPosition
-     * @memberof SetPositionCommand
-     */
-    constructor( object:THREE.Object3D, newPosition:THREE.Vector3, optionalOldPosition:THREE.Vector3 ) {
+    constructor( object:THREE.Object3D, newPosition:THREE.Vector3, optionalOldPosition?:THREE.Vector3 ) {
         super();
 
         this.type       = 'SetPositionCommand';
@@ -99,12 +63,17 @@ export class SetPositionCommand extends Command {
         this.object     = object;
 
         if ( object !== undefined && newPosition !== undefined ) {
-            this.oldPosition = object.position.clone();
-            this.newPosition = newPosition.clone();
+            this._oldPosition = object.position.clone();
+            this._newPosition = newPosition.clone();
         }
 
         if ( optionalOldPosition !== undefined ) {
-            this.oldPosition = optionalOldPosition.clone();
+            this._oldPosition = optionalOldPosition.clone();
         }
     }
+
+    // [ Private ]
+
+    private _oldPosition    : THREE.Vector3;
+    private _newPosition    : THREE.Vector3;
 }

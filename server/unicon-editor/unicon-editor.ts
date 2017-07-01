@@ -13,6 +13,9 @@ import { Player                 }   from '../editor/player';
 import { Toolbar                }   from '../editor/toolbar';
 import { Menubar                }   from '../editor/menubar';
 import { RightSidebar           }   from '../editor/right-sidebar';
+import { RightSidebar1          }   from '../editor/right-sidebar.1';
+import { RightSidebar2          }   from '../editor/right-sidebar.2';
+import { RightSidebar3          }   from '../editor/right-sidebar.3';
 import { Modal as UIModal       }   from '../editor/gui/modal';
 import { RemoveObjectCommand    }   from '../editor/commands/remove-object-command';
 
@@ -38,14 +41,36 @@ document.body.appendChild( toolbar.container.core );
 let menubar = new Menubar( editor );
 document.body.appendChild( menubar.core );
 
-let rightSidebar = new RightSidebar( editor );
-document.body.appendChild( rightSidebar.core );
+//let rightSidebar1 = new RightSidebar1( editor );
+//document.body.appendChild( rightSidebar1.core );
+
+//let rightSidebar2 = new RightSidebar2( editor );
+//document.body.appendChild( rightSidebar2.core );
+
+let rightSidebar3 = new RightSidebar3( editor );
+document.body.appendChild( rightSidebar3.core );
 
 let modal = new UIModal();
 document.body.appendChild( modal.container.core );
 
 editor.setTheme( editor.config.getKey( 'theme' ) );
 
+let saveState = ( scene ) => {
+
+    if ( editor.config.getKey( 'autosave' ) === false ) {
+        return;
+    }
+
+    let timeout;
+    clearTimeout( timeout );
+    timeout = setTimeout( () => {
+        editor.signals.savingStarted.dispatch();
+        timeout = setTimeout( () => {
+            editor.storage.set( editor.toJSON(), ()=>{} );
+            editor.signals.savingFinished.dispatch();
+        }, 100 );
+    }, 1000 );
+};
 
 editor.storage.init( () => {
 
@@ -65,32 +90,6 @@ editor.storage.init( () => {
     });
 
     //
-
-    let timeout;
-
-    function saveState( scene ) {
-
-        if ( editor.config.getKey( 'autosave' ) === false ) {
-            return;
-        }
-
-        clearTimeout( timeout );
-
-        timeout = setTimeout( () => {
-
-            editor.signals.savingStarted.dispatch();
-
-            timeout = setTimeout( () => {
-
-                editor.storage.set( editor.toJSON(), ()=>{} );
-                editor.signals.savingFinished.dispatch();
-
-            }, 100 );
-
-        }, 1000 );
-
-    };
-
     let signals = editor.signals;
 
     signals.geometryChanged.add( saveState );
@@ -105,11 +104,8 @@ editor.storage.init( () => {
     signals.historyChanged.add( saveState );
 
     signals.showModal.add( ( content ) => {
-
         modal.show( content );
-
     });
-
 });
 
 
@@ -233,7 +229,7 @@ editor.signals.enterVR.add( () => {
         groupVR = new HTMLGroup( viewport.core );
         editor.sceneHelpers.add( groupVR );
 
-        let mesh = new HTMLMesh( rightSidebar.core );
+        let mesh = new HTMLMesh( rightSidebar3.core );
         mesh.position.set( 15, 0, 15 );
         mesh.rotation.y = - 0.5;
         groupVR.add( mesh );

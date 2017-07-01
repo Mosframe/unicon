@@ -15,7 +15,8 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
-import { EditorPanel                }   from '../editor-panel';
+import { ISignals                   }   from '../interface';
+import { EditorPanel                }   from './editor';
 
 
 /**
@@ -34,277 +35,256 @@ export class HierarchyPanel extends EditorPanel {
     constructor ( editor:IEditor ) {
         super( 'hierarchy' );
 
-        var signals = editor.signals;
-
+        this._editor     = editor;
+        this._signals    = editor.signals;
         this.setBorderTop( '0' );
         this.setPaddingTop( '20px' );
 
-        // outliner
+        this._ignoreObjectSelectedSignal = false;
 
-        function buildOption( object, draggable ) {
+        // [ outliner ]
 
-            var option = document.createElement( 'div' );
-            option.draggable = draggable;
-            option.innerHTML = buildHTML( object );
-            option['value'] = object.id;
-
-            return option;
-        }
-
-        function getMaterialName( material ) {
-
-            if ( Array.isArray( material ) ) {
-
-                var array:any = [];
-
-                for ( var i = 0; i < material.length; i ++ ) {
-
-                    array.push( material[ i ].name );
-
-                }
-
-                return array.join( ',' );
-
-            }
-
-            return material.name;
-
-        }
-
-        function buildHTML( object ) {
-
-            var html = '<span class="type ' + object.type + '"></span> ' + object.name;
-
-            if ( object instanceof THREE.Mesh ) {
-
-                var geometry = object.geometry;
-                var material = object.material;
-
-                html += ' <span class="type ' + geometry.type + '"></span> ' + geometry.name;
-                html += ' <span class="type ' + material.type + '"></span> ' + getMaterialName( material );
-
-            }
-
-            html += getScript( object.uuid );
-
-            return html;
-
-        }
-
-        function getScript( uuid ) {
-
-            if ( editor.scripts[ uuid ] !== undefined ) {
-
-                return ' <span class="type Script"></span>';
-
-            }
-
-            return '';
-
-        }
-
-        var ignoreObjectSelectedSignal = false;
-
-        var outliner = new UIOutliner( editor );
-        outliner.setId( 'outliner' );
-        outliner.onChange( function () {
-
-            ignoreObjectSelectedSignal = true;
-
-            editor.selectById( parseInt( outliner.getValue() ) );
-
-            ignoreObjectSelectedSignal = false;
-
-        } );
-        outliner.onDblClick( function () {
-
-            editor.focusById( parseInt( outliner.getValue() ) );
-
-        } );
-        this.add( outliner );
+        this._outliner = new UIOutliner( editor );
+        this._outliner.setId( 'outliner' );
+        this._outliner.onChange( () => {
+            this._ignoreObjectSelectedSignal = true;
+            this._editor.selectById( parseInt( this._outliner.getValue() ) );
+            this._ignoreObjectSelectedSignal = false;
+        });
+        this._outliner.onDblClick( () => {
+            this._editor.focusById( parseInt( this._outliner.getValue() ) );
+        });
+        this.add( this._outliner );
         this.add( new UIBreak() );
 
-        // background
+        // [ background ]
 
         let backgroundRow = new UIRow();
 
         backgroundRow.add( new UIText( 'Background' ).setWidth( '90px' ) );
-        let backgroundColor = new UIColor().setValue( '#aaaaaa' ).onChange( () => {
-            signals.sceneBackgroundChanged.dispatch( backgroundColor.getHexValue() );
+        this._backgroundColor = new UIColor();
+        this._backgroundColor.setValue( '#aaaaaa' ).onChange( () => {
+            this._signals.sceneBackgroundChanged.dispatch( this._backgroundColor.getHexValue() );
         });
-        backgroundRow.add( backgroundColor );
+        backgroundRow.add( this._backgroundColor );
         this.add( backgroundRow );
 
-        // fog
+        // [ fog ]
 
-        function onFogChanged() {
-
-            signals.sceneFogChanged.dispatch(
-                fogType.getValue(),
-                fogColor.getHexValue(),
-                fogNear.getValue(),
-                fogFar.getValue(),
-                fogDensity.getValue()
-            );
-        }
-
-        var fogTypeRow = new UIRow();
-        var fogType = new UISelect().setOptions( {
-
-            'None': 'None',
-            'Fog': 'Linear',
-            'FogExp2': 'Exponential'
-
-        } ).setWidth( '150px' );
-        fogType.onChange( () => {
-            onFogChanged();
-            refreshFogUI();
+        this._fogTypeRow  = new UIRow();
+        this._fogType     = new UISelect().setOptions( {
+            'None'      : 'None',
+            'Fog'       : 'Linear',
+            'FogExp2'   : 'Exponential'
+        }).setWidth( '150px' );
+        this._fogType.onChange( () => {
+            this._onFogChanged();
+            this._refreshFogUI();
         });
-
-        fogTypeRow.add( new UIText( 'Fog' ).setWidth( '90px' ) );
-        fogTypeRow.add( fogType );
-
-        this.add( fogTypeRow );
+        this._fogTypeRow.add( new UIText( 'Fog' ).setWidth( '90px' ) );
+        this._fogTypeRow.add( this._fogType );
+        this.add( this._fogTypeRow );
 
         // fog color
 
-        var fogPropertiesRow = new UIRow();
-        fogPropertiesRow.setDisplay( 'none' );
-        fogPropertiesRow.setMarginLeft( '90px' );
-        this.add( fogPropertiesRow );
+        this._fogPropertiesRow = new UIRow();
+        this._fogPropertiesRow.setDisplay( 'none' );
+        this._fogPropertiesRow.setMarginLeft( '90px' );
+        this.add( this._fogPropertiesRow );
 
-        var fogColor = new UIColor().setValue( '#aaaaaa' );
-        fogColor.onChange( onFogChanged );
-        fogPropertiesRow.add( fogColor );
+        this._fogColor = new UIColor().setValue( '#aaaaaa' );
+        this._fogColor.onChange( this._onFogChanged );
+        this._fogPropertiesRow.add( this._fogColor );
 
         // fog near
 
-        var fogNear = new UINumber( 0.1 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogNear );
+        this._fogNear = new UINumber( 0.1 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( this._onFogChanged );
+        this._fogPropertiesRow.add( this._fogNear );
 
         // fog far
 
-        var fogFar = new UINumber( 50 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogFar );
+        this._fogFar = new UINumber( 50 ).setWidth( '40px' ).setRange( 0, Infinity ).onChange( this._onFogChanged );
+        this._fogPropertiesRow.add( this._fogFar );
 
         // fog density
 
-        var fogDensity = new UINumber( 0.05 ).setWidth( '40px' ).setRange( 0, 0.1 ).setPrecision( 3 ).onChange( onFogChanged );
-        fogPropertiesRow.add( fogDensity );
+        this._fogDensity = new UINumber( 0.05 ).setWidth( '40px' ).setRange( 0, 0.1 ).setPrecision( 3 ).onChange( this._onFogChanged );
+        this._fogPropertiesRow.add( this._fogDensity );
 
         //
-
-        function refreshUI() {
-
-            var camera = editor.camera;
-            var scene = editor.scene;
-
-            var options:any = [];
-
-            options.push( buildOption( camera, false ) );
-            options.push( buildOption( scene, false ) );
-
-            ( function addObjects( objects, pad ) {
-
-                for ( var i = 0, l = objects.length; i < l; i ++ ) {
-
-                    var object = objects[ i ];
-
-                    var option = buildOption( object, true );
-                    option.style.paddingLeft = ( pad * 10 ) + 'px';
-                    options.push( option );
-
-                    addObjects( object.children, pad + 1 );
-
-                }
-
-            } )( scene.children, 1 );
-
-            outliner.setOptions( options );
-
-            if ( editor.selected !== null ) {
-
-                outliner.setValue( editor.selected.id );
-
-            }
-
-            if ( scene.background ) {
-
-                backgroundColor.setHexValue( scene.background.getHex() );
-
-            }
-
-            if ( scene.fog ) {
-
-                fogColor.setHexValue( scene.fog.color.getHex() );
-
-                if ( scene.fog instanceof THREE.Fog ) {
-
-                    fogType.setValue( "Fog" );
-                    fogNear.setValue( scene.fog.near );
-                    fogFar.setValue( scene.fog.far );
-
-                } else if ( scene.fog instanceof THREE.FogExp2 ) {
-
-                    fogType.setValue( "FogExp2" );
-                    fogDensity.setValue( scene.fog.density );
-
-                }
-
-            } else {
-
-                fogType.setValue( "None" );
-
-            }
-
-            refreshFogUI();
-
-        }
-
-        function refreshFogUI() {
-
-            var type = fogType.getValue();
-
-            fogPropertiesRow.setDisplay( type === 'None' ? 'none' : '' );
-            fogNear.setDisplay( type === 'Fog' ? '' : 'none' );
-            fogFar.setDisplay( type === 'Fog' ? '' : 'none' );
-            fogDensity.setDisplay( type === 'FogExp2' ? '' : 'none' );
-
-        }
-
-        refreshUI();
+        this._refreshUI();
 
         // events
 
-        signals.editorCleared.add( refreshUI );
+        this._signals.editorCleared.add( this._refreshUI );
+        this._signals.sceneGraphChanged.add( this._refreshUI );
+        this._signals.objectChanged.add( ( object ) => {
 
-        signals.sceneGraphChanged.add( refreshUI );
+            let options = this._outliner.options;
 
-        signals.objectChanged.add( function ( object ) {
-
-            var options = outliner.options;
-
-            for ( var i = 0; i < options.length; i ++ ) {
-
-                var option = options[ i ];
-
+            for ( let i = 0; i < options.length; i ++ ) {
+                let option = options[ i ];
                 if ( option.value === object.id ) {
-
-                    option.innerHTML = buildHTML( object );
+                    option.innerHTML = this._buildHTML( object );
                     return;
-
                 }
+            }
+        });
+
+        this._signals.objectSelected.add( ( object ) => {
+            if ( this._ignoreObjectSelectedSignal === true ) return;
+            this._outliner.setValue( object !== null ? object.id : null );
+        });
+    }
+
+
+    // [ Private ]
+
+    private _editor                     : IEditor;
+    private _signals                    : ISignals;
+    private _ignoreObjectSelectedSignal : boolean;
+
+    private _outliner                   : UIOutliner;
+
+    private _backgroundColor            : UIColor;
+
+    private _fogTypeRow                 : UIRow;
+    private _fogType                    : UISelect;
+    private _fogPropertiesRow           : UIRow;
+    private _fogColor                   : UIColor;
+    private _fogNear                    : UINumber;
+    private _fogFar                     : UINumber;
+    private _fogDensity                 : UINumber;
+
+    private _buildOption ( object, draggable ) {
+
+        let option = document.createElement( 'div' );
+        option.draggable = draggable;
+        option.innerHTML = this._buildHTML( object );
+        option['value'] = object.id;
+
+        return option;
+    }
+
+    private _getMaterialName ( material ) {
+
+        if ( Array.isArray( material ) ) {
+            let array:any = [];
+            for ( let i = 0; i < material.length; i ++ ) {
+                array.push( material[ i ].name );
+            }
+            return array.join( ',' );
+        }
+        return material.name;
+    }
+
+    private _buildHTML ( object ) {
+
+        let html = '<span class="type ' + object.type + '"></span> ' + object.name;
+
+        if ( object instanceof THREE.Mesh ) {
+
+            let geometry = object.geometry;
+            let material = object.material;
+
+            html += ' <span class="type ' + geometry.type + '"></span> ' + geometry.name;
+            html += ' <span class="type ' + material.type + '"></span> ' + this._getMaterialName( material );
+
+        }
+
+        html += this._getScript( object.uuid );
+
+        return html;
+
+    }
+
+    private _getScript ( uuid ) {
+
+        if ( this._editor.scripts[ uuid ] !== undefined ) {
+            return ' <span class="type Script"></span>';
+        }
+        return '';
+    }
+
+
+    private _onFogChanged = () => {
+
+        this._signals.sceneFogChanged.dispatch(
+            this._fogType.getValue(),
+            this._fogColor.getHexValue(),
+            this._fogNear.getValue(),
+            this._fogFar.getValue(),
+            this._fogDensity.getValue()
+        );
+    }
+
+    private _addObjects = ( options, objects, pad ) => {
+
+        for ( let i = 0, l = objects.length; i < l; i ++ ) {
+
+            let object = objects[ i ];
+            let option = this._buildOption( object, true );
+            option.style.paddingLeft = ( pad * 10 ) + 'px';
+            options.push( option );
+
+            this._addObjects( options, object.children, pad + 1 );
+        }
+    }
+
+    private _refreshUI = () => {
+
+        let camera = this._editor.camera;
+        let scene = this._editor.scene;
+
+        let options:any = [];
+
+        options.push( this._buildOption( camera, false ) );
+        options.push( this._buildOption( scene, false ) );
+
+        this._addObjects( options, scene.children, 1 );
+
+        this._outliner.setOptions( options );
+
+        if ( this._editor.selected !== null ) {
+
+            this._outliner.setValue( this._editor.selected.id );
+        }
+
+        if ( scene.background ) {
+            this._backgroundColor.setHexValue( scene.background.getHex() );
+        }
+
+        if ( scene.fog ) {
+
+            this._fogColor.setHexValue( scene.fog.color.getHex() );
+
+            if ( scene.fog instanceof THREE.Fog ) {
+
+                this._fogType.setValue( "Fog" );
+                this._fogNear.setValue( scene.fog.near );
+                this._fogFar.setValue( scene.fog.far );
+
+            } else if ( scene.fog instanceof THREE.FogExp2 ) {
+
+                this._fogType.setValue( "FogExp2" );
+                this._fogDensity.setValue( scene.fog.density );
 
             }
 
-        } );
+        } else {
+            this._fogType.setValue( "None" );
+        }
 
-        signals.objectSelected.add( function ( object ) {
+        this._refreshFogUI();
 
-            if ( ignoreObjectSelectedSignal === true ) return;
+    }
 
-            outliner.setValue( object !== null ? object.id : null );
+    private _refreshFogUI = () => {
 
-        });
+        let type = this._fogType.getValue();
+        this._fogPropertiesRow.setDisplay( type === 'None' ? 'none' : '' );
+        this._fogNear.setDisplay( type === 'Fog' ? '' : 'none' );
+        this._fogFar.setDisplay( type === 'Fog' ? '' : 'none' );
+        this._fogDensity.setDisplay( type === 'FogExp2' ? '' : 'none' );
     }
 }

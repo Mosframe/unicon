@@ -346,7 +346,7 @@ export class Viewport extends UIPanel {
 			if( this._currentFogType !== fogType ) {
 				switch( fogType ) {
 				case 'None':
-					this.scene.fog = new THREE.Fog(0);
+					(<any>this.scene).fog = null;
 					break;
 				case 'Fog':
 					this.scene.fog = new THREE.Fog(fogColor);

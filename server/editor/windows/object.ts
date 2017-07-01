@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// project.ts
+// object.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
 import { Panel      as UIPanel      }   from '../../editor/gui/panel';
@@ -15,23 +15,27 @@ import { Select     as UISelect     }   from '../../editor/gui/select';
 import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
-import { ProjectPanel               }   from '../panels/project';
+import { ObjectPanel                }   from '../panels/object';
 import { EditorWindow               }   from './editor';
 
 
 /**
- * project window
+ * object window
  *
  * @author mosframe / https://github.com/mosframe
  * @export
- * @class ProjectWindow
+ * @class ObjectWindow
  * @extends {EditorWindow}
  */
-export class ProjectWindow extends EditorWindow {
+export class ObjectWindow extends EditorWindow {
 
     // [ Constructor ]
 
     constructor ( editor:IEditor ) {
-        super( 'project', new ProjectPanel( editor ) );
+
+        super( 'object',
+            new ObjectPanel( editor ),
+            //new PropertiesPanel( editor ),
+        );
     }
 }

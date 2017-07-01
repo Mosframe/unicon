@@ -104,7 +104,6 @@ export class TransformGizmoTranslate extends TransformGizmo {
 				[ new THREE.Mesh( new THREE.PlaneBufferGeometry( 0.29, 0.29 ), new GizmoMaterial( { color: 0xff00ff, opacity: 0.25 } ) ), [ 0.15, 0, 0.15 ], [ - Math.PI / 2, 0, 0 ] ]
 			]
 		};
-		console.log( this.handleGizmos );
 
 		this.pickerGizmos = {
 
