@@ -14,7 +14,7 @@ import {SetUuidCommand      } from './set-uuid-command';
  *
  * Developed as part of a project at University of Applied Sciences and Arts Northwestern Switzerland (www.fhnw.ch)
  *
- * @author dforrer ( https://github.com/dforrer )
+ * @author dforrer / https://github.com/dforrer
  * @author mosframe / https://github.com/mosframe
  * @export
  * @class SetSceneCommand

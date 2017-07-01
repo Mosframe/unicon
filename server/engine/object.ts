@@ -12,5 +12,6 @@
  */
 export function hasProperty ( object:object, propertyName:string ) : boolean {
     if( !object ) return false;
-    return Reflect.defineProperty( object, propertyName, {} );
+    return propertyName in object;
+    //return Reflect.defineProperty( object, propertyName, {} );
 }

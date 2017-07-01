@@ -47,9 +47,9 @@ document.body.appendChild( modal.container.core );
 editor.setTheme( editor.config.getKey( 'theme' ) );
 
 
-editor.storage.init( function() {
+editor.storage.init( () => {
 
-    editor.storage.get( function( state ) {
+    editor.storage.get( ( state ) => {
 
         if ( isLoadingFromHash ) return;
 
@@ -71,21 +71,18 @@ editor.storage.init( function() {
     function saveState( scene ) {
 
         if ( editor.config.getKey( 'autosave' ) === false ) {
-
             return;
-
         }
 
         clearTimeout( timeout );
 
-        timeout = setTimeout( function () {
+        timeout = setTimeout( () => {
 
             editor.signals.savingStarted.dispatch();
 
-            timeout = setTimeout( function () {
+            timeout = setTimeout( () => {
 
                 editor.storage.set( editor.toJSON(), ()=>{} );
-
                 editor.signals.savingFinished.dispatch();
 
             }, 100 );
@@ -107,37 +104,36 @@ editor.storage.init( function() {
     signals.scriptChanged.add( saveState );
     signals.historyChanged.add( saveState );
 
-    signals.showModal.add( function ( content ) {
+    signals.showModal.add( ( content ) => {
 
         modal.show( content );
 
-    } );
+    });
 
-} );
+});
 
 
 //
 
-document.addEventListener( 'dragover', function ( event ) {
+document.addEventListener( 'dragover', ( event ) => {
 
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
 
 }, false );
 
-document.addEventListener( 'drop', function ( event ) {
+document.addEventListener( 'drop', ( event ) => {
 
     event.preventDefault();
 
     if ( event.dataTransfer.files.length > 0 ) {
 
         editor.loader.loadFile( event.dataTransfer.files[ 0 ] );
-
     }
 
 }, false );
 
-document.addEventListener( 'keydown', function ( event ) {
+document.addEventListener( 'keydown', ( event ) => {
 
     switch ( event.keyCode ) {
 
@@ -188,13 +184,9 @@ document.addEventListener( 'keydown', function ( event ) {
 }, false );
 
 function onWindowResize( event ) {
-
     editor.signals.windowResize.dispatch();
-
 }
-
 window.addEventListener( 'resize', onWindowResize, false );
-
 onWindowResize( null );
 
 //
@@ -234,7 +226,7 @@ let groupVR;
 
 // TODO: Use editor.signals.enteredVR (WebVR 1.0)
 
-editor.signals.enterVR.add( function () {
+editor.signals.enterVR.add( () => {
 
     if ( groupVR === undefined ) {
 
@@ -261,11 +253,8 @@ editor.signals.enterVR.add( function () {
     }
 
     groupVR.visible = true;
+});
 
-} );
-
-editor.signals.exitedVR.add( function () {
-
+editor.signals.exitedVR.add( () => {
     if ( groupVR !== undefined ) groupVR.visible = false;
-
-} );
+});

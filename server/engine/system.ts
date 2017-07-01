@@ -1,9 +1,16 @@
-/**
- * @author mr.doob / http://mrdoob.com/
- */
-
+// -----------------------------------------------------------------------------
+// system.ts
+// -----------------------------------------------------------------------------
 export namespace System {
 
+    /**
+     * browser
+     *
+     * @author mr.doob / http://mrdoob.com/
+     * @author mosframe / https://github.com/mosframe
+     * @export
+     * @returns {(string|false)}
+     */
 	export function browser () : string|false {
 
         let ua = navigator.userAgent;
@@ -24,6 +31,14 @@ export namespace System {
         return false;
     }
 
+    /**
+     * os
+     *
+     * @author mr.doob / http://mrdoob.com/
+     * @author mosframe / https://github.com/mosframe
+     * @export
+     * @returns {(string|false)}
+     */
     export function os () : string|false {
 
         var ua = navigator.userAgent;
@@ -38,6 +53,14 @@ export namespace System {
         return false;
     }
 
+    /**
+     * Support
+     *
+     * @author mr.doob / http://mrdoob.com/
+     * @author mosframe / https://github.com/mosframe
+     * @export
+     * @class Support
+     */
     export class Support {
 
         static get canvas () : boolean {
