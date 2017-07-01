@@ -35,7 +35,6 @@ export class ObjectWindow extends EditorWindow {
 
         super( 'object',
             new ObjectPanel( editor ),
-            //new PropertiesPanel( editor ),
         );
     }
 }

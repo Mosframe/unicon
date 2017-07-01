@@ -17,7 +17,7 @@ export class Input extends Element {
     // [ Public Variables ]
 
     getValue () : string        { return this.core.value; }
-    setValue ( value:string )   { if( value !== undefined ) this.core.value = value; return this; }
+    setValue ( value?:string )  { if( value !== undefined ) this.core.value = value; return this; }
 
     // [ Constructors ]
 

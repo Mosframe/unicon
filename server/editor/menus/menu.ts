@@ -2,7 +2,7 @@
 // menu.ts
 // -----------------------------------------------------------------------------
 import * as THREE       from 'three'            ;
-import { EditorPanel }  from '../editor-panel'  ;
+import { EditorPanel }  from '../panels/editor' ;
 /**
  * editor panel
  *

@@ -16,6 +16,8 @@ import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
 import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
 import { IEditor                    }   from '../interface';
 import { ObjectWindow               }   from '../windows/object';
+import { GeometryWindow             }   from '../windows/geometry';
+import { MaterialWindow             }   from '../windows/material';
 import { TabPanel                   }   from './tab';
 
 
@@ -36,19 +38,9 @@ export class PropertiesPanel extends TabPanel {
         super( 'properties', editor );
 
         this.attach ( new ObjectWindow( editor ) );
-        //this.attach ( new GeometryWindow( editor ) );
-        //this.attach ( new MaterialWindow( editor ) );
+        this.attach ( new GeometryWindow( editor ) );
+        this.attach ( new MaterialWindow( editor ) );
 
         this._select( 'object' );
     }
-
-    // [ Private ]
-    private _objectTab      : UIText;
-    private _geometryTab    : UIText;
-    private _materialTab    : UIText;
-
-    private _object         : UISpan;
-    private _geometry       : UISpan;
-    private _material       : UISpan;
-
 }

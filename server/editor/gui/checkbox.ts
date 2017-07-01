@@ -16,8 +16,8 @@ export class Checkbox extends Element {
 
     // [ Public Variables ]
 
-    getValue () : boolean      { return this.core.checked; }
-    setValue ( value:boolean ) { if( value !== undefined ) this.core.checked = value; return this; }
+    getValue () : boolean       { return this.core.checked; }
+    setValue ( value?:boolean ) { if( value !== undefined ) this.core.checked = value; return this; }
 
     // [ Constructors ]
 

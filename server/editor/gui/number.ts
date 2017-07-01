@@ -16,8 +16,8 @@ export class Number extends Element {
 
     // [ Public Variables ]
 
-    getValue () : number        { return this._value; }
-    setValue ( value:number|string )   {
+    getValue () : number                { return this._value; }
+    setValue ( value?:number|string )   {
         if( value !== undefined ) {
             if( typeof value === 'string' ) {
                 value = parseFloat( value );

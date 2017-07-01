@@ -48,9 +48,9 @@ export class ObjectPanel extends EditorPanel {
         this._editor     = editor;
         this._signals    = editor.signals;
 
-        this.setBorderTop( '0' );
-        this.setPaddingTop( '20px' );
-        this.setDisplay( 'none' );
+        this.setBorderTop   ( '0' );
+        this.setPaddingTop  ( '20px' );
+        this.setDisplay     ( 'none' );
 
         this._objectActions = new UISelect().setPosition( 'absolute' ).setRight( '8px' ).setFontSize( '11px' );
         this._objectActions.setOptions( {
@@ -60,14 +60,11 @@ export class ObjectPanel extends EditorPanel {
             'Reset Scale'   : 'Reset Scale'
         });
         this._objectActions.onClick( ( event ) => {
-
             event.stopPropagation(); // Avoid panel collapsing
-
-        } );
+        });
         this._objectActions.onChange( ( event ) => {
 
             let object = editor.selected;
-
             if( object ) {
                 switch ( this._objectActions.getValue() ) {
 
@@ -91,29 +88,25 @@ export class ObjectPanel extends EditorPanel {
 
         // [ type ]
 
-        this._objectTypeRow  = new UIRow();
-        this._objectType    = new UIText();
-
+        this._objectTypeRow     = new UIRow();
+        this._objectType        = new UIText();
         this._objectTypeRow.add( new UIText( 'Type' ).setWidth( '90px' ) );
         this._objectTypeRow.add( this._objectType );
-
         this.add( this._objectTypeRow );
 
         // [ uuid ]
 
-        this._objectUUIDRow  = new UIRow();
-        this._objectUUID     = new UIInput().setWidth( '102px' ).setFontSize( '12px' ).setDisabled( true );
-        let objectUUIDRenew = new UIButton( 'New' ).setMarginLeft( '7px' ).onClick( () => {
+        this._objectUUIDRow     = new UIRow();
+        this._objectUUID        = new UIInput().setWidth( '102px' ).setFontSize( '12px' ).setDisabled( true );
+        let objectUUIDRenew     = new UIButton( 'New' ).setMarginLeft( '7px' ).onClick( () => {
             if( editor.selected ) {
                 this._objectUUID.setValue( THREE.Math.generateUUID() );
                 editor.execute( new SetUuidCommand( editor.selected, this._objectUUID.getValue() ) );
             }
         });
-
         this._objectUUIDRow.add( new UIText( 'UUID' ).setWidth( '90px' ) );
         this._objectUUIDRow.add( this._objectUUID );
         this._objectUUIDRow.add( objectUUIDRenew );
-
         this.add( this._objectUUIDRow );
 
         // [ name ]
@@ -124,10 +117,8 @@ export class ObjectPanel extends EditorPanel {
                 editor.execute( new SetValueCommand( editor.selected, 'name', this._objectName.getValue() ) );
             }
         });
-
         this._objectNameRow.add( new UIText( 'Name' ).setWidth( '90px' ) );
         this._objectNameRow.add( this._objectName );
-
         this.add( this._objectNameRow );
 
         // [ position ]
@@ -136,10 +127,8 @@ export class ObjectPanel extends EditorPanel {
         this._objectPositionX = new UINumber().setWidth( '50px' ).onChange( this.update );
         this._objectPositionY = new UINumber().setWidth( '50px' ).onChange( this.update );
         this._objectPositionZ = new UINumber().setWidth( '50px' ).onChange( this.update );
-
         this._objectPositionRow.add( new UIText( 'Position' ).setWidth( '90px' ) );
         this._objectPositionRow.add( this._objectPositionX, this._objectPositionY, this._objectPositionZ );
-
         this.add( this._objectPositionRow );
 
         // [ rotation ]
@@ -148,10 +137,8 @@ export class ObjectPanel extends EditorPanel {
         this._objectRotationX = new UINumber().setStep( 10 ).setUnit( '°' ).setWidth( '50px' ).onChange( this.update );
         this._objectRotationY = new UINumber().setStep( 10 ).setUnit( '°' ).setWidth( '50px' ).onChange( this.update );
         this._objectRotationZ = new UINumber().setStep( 10 ).setUnit( '°' ).setWidth( '50px' ).onChange( this.update );
-
         this._objectRotationRow.add( new UIText( 'Rotation' ).setWidth( '90px' ) );
         this._objectRotationRow.add( this._objectRotationX, this._objectRotationY, this._objectRotationZ );
-
         this.add( this._objectRotationRow );
 
         // [ scale ]
@@ -161,11 +148,9 @@ export class ObjectPanel extends EditorPanel {
         this._objectScaleX = new UINumber( 1 ).setRange( 0.01, Infinity ).setWidth( '50px' ).onChange( this.updateScaleX );
         this._objectScaleY = new UINumber( 1 ).setRange( 0.01, Infinity ).setWidth( '50px' ).onChange( this.updateScaleY );
         this._objectScaleZ = new UINumber( 1 ).setRange( 0.01, Infinity ).setWidth( '50px' ).onChange( this.updateScaleZ );
-
         this._objectScaleRow.add( new UIText( 'Scale' ).setWidth( '90px' ) );
         this._objectScaleRow.add( this._objectScaleLock );
         this._objectScaleRow.add( this._objectScaleX, this._objectScaleY, this._objectScaleZ );
-
         this.add( this._objectScaleRow );
 
         // [ fov ]
@@ -196,97 +181,76 @@ export class ObjectPanel extends EditorPanel {
 
         this._objectIntensityRow = new UIRow();
         this._objectIntensity = new UINumber().setRange( 0, Infinity ).onChange( this.update );
-
         this._objectIntensityRow.add( new UIText( 'Intensity' ).setWidth( '90px' ) );
         this._objectIntensityRow.add( this._objectIntensity );
-
         this.add( this._objectIntensityRow );
 
         // [ color ]
 
         this._objectColorRow = new UIRow();
         this._objectColor = new UIColor().onChange( this.update );
-
         this._objectColorRow.add( new UIText( 'Color' ).setWidth( '90px' ) );
         this._objectColorRow.add( this._objectColor );
-
         this.add( this._objectColorRow );
 
         // [ ground color ]
 
         this._objectGroundColorRow = new UIRow();
         this._objectGroundColor = new UIColor().onChange( this.update );
-
         this._objectGroundColorRow.add( new UIText( 'Ground color' ).setWidth( '90px' ) );
         this._objectGroundColorRow.add( this._objectGroundColor );
-
         this.add( this._objectGroundColorRow );
 
         // [ distance ]
 
         this._objectDistanceRow = new UIRow();
         this._objectDistance = new UINumber().setRange( 0, Infinity ).onChange( this.update );
-
         this._objectDistanceRow.add( new UIText( 'Distance' ).setWidth( '90px' ) );
         this._objectDistanceRow.add( this._objectDistance );
-
         this.add( this._objectDistanceRow );
 
         // [ angle ]
 
         this._objectAngleRow = new UIRow();
         this._objectAngle = new UINumber().setPrecision( 3 ).setRange( 0, Math.PI / 2 ).onChange( this.update );
-
         this._objectAngleRow.add( new UIText( 'Angle' ).setWidth( '90px' ) );
         this._objectAngleRow.add( this._objectAngle );
-
         this.add( this._objectAngleRow );
 
         // [ penumbra ]
 
         this._objectPenumbraRow = new UIRow();
         this._objectPenumbra = new UINumber().setRange( 0, 1 ).onChange( this.update );
-
         this._objectPenumbraRow.add( new UIText( 'Penumbra' ).setWidth( '90px' ) );
         this._objectPenumbraRow.add( this._objectPenumbra );
-
         this.add( this._objectPenumbraRow );
 
         // [ decay ]
 
         this._objectDecayRow = new UIRow();
         this._objectDecay = new UINumber().setRange( 0, Infinity ).onChange( this.update );
-
         this._objectDecayRow.add( new UIText( 'Decay' ).setWidth( '90px' ) );
         this._objectDecayRow.add( this._objectDecay );
-
         this.add( this._objectDecayRow );
 
         // [ shadow ]
 
         this._objectShadowRow = new UIRow();
-
         this._objectShadowRow.add( new UIText( 'Shadow' ).setWidth( '90px' ) );
-
         this._objectCastShadow = new UIBoolean( false, 'cast' ).onChange( this.update );
         this._objectShadowRow.add( this._objectCastShadow );
-
         this._objectReceiveShadow = new UIBoolean( false, 'receive' ).onChange( this.update );
         this._objectShadowRow.add( this._objectReceiveShadow );
-
         this._objectShadowRadius = new UINumber( 1 ).onChange( this.update );
         this._objectShadowRow.add( this._objectShadowRadius );
-
         this.add( this._objectShadowRow );
 
         // [ visible ]
 
         this._objectVisibleRow = new UIRow();
         this._objectVisible = new UICheckbox().onChange( this.update );
-
         this._objectVisibleRow.add( new UIText( 'Visible' ).setWidth( '90px' ) );
         this._objectVisibleRow.add( this._objectVisible );
-
         this.add( this._objectVisibleRow );
 
         // [ user data ]
@@ -295,22 +259,17 @@ export class ObjectPanel extends EditorPanel {
         this._objectUserDataRow = new UIRow();
         this._objectUserData = new UITextArea().setWidth( '150px' ).setHeight( '40px' ).setFontSize( '12px' ).onChange( this.update );
         this._objectUserData.onKeyUp( () => {
-
             try {
                 JSON.parse( this._objectUserData.getValue() );
                 this._objectUserData.core.classList.add( 'success' );
                 this._objectUserData.core.classList.remove( 'fail' );
-
             } catch ( error ) {
-
                 this._objectUserData.core.classList.remove( 'success' );
                 this._objectUserData.core.classList.add( 'fail' );
             }
         });
-
         this._objectUserDataRow.add( new UIText( 'User data' ).setWidth( '90px' ) );
         this._objectUserDataRow.add( this._objectUserData );
-
         this.add( this._objectUserDataRow );
 
 
@@ -319,24 +278,20 @@ export class ObjectPanel extends EditorPanel {
         this._signals.objectSelected.add( ( object ) => {
 
             if ( object !== null ) {
-
                 this.setDisplay( 'block' );
                 this.updateRows( object );
                 this.updateUI( object );
-
             } else {
                 this.setDisplay( 'none' );
             }
         });
 
         this._signals.objectChanged.add( ( object ) => {
-
             if ( object !== editor.selected ) return;
             this.updateUI( object );
         });
 
         this._signals.refreshSidebarObject3D.add( ( object ) => {
-
             if ( object !== editor.selected ) return;
             this.updateUI( object );
         });
@@ -345,8 +300,8 @@ export class ObjectPanel extends EditorPanel {
 
     // [ Private ]
 
-    private _editor             : IEditor;
-    private _signals            : ISignals;
+    private _editor                 : IEditor;
+    private _signals                : ISignals;
 
     private _objectTypeRow          : UIRow;
     private _objectUUIDRow          : UIRow;
@@ -472,22 +427,16 @@ export class ObjectPanel extends EditorPanel {
             // [ PerspectiveCamera ]
 
             if ( object.fov !== undefined && Math.abs( object.fov - this._objectFov.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'fov', this._objectFov.getValue() ) );
                 object.updateProjectionMatrix();
-
             }
 
             if ( object.near !== undefined && Math.abs( object.near - this._objectNear.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'near', this._objectNear.getValue() ) );
-
             }
 
             if ( object.far !== undefined && Math.abs( object.far - this._objectFar.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'far', this._objectFar.getValue() ) );
-
             }
 
             // [ Light ]
@@ -499,87 +448,57 @@ export class ObjectPanel extends EditorPanel {
             // [ Material ]
 
             if ( object.color !== undefined && object.color.getHex() !== this._objectColor.getHexValue() ) {
-
                 this._editor.execute( new SetColorCommand( object, 'color', this._objectColor.getHexValue() ) );
-
             }
 
             if ( object.groundColor !== undefined && object.groundColor.getHex() !== this._objectGroundColor.getHexValue() ) {
-
                 this._editor.execute( new SetColorCommand( object, 'groundColor', this._objectGroundColor.getHexValue() ) );
-
             }
 
             if ( object.distance !== undefined && Math.abs( object.distance - this._objectDistance.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'distance', this._objectDistance.getValue() ) );
-
             }
 
             if ( object.angle !== undefined && Math.abs( object.angle - this._objectAngle.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'angle', this._objectAngle.getValue() ) );
 
             }
-
             if ( object.penumbra !== undefined && Math.abs( object.penumbra - this._objectPenumbra.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'penumbra', this._objectPenumbra.getValue() ) );
-
             }
 
             if ( object.decay !== undefined && Math.abs( object.decay - this._objectDecay.getValue() ) >= 0.01 ) {
-
                 this._editor.execute( new SetValueCommand( object, 'decay', this._objectDecay.getValue() ) );
-
             }
 
             if ( object.visible !== this._objectVisible.getValue() ) {
-
                 this._editor.execute( new SetValueCommand( object, 'visible', this._objectVisible.getValue() ) );
-
             }
 
             if ( object.castShadow !== undefined && object.castShadow !== this._objectCastShadow.getValue() ) {
-
                 this._editor.execute( new SetValueCommand( object, 'castShadow', this._objectCastShadow.getValue() ) );
-
             }
 
             if ( object.receiveShadow !== undefined && object.receiveShadow !== this._objectReceiveShadow.getValue() ) {
-
                 this._editor.execute( new SetValueCommand( object, 'receiveShadow', this._objectReceiveShadow.getValue() ) );
                 object.material.needsUpdate = true;
-
             }
 
             if ( object.shadow !== undefined ) {
-
                 if ( object.shadow.radius !== this._objectShadowRadius.getValue() ) {
-
                     this._editor.execute( new SetValueCommand( object.shadow, 'radius', this._objectShadowRadius.getValue() ) );
-
                 }
-
             }
 
             try {
-
                 let userData = JSON.parse( this._objectUserData.getValue() );
                 if ( JSON.stringify( object.userData ) != JSON.stringify( userData ) ) {
-
                     this._editor.execute( new SetValueCommand( object, 'userData', userData ) );
-
                 }
-
             } catch ( exception ) {
-
                 console.warn( exception );
-
             }
-
         }
-
     }
 
     private updateRows = ( object ) => {
@@ -601,23 +520,16 @@ export class ObjectPanel extends EditorPanel {
         };
 
         for ( let property in properties ) {
-
             properties[ property ].setDisplay( object[ property ] !== undefined ? '' : 'none' );
-
         }
-
     }
 
     private updateTransformRows = ( object ) =>{
 
-        if ( object instanceof THREE.Light ||
-        ( object instanceof THREE.Object3D && object.userData.targetInverse ) ) {
-
+        if ( object instanceof THREE.Light || ( object instanceof THREE.Object3D && object.userData.targetInverse ) ) {
             this._objectRotationRow.setDisplay( 'none' );
             this._objectScaleRow.setDisplay( 'none' );
-
         } else {
-
             this._objectRotationRow.setDisplay( '' );
             this._objectScaleRow.setDisplay( '' );
         }
@@ -643,101 +555,53 @@ export class ObjectPanel extends EditorPanel {
         this._objectScaleZ.setValue( object.scale.z );
 
         if ( object.fov !== undefined ) {
-
             this._objectFov.setValue( object.fov );
-
         }
-
         if ( object.near !== undefined ) {
-
             this._objectNear.setValue( object.near );
-
         }
-
         if ( object.far !== undefined ) {
-
             this._objectFar.setValue( object.far );
-
         }
-
         if ( object.intensity !== undefined ) {
-
             this._objectIntensity.setValue( object.intensity );
-
         }
-
         if ( object.color !== undefined ) {
-
             this._objectColor.setHexValue( object.color.getHexString() );
-
         }
-
         if ( object.groundColor !== undefined ) {
-
             this._objectGroundColor.setHexValue( object.groundColor.getHexString() );
-
         }
-
         if ( object.distance !== undefined ) {
-
             this._objectDistance.setValue( object.distance );
-
         }
-
         if ( object.angle !== undefined ) {
-
             this._objectAngle.setValue( object.angle );
-
         }
-
         if ( object.penumbra !== undefined ) {
-
             this._objectPenumbra.setValue( object.penumbra );
-
         }
-
         if ( object.decay !== undefined ) {
-
             this._objectDecay.setValue( object.decay );
-
         }
-
         if ( object.castShadow !== undefined ) {
-
             this._objectCastShadow.setValue( object.castShadow );
-
         }
-
         if ( object.receiveShadow !== undefined ) {
-
             this._objectReceiveShadow.setValue( object.receiveShadow );
-
         }
-
         if ( object.shadow !== undefined ) {
-
             this._objectShadowRadius.setValue( object.shadow.radius );
-
         }
-
         this._objectVisible.setValue( object.visible );
-
         try {
-
             this._objectUserData.setValue( JSON.stringify( object.userData, null, '  ' ) );
-
         } catch ( error ) {
-
             console.log( error );
-
         }
 
         this._objectUserData.setBorderColor( 'transparent' );
         this._objectUserData.setBackgroundColor( '' );
-
         this.updateTransformRows( object );
-
     }
-
-
 }
