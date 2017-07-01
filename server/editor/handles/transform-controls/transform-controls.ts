@@ -2,7 +2,6 @@
 // transform-controls.ts
 // -----------------------------------------------------------------------------
 import 	* as THREE             	  	  	from 'three';
-import { hasFunction    			}   from '../../../engine/object';
 import { GizmoLineMaterial   		} 	from './gizmo-line-material';
 import { GizmoMaterial       		} 	from './gizmo-material';
 import { pickerMaterial      		} 	from './gizmo-material';
@@ -22,19 +21,10 @@ import { TransformGizmoScale		} 	from './transform-gizmo-scale';
  */
 export class TransformControls extends THREE.Object3D {
 
-    // [ Public Variables ]
+    // [ Public ]
 
 	object : THREE.Object3D;
 
-
-    // [ Public Functions ]
-
-	/**
-	 * dispose
-	 *
-	 *
-	 * @memberof TransformControls
-	 */
 	dispose () {
 
 		this._domElement.removeEventListener( "mousedown"	, this._onPointerDown 	);
@@ -49,48 +39,24 @@ export class TransformControls extends THREE.Object3D {
 		this._domElement.removeEventListener( "touchcancel"	, this._onPointerUp 	);
 		this._domElement.removeEventListener( "touchleave"	, this._onPointerUp 	);
 	}
-	/**
-	 * attach
-	 *
-	 * @param {THREE.Object3D} object
-	 *
-	 * @memberof TransformControls
-	 */
+
 	attach ( object:THREE.Object3D ) {
 		this.object = object;
 		this.visible = true;
 		this.update();
 	}
-	/**
-	 * detach
-	 *
-	 *
-	 * @memberof TransformControls
-	 */
+
 	detach () {
 		delete this.object;
 		this.visible 	= false;
 		this._axis 		= null;
 	}
-	/**
-	 * get mode
-	 *
-	 * @returns {string}
-	 *
-	 * @memberof TransformControls
-	 */
+
 	getMode () : string {
 		return this._mode;
 	}
-	/**
-	 * set mode
-	 *
-	 * @param {string} mode
-	 *
-	 * @memberof TransformControls
-	 */
-	setMode ( mode:string ) {
 
+	setMode ( mode:string ) {
 		this._mode = mode ? mode : this._mode;
 		if ( this._mode === "scale" ) this._space = "local";
 		for ( let type in this._gizmo ) this._gizmo[ type ].visible = ( type === this._mode );
@@ -98,65 +64,33 @@ export class TransformControls extends THREE.Object3D {
 		this.update();
 		this.dispatchEvent( this._changeEvent );
 	}
-	/**
-	 * set translation snap
-	 *
-	 * @param {any} translationSnap
-	 *
-	 * @memberof TransformControls
-	 */
-	setTranslationSnap ( translationSnap ) {
 
+	setTranslationSnap ( translationSnap:number ) {
 		this._translationSnap = translationSnap;
-
 	}
-	/**
-	 * set rotation snap
-	 *
-	 * @param {any} rotationSnap
-	 *
-	 * @memberof TransformControls
-	 */
-	setRotationSnap ( rotationSnap ) {
 
+	setRotationSnap ( rotationSnap:number ) {
 		this._rotationSnap = rotationSnap;
-
 	}
-	/**
-	 * set size
-	 *
-	 * @param {any} size
-	 *
-	 * @memberof TransformControls
-	 */
-	setSize ( size ) {
 
+	setSize ( size:number ) {
 		this._size = size;
 		this.update();
 		this.dispatchEvent( this._changeEvent );
-
 	}
+
 	/**
 	 * set space
 	 *
-	 * @param {any} space
-	 *
+	 * @param {string} space 'world' | 'local'
 	 * @memberof TransformControls
 	 */
-	setSpace ( space ) {
-
+	setSpace ( space:string ) {
 		this._space = space;
 		this.update();
 		this.dispatchEvent( this._changeEvent );
-
 	}
-	/**
-	 * update
-	 *
-	 * @returns
-	 *
-	 * @memberof TransformControls
-	 */
+
 	update () {
 
 		if ( this.object === undefined ) return;
@@ -169,11 +103,11 @@ export class TransformControls extends THREE.Object3D {
 		this._camPosition.setFromMatrixPosition( this._camera.matrixWorld );
 		this._camRotation.setFromRotationMatrix( this._tempMatrix.extractRotation( this._camera.matrixWorld ) );
 
-		let scale = 1;
-		scale = this._worldPosition.distanceTo( this._camPosition ) / 6 * this._size;
+		let scale = this._worldPosition.distanceTo( this._camPosition ) / 6 * this._size;
 		this.position.copy( this._worldPosition );
 		this.scale.set( scale, scale, scale );
 
+		// [ camera ]
 		if ( this._camera instanceof THREE.PerspectiveCamera ) {
 
 			this._eye.copy( this._camPosition ).sub( this._worldPosition ).normalize();
@@ -184,6 +118,7 @@ export class TransformControls extends THREE.Object3D {
 
 		}
 
+		// [ gizmo ]
 		if ( this._space === "local" ) {
 
 			this._gizmo[ this._mode ].update( this._worldRotation, this._eye );
@@ -191,21 +126,13 @@ export class TransformControls extends THREE.Object3D {
 		} else if ( this._space === "world" ) {
 
 			this._gizmo[ this._mode ].update( new THREE.Euler(), this._eye );
-
 		}
 
 		this._gizmo[ this._mode ].highlight( this._axis );
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-	/**
-	 * Creates an instance of TransformControls.
-	 * @param {THREE.Camera} camera
-	 * @param {Document} domElement
-	 *
-	 * @memberof TransformControls
-	 */
     constructor( camera:THREE.Camera, domElement:HTMLElement ) {
         super();
 
@@ -220,6 +147,7 @@ export class TransformControls extends THREE.Object3D {
 			this.add( gizmoObj );
 		}
 
+
 		this._domElement.addEventListener( "mousedown"	, this._onPointerDown	, false );
 		this._domElement.addEventListener( "touchstart"	, this._onPointerDown	, false );
 		this._domElement.addEventListener( "mousemove"	, this._onPointerHover	, false );
@@ -233,7 +161,7 @@ export class TransformControls extends THREE.Object3D {
 		this._domElement.addEventListener( "touchleave"	, this._onPointerUp		, false );
     }
 
-	// [ Protected Variables ]
+	// [ Protected ]
 
 	protected _camera				: THREE.Camera;
 	protected _domElement 			: HTMLElement;
@@ -286,28 +214,19 @@ export class TransformControls extends THREE.Object3D {
 	protected _camPosition 			= new THREE.Vector3();
 	protected _camRotation 			= new THREE.Euler();
 
-
-	/**
-	 * onPointerHover
-	 *
-	 * @param {Event} event
-	 * @returns
-	 *
-	 * @memberof TransformControls
-	 */
 	protected _onPointerHover = ( event:MouseEvent|TouchEvent ) => {
 
 		if ( this.object === undefined || this._dragging === true ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer : any = event;
-		if( event instanceof TouchEvent ) {
+		if ( event instanceof TouchEvent ) {
 			pointer = event.changedTouches ? event.changedTouches[ 0 ] : event;
 		}
+
+		let axis : string|null = null;
+
 		let intersect = this._intersectObjects( pointer, this._gizmo[ this._mode ].pickers.children );
-
-		let axis : string | null = null;
-
 		if ( intersect ) {
 			axis = intersect.object.name;
 			event.preventDefault();
@@ -319,14 +238,7 @@ export class TransformControls extends THREE.Object3D {
 			this.dispatchEvent( this._changeEvent );
 		}
 	}
-	/**
-	 * onPointerHover
-	 *
-	 * @param {Event} event
-	 * @returns
-	 *
-	 * @memberof TransformControls
-	 */
+
 	protected _onPointerDown = ( event:MouseEvent|TouchEvent ) => {
 
 		if ( this.object === undefined || this._dragging === true ) return;
@@ -342,8 +254,6 @@ export class TransformControls extends THREE.Object3D {
 			if ( pointer.button === 0 || pointer.button === undefined ) {
 
 				let intersect = this._intersectObjects( pointer, this._gizmo[ this._mode ].pickers.children );
-				console.log( intersect );
-
 				if ( intersect ) {
 
 					event.preventDefault();
@@ -376,7 +286,6 @@ export class TransformControls extends THREE.Object3D {
 					}
 				}
 			}
-
 		}
 
 		this._dragging = true;
@@ -384,7 +293,7 @@ export class TransformControls extends THREE.Object3D {
 
 	protected _onPointerMove = ( event:MouseEvent|TouchEvent ) => {
 
-		if ( this.object === undefined || this._axis === null || this._dragging === true ) return;
+		if ( this.object === undefined || this._axis === null || this._dragging === false ) return;
 		if ( event instanceof MouseEvent && event.button !== undefined && event.button !== 0 ) return;
 
 		let pointer : any = event;
@@ -419,7 +328,6 @@ export class TransformControls extends THREE.Object3D {
 
 				this.object.position.copy( this._oldPosition );
 				this.object.position.add( this._point );
-
 			}
 
 			if ( this._space === "world" || this._axis.search( "XYZ" ) !== - 1 ) {
@@ -432,7 +340,6 @@ export class TransformControls extends THREE.Object3D {
 
 				this.object.position.copy( this._oldPosition );
 				this.object.position.add( this._point );
-
 			}
 
 			if ( this._translationSnap !== null ) {
@@ -440,7 +347,6 @@ export class TransformControls extends THREE.Object3D {
 				if ( this._space === "local" ) {
 
 					this.object.position.applyMatrix4( this._tempMatrix.getInverse( this._worldRotationMatrix ) );
-
 				}
 
 				if ( this._axis.search( "X" ) !== - 1 ) this.object.position.x = Math.round( this.object.position.x / this._translationSnap ) * this._translationSnap;
@@ -450,9 +356,7 @@ export class TransformControls extends THREE.Object3D {
 				if ( this._space === "local" ) {
 
 					this.object.position.applyMatrix4( this._worldRotationMatrix );
-
 				}
-
 			}
 
 		} else if ( this._mode === "scale" ) {
@@ -592,7 +496,6 @@ export class TransformControls extends THREE.Object3D {
 		this.update();
 		this.dispatchEvent( this._changeEvent );
 		this.dispatchEvent( this._objectChangeEvent );
-
 	}
 
 	protected _onPointerUp = ( event:MouseEvent|TouchEvent ) => {
@@ -623,15 +526,6 @@ export class TransformControls extends THREE.Object3D {
 		}
 	}
 
-	/**
-	 * intersect objects
-	 *
-	 * @param {*} pointer
-	 * @param {THREE.Object3D[]} objects
-	 * @returns
-	 *
-	 * @memberof TransformControls
-	 */
 	protected _intersectObjects( pointer:any, objects:THREE.Object3D[] ) {
 
 		let rect = this._domElement.getBoundingClientRect();

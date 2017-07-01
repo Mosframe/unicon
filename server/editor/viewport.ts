@@ -3,8 +3,6 @@
 // -----------------------------------------------------------------------------
 import 	* as THREE     		  	  from 'three';
 import { Signal  				} from 'signals';
-import { hasProperty			} from '../engine/object';
-import { hasFunction			} from '../engine/object';
 import { WebVR					} from '../engine/vr/web-vr';
 import { VREffect				} from '../engine/vr/vr-effect';
 import { VRControls				} from '../engine/vr/vr-controls';
@@ -29,7 +27,7 @@ import { ViewportInfo			} from './viewport-info';
  */
 export class Viewport extends UIPanel {
 
-    // [ Public Variables ]
+    // [ Public ]
 
 	editor 				: IEditor;
 	renderer 			: THREE.WebGLRenderer | null;
@@ -44,39 +42,19 @@ export class Viewport extends UIPanel {
 	vrControls			: VRControls;
 	vrCamera			: THREE.PerspectiveCamera;
 
-    // [ Public Functions ]
-
-	/**
-	 * get intersect objects
-	 *
-	 * @param {THREE.Vector2} point
-	 * @param {THREE.Object3D[]} objects
-	 * @returns
-	 *
-	 * @memberof Viewport
-	 */
 	getIntersects ( point:THREE.Vector2, objects:THREE.Object3D[] ) {
 		this._mouse.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
 		this._raycaster.setFromCamera( this._mouse, this.camera );
 		return this._raycaster.intersectObjects( objects );
 	}
-	/**
-	 * get mouse position
-	 *
-	 * @param {HTMLElement} dom
-	 * @param {number} x
-	 * @param {number} y
-	 * @returns {number[]}
-	 *
-	 * @memberof Viewport
-	 */
+
 	getMousePosition( dom:HTMLElement, x:number, y:number ) : number[] {
 		let rect = dom.getBoundingClientRect();
 		return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
 	}
 
 
-    // [ Constructors ]
+    // [ Constructor ]
 
     constructor( editor:IEditor ) {
 		super();
@@ -123,21 +101,16 @@ export class Viewport extends UIPanel {
 		this.transformControls = new TransformControls( this.camera, this.core );
 		this.transformControls.addEventListener( 'change', () => {
 
-			console.log('transformControls.change');
-
 			let object = this.transformControls.object;
 			if( object !== undefined ) {
 
 				//this.selectionBox.setFromObject( object );
-				//this.selectionBox = new THREE.BoxHelper( object );
-				this.selectionBox.update( object );
+				this.selectionBox['object'] = object;
+				this.selectionBox.update();
 
 				let helper = editor.helpers[ object.id ];
 				if( helper ) {
-					if( hasFunction( helper, 'update') ) {
-						console.log( helper );
-						helper['update']();
-					}
+					helper['update']();
 				}
 
 				this.editor.signals.refreshSidebarObject3D.dispatch( object );
@@ -146,8 +119,6 @@ export class Viewport extends UIPanel {
 		});
 
 		this.transformControls.addEventListener( 'mouseDown', () => {
-
-			console.log( 'transformControls mouseDown' );
 
 			let object = this.transformControls.object;
 			if( object ) {
@@ -158,7 +129,7 @@ export class Viewport extends UIPanel {
 			}
 		});
 
-		this.transformControls.addEventListener( 'mouseUp', function () {
+		this.transformControls.addEventListener( 'mouseUp', () => {
 
 			let object = this.transformControls.object;
 			if( object !== undefined ) {
@@ -265,15 +236,13 @@ export class Viewport extends UIPanel {
 
 				window.addEventListener( 'vrdisplaypresentchange', ( event ) => {
 
-					if( hasProperty(window,'effect') ) {
-						window['effect'].isPresenting ? this.editor.signals.enteredVR.dispatch() : this.editor.signals.exitedVR.dispatch();
-					}
+					window['effect'].isPresenting ? this.editor.signals.enteredVR.dispatch() : this.editor.signals.exitedVR.dispatch();
+
 				}, false );
 			}
 
 			this.render();
-
-		} );
+		});
 
 		this.editor.signals.sceneGraphChanged.add( () => {
 			this.render();
@@ -285,8 +254,6 @@ export class Viewport extends UIPanel {
 
 		this.editor.signals.objectSelected.add( ( object:THREE.Object3D ) => {
 
-			console.log('signals.objectSelected.add');
-
 			this.selectionBox.visible = false;
 			this.transformControls.detach();
 
@@ -295,9 +262,9 @@ export class Viewport extends UIPanel {
 				box.setFromObject( object );
 
 				if ( box.isEmpty() === false ) {
-					this.selectionBox = new THREE.BoxHelper( object );
+					this.selectionBox['object'] = object;
+					this.selectionBox.update();
 					this.selectionBox.visible = true;
-					console.log( this.selectionBox );
 				}
 
 				this.transformControls.attach( object );
@@ -312,7 +279,7 @@ export class Viewport extends UIPanel {
 
 		this.editor.signals.geometryChanged.add( ( object:THREE.Object3D ) => {
 			if( object !== undefined ) {
-				this.selectionBox = new THREE.BoxHelper( object );
+				this.selectionBox.update( object );
 			}
 			this.render();
 		});
@@ -328,10 +295,9 @@ export class Viewport extends UIPanel {
 
 			if ( editor.selected === object ) {
 
-				//this.selectionBox.setFromObject( object );
-				this.selectionBox = new THREE.BoxHelper( object );
+				this.selectionBox['object'] = object;
+				this.selectionBox.update();
 				this.transformControls.update();
-
 			}
 
 			if ( object instanceof THREE.PerspectiveCamera ) {
@@ -342,10 +308,7 @@ export class Viewport extends UIPanel {
 
 			let helper = editor.helpers[ object.id ];
 			if ( helper !== undefined ) {
-
-				if( hasFunction( helper, 'update' ) ) {
-					helper['update']();
-				}
+				helper['update']();
 			}
 			this.render();
 		});
@@ -436,7 +399,8 @@ export class Viewport extends UIPanel {
 	}
 
 
-	// [ Protected Variables ]
+	// [ Protected ]
+
 	protected objectPositionOnDown 		: any;
 	protected objectRotationOnDown 		: any;
 	protected objectScaleOnDown 		: any;
@@ -447,8 +411,6 @@ export class Viewport extends UIPanel {
 	protected _onUpPosition 			: THREE.Vector2 	= new THREE.Vector2();
 	protected _onDoubleClickPosition 	: THREE.Vector2 	= new THREE.Vector2();
 	protected _currentFogType 			: string;
-
-	// [ Proected functions ]
 
 	protected _animate = () => {
 
@@ -485,9 +447,6 @@ export class Viewport extends UIPanel {
 			}
 		}
 	}
-
-
-	// [ Proected Events ]
 
 	protected _onHandleClick = () => {
 

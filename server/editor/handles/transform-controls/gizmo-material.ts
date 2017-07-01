@@ -39,6 +39,10 @@ export class GizmoMaterial extends THREE.MeshBasicMaterial {
 
 		this._oldColor      = this.color.clone();
 		this._oldOpacity    = this.opacity;
+
+        //if( Reflect.defineProperty( this, 'hightlight', {}) ) {
+        //    this['highlight'] = this.highlight;
+        //}
     }
 
     // [ Protected Veriables ]

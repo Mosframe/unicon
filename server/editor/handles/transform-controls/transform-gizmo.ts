@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 // transform-gizmo.ts
 // -----------------------------------------------------------------------------
-import  * as THREE          from 'three';
-import { hasFunction    }   from '../../../engine/object';
+import  * as THREE              from 'three';
+import { GizmoMaterial      }   from './gizmo-material';
+import { GizmoLineMaterial  }   from './gizmo-line-material';
 
 /**
  * TransformGizmo
@@ -63,7 +64,7 @@ export class TransformGizmo extends THREE.Object3D {
         this.setupGizmos( this.handleGizmos, this.handles );
         this.setupGizmos( this.pickerGizmos, this.pickers );
 
-        // reset Transformations
+        // [ reset Transformations ]
 
         this.traverse( ( child:THREE.Object3D ) => {
 
@@ -81,18 +82,12 @@ export class TransformGizmo extends THREE.Object3D {
             }
         });
     }
-    /**
-     * setup gizmos
-     *
-     * @param {*} gizmoMap
-     * @param {THREE.Object3D} parent
-     *
-     * @memberof TransformGizmo
-     */
+
     setupGizmos ( gizmoMap:any, parent:THREE.Object3D ) {
 
         for ( let name in gizmoMap ) {
-            for( let i = gizmoMap[ name ].length; --i; ) {
+
+            for( let i = gizmoMap[ name ].length; i--; ) {
 
                 let object = gizmoMap[ name ][ i ][ 0 ];
                 let position = gizmoMap[ name ][ i ][ 1 ];
@@ -107,37 +102,26 @@ export class TransformGizmo extends THREE.Object3D {
             }
         }
     }
-    /**
-     * highlight mesh
-     *
-     * @param {string} axis
-     *
-     * @memberof TransformGizmo
-     */
+
     highlight ( axis:string ) {
 
         this.traverse( ( child:THREE.Object3D ) => {
-            if( child instanceof THREE.Mesh ) {
+            if( child instanceof THREE.Mesh || child instanceof THREE.Line ) {
                 if ( child.material ) {
-                    if( hasFunction( child.material, 'highlight') ) {
-                        if ( child.name === axis ) {
-                            child.material['highlight']( true );
-                        } else {
-                            child.material['highlight']( false );
+                    if( child.material instanceof GizmoMaterial || child.material instanceof GizmoLineMaterial ) {
+                        if( child.material.highlight ) {
+                            if ( child.name === axis ) {
+                                child.material.highlight( true );
+                            } else {
+                                child.material.highlight( false );
+                            }
                         }
                     }
                 }
             }
         });
     }
-    /**
-     * update
-     *
-     * @param {THREE.Euler} rotation
-     * @param {THREE.Vector3} eye
-     *
-     * @memberof TransformGizmo
-     */
+
 	update ( rotation:THREE.Euler, eye:THREE.Vector3 ) {
 
 		let vec1 = new THREE.Vector3( 0, 0, 0 );
@@ -147,9 +131,13 @@ export class TransformGizmo extends THREE.Object3D {
 		this.traverse( ( child:THREE.Object3D ) => {
 
 			if( child.name.search( "E" ) !== - 1 ) {
-				child.quaternion.setFromRotationMatrix( lookAtMatrix.lookAt( eye, vec1, vec2 ) );
+
+                child.quaternion.setFromRotationMatrix( lookAtMatrix.lookAt( eye, vec1, vec2 ) );
+
 			} else if ( child.name.search( "X" ) !== - 1 || child.name.search( "Y" ) !== - 1 || child.name.search( "Z" ) !== - 1 ) {
-				child.quaternion.setFromEuler( rotation );
+
+                child.quaternion.setFromEuler( rotation );
+
 			}
 		});
 	};

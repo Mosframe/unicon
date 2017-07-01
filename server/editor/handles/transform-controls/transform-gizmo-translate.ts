@@ -28,35 +28,25 @@ export class TransformGizmoTranslate extends TransformGizmo {
         if ( axis === "X" ) {
 
             this.activePlane = this.planes[ "XY" ];
-
             if ( Math.abs( eye.y ) > Math.abs( eye.z ) ) this.activePlane = this.planes[ "XZ" ];
-
         }
 
         if ( axis === "Y" ) {
 
             this.activePlane = this.planes[ "XY" ];
-
             if ( Math.abs( eye.x ) > Math.abs( eye.z ) ) this.activePlane = this.planes[ "YZ" ];
-
         }
 
         if ( axis === "Z" ) {
 
             this.activePlane = this.planes[ "XZ" ];
-
             if ( Math.abs( eye.x ) > Math.abs( eye.y ) ) this.activePlane = this.planes[ "YZ" ];
-
         }
 
-        if ( axis === "XYZ" ) this.activePlane = this.planes[ "XYZE" ];
-
-        if ( axis === "XY" ) this.activePlane = this.planes[ "XY" ];
-
-        if ( axis === "YZ" ) this.activePlane = this.planes[ "YZ" ];
-
-        if ( axis === "XZ" ) this.activePlane = this.planes[ "XZ" ];
-
+        if ( axis === "XYZ" ) this.activePlane = this.planes[ "XYZE"];
+        if ( axis === "XY" 	) this.activePlane = this.planes[ "XY" 	];
+        if ( axis === "YZ" 	) this.activePlane = this.planes[ "YZ" 	];
+        if ( axis === "XZ" 	) this.activePlane = this.planes[ "XZ" 	];
     }
 
 
@@ -90,7 +80,7 @@ export class TransformGizmoTranslate extends TransformGizmo {
 
 			Y: [
 				[ new THREE.Mesh( arrowGeometry, new GizmoMaterial( { color: 0x00ff00 } ) ), [ 0, 0.5, 0 ] ],
-				[	new THREE.Line( lineYGeometry, new GizmoLineMaterial( { color: 0x00ff00 } ) ) ]
+				[ new THREE.Line( lineYGeometry, new GizmoLineMaterial( { color: 0x00ff00 } ) ) ]
 			],
 
 			Z: [
@@ -113,8 +103,8 @@ export class TransformGizmoTranslate extends TransformGizmo {
 			XZ: [
 				[ new THREE.Mesh( new THREE.PlaneBufferGeometry( 0.29, 0.29 ), new GizmoMaterial( { color: 0xff00ff, opacity: 0.25 } ) ), [ 0.15, 0, 0.15 ], [ - Math.PI / 2, 0, 0 ] ]
 			]
-
 		};
+		console.log( this.handleGizmos );
 
 		this.pickerGizmos = {
 
@@ -145,9 +135,7 @@ export class TransformGizmoTranslate extends TransformGizmo {
 			XZ: [
 				[ new THREE.Mesh( new THREE.PlaneBufferGeometry( 0.4, 0.4 ), pickerMaterial ), [ 0.2, 0, 0.2 ], [ - Math.PI / 2, 0, 0 ] ]
 			]
-
 		};
-
 
 		this.init();
     }
