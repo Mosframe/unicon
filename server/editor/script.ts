@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // script.ts
 // -----------------------------------------------------------------------------
-import  *           as esprima      from 'esprima';
+//import  *           as esprima      from 'esprima';
 import  *           as THREE        from 'three';
 import { Element    as UIElement}   from './gui/element';
 import { Panel      as UIPanel  }   from './gui/panel';
@@ -11,8 +11,9 @@ import { SetMaterialValueCommand}   from './commands/set-material-value-command'
 import { SetScriptValueCommand  }   from './commands/set-script-value-command';
 
 let jsonlint    = require( 'jsonlint' );
-let CodeMirror  = window['CodeMirror'];//require( '../lib/codemirror/codemirror' );
-let glslprep    = require( '../lib/glslprep/glslprep.min' );
+let esprima     = window['esprima'];
+let CodeMirror  = window['CodeMirror'];
+let glslprep    = window['glslprep'];
 
 /**
  * Script
@@ -187,7 +188,7 @@ export class Script extends UIPanel {
                         try {
 
                             let syntax = esprima.parse( string, { tolerant: true } );
-                            //errors = syntax.errors;
+                            errors = syntax.errors;
 
                         } catch ( error ) {
 
