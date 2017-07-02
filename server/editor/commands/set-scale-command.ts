@@ -48,8 +48,8 @@ export class SetScaleCommand extends Command {
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 		this.object     = this._editor.objectByUuid( json.objectUuid );
-		this._oldScale   = new THREE.Vector3().fromArray( json.oldScale );
-		this._newScale   = new THREE.Vector3().fromArray( json.newScale );
+		this._oldScale  = new THREE.Vector3().fromArray( json.oldScale );
+		this._newScale  = new THREE.Vector3().fromArray( json.newScale );
 	}
 
     // [ Constructor ]

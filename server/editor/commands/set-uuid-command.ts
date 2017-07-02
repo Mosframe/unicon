@@ -65,7 +65,8 @@ export class SetUuidCommand extends Command {
         this._newUuid   = newUuid;
     }
 
+    // [ Private ]
+
     private _oldUuid : string;
     private _newUuid : string;
-
 }

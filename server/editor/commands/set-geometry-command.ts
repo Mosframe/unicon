@@ -19,96 +19,63 @@ import {Command     } from '../command';
  */
 export class SetGeometryCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite;
-    oldGeometry : THREE.Geometry | THREE.BufferGeometry;
-    newGeometry : THREE.Geometry | THREE.BufferGeometry;
+    object : any;
 
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetGeometryCommand
-     */
     execute () {
 		this.object.geometry.dispose();
-		this.object.geometry = this.newGeometry;
+		this.object.geometry = this._newGeometry;
 		this.object.geometry.computeBoundingSphere();
-
 		this._editor.signals.geometryChanged.dispatch( this.object );
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * undo
-     *
-     * @memberof SetGeometryCommand
-     */
+
     undo () {
 		this.object.geometry.dispose();
-		this.object.geometry = this.oldGeometry;
+		this.object.geometry = this._oldGeometry;
 		this.object.geometry.computeBoundingSphere();
-
 		this._editor.signals.geometryChanged.dispatch( this.object );
 		this._editor.signals.sceneGraphChanged.dispatch();
     }
-    /**
-     * update
-     *
-     * @param {SetGeometryCommand} cmd
-     * @memberof SetGeometryCommand
-     */
+
     update ( cmd:SetGeometryCommand ) {
-		this.newGeometry = cmd.newGeometry;
+		this._newGeometry = cmd._newGeometry;
     }
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetGeometryCommand
-     */
+
     toJSON () : any {
         let output          = super.toJSON();
 		output.objectUuid   = this.object.uuid;
 		output.oldGeometry  = this.object.geometry.toJSON();
-		output.newGeometry  = this.newGeometry.toJSON();
+		output.newGeometry  = this._newGeometry.toJSON();
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetGeometryCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
-
-		this.object         = <THREE.Mesh>this._editor.objectByUuid( json.objectUuid );
-		this.oldGeometry    = this._parseGeometry( json.oldGeometry );
-		this.newGeometry    = this._parseGeometry( json.newGeometry );
+		this.object         = this._editor.objectByUuid( json.objectUuid );
+		this._oldGeometry   = this._parseGeometry( json.oldGeometry );
+		this._newGeometry   = this._parseGeometry( json.newGeometry );
 	}
-    // [ Constructors ]
 
-    /**
-     * Creates an instance of SetGeometryCommand.
-     * @param {THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite} object
-     * @param {(THREE.Geometry|THREE.BufferGeometry)} newGeometry
-     * @memberof SetGeometryCommand
-     */
-    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite, newGeometry:THREE.Geometry|THREE.BufferGeometry ) {
+    // [ Constructor ]
+
+    constructor( object:any, newGeometry:THREE.Geometry|THREE.BufferGeometry ) {
         super();
         this.type           = 'SetGeometryCommand';
         this.name           = 'Set Geometry';
         this.updatable      = true;
         this.object         = object;
-        this.oldGeometry    = ( object !== undefined ) ? object.geometry : undefined;
-        this.newGeometry    = newGeometry;
+        this._oldGeometry   = ( object !== undefined ) ? object.geometry : undefined;
+        this._newGeometry   = newGeometry;
     }
 
-    // [ Protected Functions ]
+    // [ private ]
 
-    protected _parseGeometry ( data:THREE.Geometry ) : any {
+    private _oldGeometry : THREE.Geometry | THREE.BufferGeometry;
+    private _newGeometry : THREE.Geometry | THREE.BufferGeometry;
+
+    private _parseGeometry ( data:THREE.Geometry ) : any {
         let loader = new THREE.ObjectLoader();
         return loader.parseGeometries( [ data ] )[ data.uuid ];
     }

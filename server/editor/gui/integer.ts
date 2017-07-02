@@ -43,21 +43,21 @@ export class Integer extends Element {
     setRange( min:number, max:number ) {
         this.min = min;
         this.max = max;
+        return this;
     }
 
     // [ Constructors ]
 
     constructor ( number:number ) {
 
-        let element = document.createElement( 'input' );
-        element.className   = 'Number'  ;
-        element.value       = '0'       ;
+        super( document.createElement( 'input' ) );
 
-        element.addEventListener( 'keydown', ( event:KeyboardEvent ) => {
+        this.core.className   = 'Number'  ;
+        this.core.value       = '0'       ;
+
+        this.core.addEventListener( 'keydown', ( event:KeyboardEvent ) => {
             event.stopPropagation();
         }, false );
-
-        super( element );
 
         this._value     = 0;
         this.min        =-Infinity;
@@ -73,7 +73,7 @@ export class Integer extends Element {
         this._pointer           = [ 0, 0 ];
         this._prevPointer       = [ 0, 0 ];
 
-        this._onBlur(null);
+        this._onBlur();
 
         this._core.addEventListener( 'mousedown', this._onMouseDown  , false );
         this._core.addEventListener( 'change'   , this._onChange     , false );
@@ -82,7 +82,7 @@ export class Integer extends Element {
     }
 
 
-    // [ Protected Variables ]
+    // [ Protected ]
 
     protected _value                : number;
     protected _step                 : number;
@@ -96,9 +96,9 @@ export class Integer extends Element {
 
     get core() : HTMLInputElement { return <HTMLInputElement>this._core; }
 
-    // [ Protected Events ]
+    // [ Protected ]
 
-	protected _onMouseDown ( event:MouseEvent ) {
+	protected _onMouseDown = ( event:MouseEvent ) => {
 
 		event.preventDefault();
 
@@ -110,7 +110,7 @@ export class Integer extends Element {
 		document.addEventListener( 'mouseup'    , this._onMouseUp     , false );
 	}
 
-	protected _onMouseMove( event:MouseEvent ) {
+	protected _onMouseMove = ( event:MouseEvent ) => {
 
 		let currentValue = this._value;
 
@@ -128,7 +128,7 @@ export class Integer extends Element {
 		this._prevPointer = [ event.clientX, event.clientY ];
 	}
 
-	protected _onMouseUp( event:MouseEvent ) {
+	protected _onMouseUp = ( event:MouseEvent ) => {
 		document.removeEventListener( 'mousemove'   , this._onMouseMove  , false );
 		document.removeEventListener( 'mouseup'     , this._onMouseUp    , false );
 
@@ -137,14 +137,14 @@ export class Integer extends Element {
 			this.core.select();
 		}
 	}
-    protected _onChange( event:Event ) {
+    protected _onChange = ( event:Event ) => {
         this.setValue( parseInt( this.core.value ) );
     }
-	protected _onFocus( event:FocusEvent ) {
+	protected _onFocus = ( event:FocusEvent ) => {
 		this._core.style.backgroundColor    = '';
 		this._core.style.cursor             = '';
 	}
-	protected _onBlur( event:FocusEvent ) {
+	protected _onBlur = ( event?:any ) => {
 		this._core.style.backgroundColor    = 'transparent';
 		this._core.style.cursor             = 'col-resize';
 	}

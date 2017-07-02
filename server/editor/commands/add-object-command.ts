@@ -18,7 +18,7 @@ import {Command     } from '../command';
  */
 export class AddObjectCommand extends Command {
 
-    // [ Public Properties ]
+    // [ Public ]
 
     execute () {
         this._editor.addObject( this.object );

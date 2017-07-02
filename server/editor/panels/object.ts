@@ -2,27 +2,27 @@
 // object.ts
 // -----------------------------------------------------------------------------
 import *            as THREE            from 'three';
-import { Panel      as UIPanel      }   from '../../editor/gui/panel';
-import { Button     as UIButton     }   from '../../editor/gui/button';
-import { Number     as UINumber     }   from '../../editor/gui/number';
-import { Div        as UIDiv        }   from '../../editor/gui/div';
-import { Span       as UISpan       }   from '../../editor/gui/span';
-import { Row        as UIRow        }   from '../../editor/gui/row';
-import { Color      as UIColor      }   from '../../editor/gui/color';
-import { Text       as UIText       }   from '../../editor/gui/text';
-import { Break      as UIBreak      }   from '../../editor/gui/break';
-import { Select     as UISelect     }   from '../../editor/gui/select';
-import { Boolean    as UIBoolean    }   from '../../editor/gui/boolean';
-import { Input      as UIInput      }   from '../../editor/gui/input';
-import { Checkbox   as UICheckbox   }   from '../../editor/gui/checkbox';
-import { TextArea   as UITextArea   }   from '../../editor/gui/text-area';
-import { Outliner   as UIOutliner   }   from '../../editor/gui/outliner';
-import { SetPositionCommand         }   from '../../editor/commands/set-position-command';
-import { SetRotationCommand         }   from '../../editor/commands/set-rotation-command';
-import { SetScaleCommand            }   from '../../editor/commands/set-scale-command';
-import { SetUuidCommand             }   from '../../editor/commands/set-uuid-command';
-import { SetValueCommand            }   from '../../editor/commands/set-value-command';
-import { SetColorCommand            }   from '../../editor/commands/set-color-command';
+import { Panel      as UIPanel      }   from '../gui/panel';
+import { Button     as UIButton     }   from '../gui/button';
+import { Number     as UINumber     }   from '../gui/number';
+import { Div        as UIDiv        }   from '../gui/div';
+import { Span       as UISpan       }   from '../gui/span';
+import { Row        as UIRow        }   from '../gui/row';
+import { Color      as UIColor      }   from '../gui/color';
+import { Text       as UIText       }   from '../gui/text';
+import { Break      as UIBreak      }   from '../gui/break';
+import { Select     as UISelect     }   from '../gui/select';
+import { Boolean    as UIBoolean    }   from '../gui/boolean';
+import { Input      as UIInput      }   from '../gui/input';
+import { Checkbox   as UICheckbox   }   from '../gui/checkbox';
+import { TextArea   as UITextArea   }   from '../gui/text-area';
+import { Outliner   as UIOutliner   }   from '../gui/outliner';
+import { SetPositionCommand         }   from '../commands/set-position-command';
+import { SetRotationCommand         }   from '../commands/set-rotation-command';
+import { SetScaleCommand            }   from '../commands/set-scale-command';
+import { SetUuidCommand             }   from '../commands/set-uuid-command';
+import { SetValueCommand            }   from '../commands/set-value-command';
+import { SetColorCommand            }   from '../commands/set-color-command';
 
 import { IEditor                    }   from '../interface';
 import { ISignals                   }   from '../interface';
@@ -50,6 +50,7 @@ export class ObjectPanel extends EditorPanel {
 
         this.setBorderTop   ( '0' );
         this.setPaddingTop  ( '20px' );
+        this.setPaddingRight( '0px' );
         this.setDisplay     ( 'none' );
 
         this._objectActions = new UISelect().setPosition( 'absolute' ).setRight( '8px' ).setFontSize( '11px' );

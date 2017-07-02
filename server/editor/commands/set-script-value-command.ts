@@ -19,81 +19,44 @@ import {Command             } from '../command';
  */
 export class SetScriptValueCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    oldValue    : string|object;
-    newValue    : string|object;
-
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetScriptValueCommand
-     */
     execute () {
-		this.script[ this.attributeName ] = this.newValue;
+		this.script[ this.attributeName ] = this._newValue;
 		this._editor.signals.scriptChanged.dispatch();
     }
-    /**
-     * undo
-     *
-     * @memberof SetScriptValueCommand
-     */
+
     undo () {
-		this.script[ this.attributeName ] = this.oldValue;
+		this.script[ this.attributeName ] = this._oldValue;
 		this._editor.signals.scriptChanged.dispatch();
     }
-    /**
-     * update
-     *
-     * @param {SetScriptValueCommand} command
-     * @memberof SetScriptValueCommand
-     */
+
 	update ( command:SetScriptValueCommand ) {
-		this.newValue = command.newValue;
+		this._newValue = command._newValue;
 	}
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetScriptValueCommand
-     */
+
     toJSON () : any {
         let output = super.toJSON();
 		output.objectUuid       = this.object.uuid;
 		output.index            = this._editor.scripts[ this.object.uuid ].indexOf( this.script );
 		output.attributeName    = this.attributeName;
-		output.oldValue         = this.oldValue;
-		output.newValue         = this.newValue;
+		output.oldValue         = this._oldValue;
+		output.newValue         = this._newValue;
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetScriptValueCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
-		this.oldValue       = json.oldValue;
-		this.newValue       = json.newValue;
+		this._oldValue      = json.oldValue;
+		this._newValue      = json.newValue;
 		this.attributeName  = json.attributeName;
 		this.object         = this._editor.objectByUuid( json.objectUuid );
 		this.script         = this._editor.scripts[ json.objectUuid ][ json.index ];
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetScriptValueCommand.
-     * @param {THREE.Object3D} object
-     * @param {object} script
-     * @param {string} attributeName
-     * @param {(string|object)} newValue
-     * @memberof SetScriptValueCommand
-     */
-    constructor( object:THREE.Object3D, script:object, attributeName:string, newValue:string|object ) {
+    constructor( object:THREE.Object3D, script:object, attributeName:string, newValue:any ) {
         super();
 
         this.type           = 'SetScriptValueCommand';
@@ -102,7 +65,12 @@ export class SetScriptValueCommand extends Command {
         this.object         = object;
         this.script         = script;
         this.attributeName  = attributeName;
-        this.oldValue       = ( script !== undefined ) ? script[ this.attributeName ] : undefined;
-        this.newValue       = newValue;
+        this._oldValue      = ( script !== undefined ) ? script[ this.attributeName ] : undefined;
+        this._newValue      = newValue;
     }
+
+    // [ Private ]
+
+    private _oldValue   : any;
+    private _newValue   : any;
 }

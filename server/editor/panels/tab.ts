@@ -61,6 +61,7 @@ export class TabPanel extends UIPanel {
         super();
 
         this.setId( id );
+        this.setPaddingRight( '0px' );
 
         // [ TAB ]
         this._tabs = new UIDiv();

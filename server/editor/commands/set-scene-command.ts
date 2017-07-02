@@ -66,7 +66,7 @@ export class SetSceneCommand extends Command {
 		}
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
     constructor( object:THREE.Object3D, scene?:THREE.Scene ) {
         super();
@@ -87,6 +87,8 @@ export class SetSceneCommand extends Command {
             }
         }
     }
+
+    // [ Private ]
 
     private cmdArray : ICommand[] = [];
 }

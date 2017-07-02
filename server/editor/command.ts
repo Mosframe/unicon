@@ -18,11 +18,9 @@ import {Config      } from './config';
  */
 export class Command implements ICommand {
 
-    // [ Public Static Variables ]
+    // [ Public ]
 
     static editor   : IEditor;
-
-    // [ Public Variables ]
 
 	id              : number;
 	type            : string;
@@ -30,11 +28,9 @@ export class Command implements ICommand {
 	inMemory        : boolean;
 	updatable       : boolean;
     object          : THREE.Object3D;
-    script          : object;
+    script          : any;
     attributeName   : string;
     json            : any;
-
-    // [ Public Functions ]
 
     execute () {
 
@@ -78,7 +74,7 @@ export class Command implements ICommand {
         this._editor = Command.editor;
     }
 
-    // [ Protected Variables ]
+    // [ Protected ]
 
-	protected _editor : IEditor;
+	protected _editor           : IEditor;
 }

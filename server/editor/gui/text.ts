@@ -16,8 +16,8 @@ export class Text extends Element {
 
     // [ Public Variables ]
 
-    getValue () : string|null      { return this.core.textContent; }
-    setValue ( value:string|null ) { if( value !== undefined ) this.core.textContent = value; return this; }
+    getValue () : string|null   { return this.core.textContent; }
+    setValue ( value?:string )  { if( value !== undefined ) this.core.textContent = value; return this; }
 
     // [ Constructors ]
 

@@ -48,8 +48,8 @@ export class SetPositionCommand extends Command {
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 		this.object         = this._editor.objectByUuid( json.objectUuid );
-		this._oldPosition    = new THREE.Vector3().fromArray( json.oldPosition );
-		this._newPosition    = new THREE.Vector3().fromArray( json.newPosition );
+		this._oldPosition   = new THREE.Vector3().fromArray( json.oldPosition );
+		this._newPosition   = new THREE.Vector3().fromArray( json.newPosition );
 	}
 
     // [ Constructor ]

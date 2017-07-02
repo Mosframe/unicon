@@ -19,79 +19,44 @@ import {Command     } from '../command';
  */
 export class SetMaterialColorCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject;
-    oldValue    : number;
-    newValue    : number;
+    object : any;
 
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetMaterialColorCommand
-     */
     execute () {
-		this.object.material[ this.attributeName ].setHex( this.newValue );
+		this.object.material[ this.attributeName ].setHex( this._newValue );
 		this._editor.signals.materialChanged.dispatch( this.object.material );
     }
-    /**
-     * undo
-     *
-     * @memberof SetMaterialColorCommand
-     */
+
     undo () {
-		this.object.material[ this.attributeName ].setHex( this.oldValue );
+		this.object.material[ this.attributeName ].setHex( this._oldValue );
 		this._editor.signals.materialChanged.dispatch( this.object.material );
     }
-    /**
-     * update
-     *
-     * @param {SetMaterialColorCommand} cmd
-     * @memberof SetMaterialColorCommand
-     */
+
     update ( cmd:SetMaterialColorCommand ) {
-		this.newValue = cmd.newValue;
+		this._newValue = cmd._newValue;
     }
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetMaterialColorCommand
-     */
+
     toJSON () : any {
         let output              = super.toJSON();
 		output.objectUuid       = this.object.uuid;
 		output.attributeName    = this.attributeName;
-		output.oldValue         = this.oldValue;
-		output.newValue         = this.newValue;
+		output.oldValue         = this._oldValue;
+		output.newValue         = this._newValue;
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetMaterialColorCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
-		this.object         = <THREE.Mesh>this._editor.objectByUuid( json.objectUuid );
+		this.object         = this._editor.objectByUuid( json.objectUuid );
 		this.attributeName  = json.attributeName;
-		this.oldValue       = json.oldValue;
-		this.newValue       = json.newValue;
+		this._oldValue      = json.oldValue;
+		this._newValue      = json.newValue;
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetMaterialColorCommand.
-     * @param {THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject} object
-     * @param {string} attributeName
-     * @param {number} newValue
-     * @memberof SetMaterialColorCommand
-     */
-    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject, attributeName:string, newValue:number ) {
+    constructor( object:any, attributeName:string, newValue:number ) {
         super();
 
         this.type           = 'SetMaterialColorCommand';
@@ -99,7 +64,12 @@ export class SetMaterialColorCommand extends Command {
         this.updatable      = true;
         this.object         = object;
         this.attributeName  = attributeName;
-        this.oldValue       = ( object !== undefined ) ? this.object.material[ this.attributeName ].getHex() : undefined;
-        this.newValue       = newValue;
+        this._oldValue      = ( object !== undefined ) ? this.object.material[ this.attributeName ].getHex() : undefined;
+        this._newValue      = newValue;
     }
+
+    // [ Private ]
+
+    private _oldValue    : number;
+    private _newValue    : number;
 }

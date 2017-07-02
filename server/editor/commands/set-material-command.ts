@@ -19,78 +19,52 @@ import {Command     } from '../command';
  */
 export class SetMaterialCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject;
-    oldMaterial : THREE.Material;
-    newMaterial : THREE.Material;
+    object : any;
 
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetMaterialCommand
-     */
     execute () {
-		this.object.material = this.newMaterial;
-		this._editor.signals.materialChanged.dispatch( this.newMaterial );
+		this.object.material = this._newMaterial;
+		this._editor.signals.materialChanged.dispatch( this._newMaterial );
     }
-    /**
-     * undo
-     *
-     * @memberof SetMaterialCommand
-     */
+
     undo () {
-		this.object.material = this.oldMaterial;
-		this._editor.signals.materialChanged.dispatch( this.oldMaterial );
+		this.object.material = this._oldMaterial;
+		this._editor.signals.materialChanged.dispatch( this._oldMaterial );
     }
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetMaterialCommand
-     */
+
     toJSON () : any {
         let output          = super.toJSON();
 		output.objectUuid   = this.object.uuid;
-		output.oldMaterial  = this.oldMaterial.toJSON();
-		output.newMaterial  = this.newMaterial.toJSON();
+		output.oldMaterial  = this._oldMaterial.toJSON();
+		output.newMaterial  = this._newMaterial.toJSON();
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetMaterialCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
 
-		this.object         = <THREE.Mesh>this._editor.objectByUuid( json.objectUuid );
-		this.oldMaterial    = this.parseMaterial( json.oldMaterial );
-		this.newMaterial    = this.parseMaterial( json.newMaterial );
+		this.object         = this._editor.objectByUuid( json.objectUuid );
+		this._oldMaterial   = this._parseMaterial( json.oldMaterial );
+		this._newMaterial   = this._parseMaterial( json.newMaterial );
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetMaterialCommand.
-     * @param {THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject} object
-     * @param {THREE.Material} newMaterial
-     * @memberof SetMaterialCommand
-     */
-    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject, newMaterial:THREE.Material ) {
+    constructor( object:any, newMaterial:THREE.Material ) {
         super();
 
         this.type           = 'SetMaterialCommand';
         this.name           = 'New Material';
         this.object         = object;
-        this.oldMaterial    = ( object !== undefined ) ? object.material : undefined;
-        this.newMaterial    = newMaterial;
+        this._oldMaterial   = ( object !== undefined ) ? object.material : undefined;
+        this._newMaterial   = newMaterial;
     }
 
-    protected parseMaterial ( json:any ) {
+    private _oldMaterial : THREE.Material;
+    private _newMaterial : THREE.Material;
+
+    private _parseMaterial ( json:any ) {
 
         let loader      = new THREE.ObjectLoader();
         let images      = loader.parseImages( json.images, () => {} );

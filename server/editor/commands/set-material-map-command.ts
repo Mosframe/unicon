@@ -19,86 +19,55 @@ import {Command     } from '../command';
  */
 export class SetMaterialMapCommand extends Command {
 
-    // [ Public Variables ]
+    // [ Public ]
 
-    object      : THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject;
-    mapName     : string;
-    oldMap      : THREE.Texture;
-    newMap      : THREE.Texture;
+    object : any;
 
-    // [ Public Functions ]
-
-    /**
-     * execute
-     *
-     * @memberof SetMaterialMapCommand
-     */
     execute () {
-		this.object.material[ this.mapName ] = this.newMap;
+		this.object.material[ this._mapName ] = this._newMap;
 		this.object.material.needsUpdate = true;
 		this._editor.signals.materialChanged.dispatch( this.object.material );
     }
-    /**
-     * undo
-     *
-     * @memberof SetMaterialMapCommand
-     */
+
     undo () {
-		this.object.material[ this.mapName ] = this.oldMap;
+		this.object.material[ this._mapName ] = this._oldMap;
 		this.object.material.needsUpdate = true;
 		this._editor.signals.materialChanged.dispatch( this.object.material );
     }
-    /**
-     * to JSON
-     *
-     * @returns {*}
-     * @memberof SetMaterialMapCommand
-     */
+
     toJSON () : any {
         let output          = super.toJSON();
 		output.objectUuid   = this.object.uuid;
-		output.mapName      = this.mapName;
-		output.newMap       = this.serializeMap( this.newMap );
-		output.oldMap       = this.serializeMap( this.oldMap );
+		output.mapName      = this._mapName;
+		output.newMap       = this._serializeMap( this._newMap );
+		output.oldMap       = this._serializeMap( this._oldMap );
         return output;
     }
-    /**
-     * from JSON
-     *
-     * @param {*} json
-     * @memberof SetMaterialMapCommand
-     */
+
 	fromJSON ( json:any ) {
         super.fromJSON( json );
-		this.object     = <THREE.Mesh>this._editor.objectByUuid( json.objectUuid );
-		this.mapName    = json.mapName;
-		this.oldMap     = this.parseTexture( json.oldMap );
-		this.newMap     = this.parseTexture( json.newMap );
+		this.object     = this._editor.objectByUuid( json.objectUuid );
+		this._mapName   = json.mapName;
+		this._oldMap    = this._parseTexture( json.oldMap );
+		this._newMap    = this._parseTexture( json.newMap );
 	}
 
-    // [ Constructors ]
+    // [ Constructor ]
 
-    /**
-     * Creates an instance of SetMaterialMapCommand.
-     * @param {(THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject)} object
-     * @param {string} mapName
-     * @param {THREE.Texture} newMap
-     * @memberof SetMaterialMapCommand
-     */
-    constructor( object:THREE.Line|THREE.Mesh|THREE.Points|THREE.Sprite|THREE.ImmediateRenderObject, mapName:string, newMap:THREE.Texture ) {
+    constructor( object:any, mapName:string, newMap:THREE.Texture ) {
         super();
 
         this.type       = 'SetMaterialMapCommand';
         this.name       = 'Set Material.' + mapName;
         this.object     = object;
-        this.mapName    = mapName;
-        this.oldMap     = ( object !== undefined ) ? object.material[ mapName ] : undefined;
-        this.newMap     = newMap;
+        this._mapName   = mapName;
+        this._oldMap    = ( object !== undefined ) ? object.material[ mapName ] : undefined;
+        this._newMap    = newMap;
     }
 
-    // [ Protected Functions ]
+    // [ Private ]
 
-    protected serializeMap ( map:any ) {
+    private _serializeMap ( map:any ) {
 
         if ( map === null || map === undefined ) return null;
 
@@ -110,21 +79,25 @@ export class SetMaterialMapCommand extends Command {
         };
 
         let json = map.toJSON( meta );
-        let images = this.extractFromCache( meta.images );
+        let images = this._extractFromCache( meta.images );
         if ( images.length > 0 ) json.images = images;
         json.sourceFile = map.sourceFile;
 
         return json;
     }
 
+    private _mapName    : string;
+    private _oldMap     : THREE.Texture;
+    private _newMap     : THREE.Texture;
+
     // Note: The function 'extractFromCache' is copied from Object3D.toJSON()
 
     // extract data from the cache hash
     // remove metadata on each item
     // and return as array
-    protected extractFromCache ( cache:any ) {
+    private _extractFromCache = ( cache:any ) => {
 
-        let values = [];
+        let values : any = [];
         for ( let key in cache ) {
 
             let data = cache[ key ];
@@ -134,9 +107,9 @@ export class SetMaterialMapCommand extends Command {
         return values;
     }
 
-    protected parseTexture ( json:any ) {
+    private _parseTexture = ( json:any ) => {
 
-        let map = null;
+        let map : any = null;
         if ( json !== null ) {
             let loader      = new THREE.ObjectLoader();
             let images      = loader.parseImages( json.images, ()=>{} );
@@ -146,5 +119,4 @@ export class SetMaterialMapCommand extends Command {
         }
         return map;
     }
-
 }

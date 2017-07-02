@@ -41,7 +41,7 @@ export class Editor implements IEditor {
 	geometries      : {[uuid:string]:THREE.Geometry|THREE.BufferGeometry};
 	materials       : {[uuid:string]:THREE.Material};
 	textures        : {[uuid:string]:THREE.Texture};
-	scripts         : {[uuid:string]:object[]};
+	scripts         : {[uuid:string]:any[]};
 	selected        : THREE.Object3D | null;
 	helpers         : {[uuid:string]:THREE.Object3D};
 
