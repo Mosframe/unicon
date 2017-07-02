@@ -52,7 +52,7 @@ break;
 case 5:this.$ = false;
 break;
 case 6:return this.$ = $$[$0-1];
-break;
+//break;
 case 13:this.$ = {};
 break;
 case 14:this.$ = $$[$0-1];
@@ -136,7 +136,7 @@ parse: function parse(input) {
         }
 
         // handle parse error
-        _handle_error:
+        //_handle_error:
         if (typeof action === 'undefined' || !action.length || !action[0]) {
 
             if (!recovering) {
@@ -260,7 +260,7 @@ parse: function parse(input) {
 
     }
 
-    return true;
+    //return true;
 }};
 /* Jison generated lexer */
 var lexer = (function(){
@@ -400,31 +400,31 @@ switch($avoiding_name_collisions) {
 case 0:/* skip whitespace */
 break;
 case 1:return 6
-break;
+//break;
 case 2:yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); return 4
-break;
+//break;
 case 3:return 17
-break;
+//break;
 case 4:return 18
-break;
+//break;
 case 5:return 23
-break;
+//break;
 case 6:return 24
-break;
+//break;
 case 7:return 22
-break;
+//break;
 case 8:return 21
-break;
+//break;
 case 9:return 10
-break;
+//break;
 case 10:return 11
-break;
+//break;
 case 11:return 8
-break;
+//break;
 case 12:return 14
-break;
+//break;
 case 13:return 'INVALID'
-break;
+//break;
 }
 };
 lexer.rules = [/^(?:\s+)/,/^(?:(-?([0-9]|[1-9][0-9]+))(\.[0-9]+)?([eE][-+]?[0-9]+)?\b)/,/^(?:"(?:\\[\\"bfnrt/]|\\u[a-fA-F0-9]{4}|[^\\\0-\x09\x0a-\x1f"])*")/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?:,)/,/^(?::)/,/^(?:true\b)/,/^(?:false\b)/,/^(?:null\b)/,/^(?:$)/,/^(?:.)/];

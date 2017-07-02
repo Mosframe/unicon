@@ -1,13 +1,13 @@
 // -----------------------------------------------------------------------------
 // unicon-editor.ts
 // -----------------------------------------------------------------------------
-import  * as THREE                  from 'three';
+import * as THREE                   from 'three';
 import { Global                 }   from '../engine/global';
 import { hasProperty            }   from '../engine/object';
 import { HTMLGroup              }   from '../editor/html/group';
 import { HTMLMesh               }   from '../editor/html/mesh';
 import { Editor                 }   from '../editor/editor';
-//import {Script                } from '../editor/script';
+import { Script                 }   from '../editor/script';
 import { Viewport               }   from '../editor/viewport';
 import { Player                 }   from '../editor/player';
 import { Toolbar                }   from '../editor/toolbar';
@@ -28,10 +28,9 @@ let editor = new Editor();
 let viewport = new Viewport( editor );
 document.body.appendChild( viewport.core );
 
-/*
 let script = new Script( editor );
-document.body.appendChild( script.container.core );
-*/
+document.body.appendChild( script.core );
+
 let player = new Player( editor );
 document.body.appendChild( player.core );
 
