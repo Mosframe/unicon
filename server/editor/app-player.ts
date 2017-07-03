@@ -13,101 +13,97 @@ import { WebVR 		}   from '../engine/vr/web-vr';
  */
 export class AppPlayer {
 
-	loader 		: any = new THREE.ObjectLoader();
-	camera 		: any;
-	scene  		: any;
-	renderer 	: any;
+	dom 		: HTMLDivElement;
+	width 		: number;
+	height 		: number;
 
-	controls	: any;
-	effect		: any;
-	cameraVR	: any;
-	isVR		: any;
+	private _scene : THREE.Scene;
+	private _camera : THREE.PerspectiveCamera;
+	private _renderer : THREE.WebGLRenderer;
 
-	events 		: any = {};
 
-	core = document.createElement( 'div' );
 
-	width 		: number = 500;
-	height 		: number = 500;
+	load ( json ) {
 
-	load ( json:any ) {
+		this._isVR = json.project.vr;
 
-		this.isVR = json.project.vr;
+		this._renderer = new THREE.WebGLRenderer( { antialias: true } );
+		this._renderer.setClearColor( 0x000000 );
+		this._renderer.setPixelRatio( window.devicePixelRatio );
 
-		this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-		this.renderer.setClearColor( 0x000000 );
-		this.renderer.setPixelRatio( window.devicePixelRatio );
-
-		if ( json.project.gammaInput ) this.renderer.gammaInput = true;
-		if ( json.project.gammaOutput ) this.renderer.gammaOutput = true;
+		if ( json.project.gammaInput ) this._renderer.gammaInput = true;
+		if ( json.project.gammaOutput ) this._renderer.gammaOutput = true;
 
 		if ( json.project.shadows ) {
 
-			this.renderer.shadowMap.enabled = true;
-			// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+			this._renderer.shadowMap.enabled = true;
+			// this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 		}
 
-		this.core.appendChild( this.renderer.domElement );
+		this.dom.appendChild( this._renderer.domElement );
 
-		this.setScene( this.loader.parse( json.scene ) );
-		this.setCamera( this.loader.parse( json.camera ) );
+		this.setScene( this._loader.parse( json.scene ) );
+		this.setCamera( this._loader.parse( json.camera ) );
 
-		this.events = {
-			init		: [],
-			start		: [],
-			stop		: [],
-			keydown		: [],
-			keyup		: [],
-			mousedown	: [],
-			mouseup		: [],
-			mousemove	: [],
-			touchstart	: [],
-			touchend	: [],
-			touchmove	: [],
-			update		: []
+		this._events = {
+			init: [],
+			start: [],
+			stop: [],
+			keydown: [],
+			keyup: [],
+			mousedown: [],
+			mouseup: [],
+			mousemove: [],
+			touchstart: [],
+			touchend: [],
+			touchmove: [],
+			update: []
 		};
 
-		let scriptWrapParams  	= 'player,renderer,scene,camera';
+		let scriptWrapParams = 'player,renderer,scene,camera';
 		let scriptWrapResultObj = {};
 
-		for ( let eventKey in this.events ) {
+		for ( let eventKey in this._events ) {
 
 			scriptWrapParams += ',' + eventKey;
 			scriptWrapResultObj[ eventKey ] = eventKey;
+
 		}
 
 		let scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
 
 		for ( let uuid in json.scripts ) {
 
-			let object = this.scene.getObjectByProperty( 'uuid', uuid, true );
+			let object = this._scene.getObjectByProperty( 'uuid', uuid, true );
 
 			if ( object === undefined ) {
 
 				console.warn( 'APP.Player: Script without object.', uuid );
 				continue;
+
 			}
 
-			var scripts = json.scripts[ uuid ];
+			let scripts = json.scripts[ uuid ];
 
-			for ( var i = 0; i < scripts.length; i ++ ) {
+			for ( let i = 0; i < scripts.length; i ++ ) {
 
-				var script = scripts[ i ];
+				let script = scripts[ i ];
 
-				var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, this.renderer, this.scene, this.camera );
+				let functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
 
-				for ( var name in functions ) {
+				for ( let name in functions ) {
 
 					if ( functions[ name ] === undefined ) continue;
 
-					if ( this.events[ name ] === undefined ) {
+					if ( this._events[ name ] === undefined ) {
 
 						console.warn( 'APP.Player: Event type not supported (', name, ')' );
 						continue;
 
 					}
 
-					this.events[ name ].push( functions[ name ].bind( object ) );
+					this._events[ name ].push( functions[ name ].bind( object ) );
 
 				}
 
@@ -115,44 +111,41 @@ export class AppPlayer {
 
 		}
 
-		this.dispatch( this.events.init, arguments );
+		this.dispatch( events.init, arguments );
 
-	}
+	};
 
 	setCamera ( value ) {
 
-		this.camera = value;
-		this.camera.aspect = this.width / this.height;
-		this.camera.updateProjectionMatrix();
+		this._camera = value;
+		this._camera.aspect = this.width / this.height;
+		this._camera.updateProjectionMatrix();
 
-		if ( this.isVR === true ) {
+		if ( this._isVR === true ) {
 
-			this.cameraVR = new THREE.PerspectiveCamera();
-			this.cameraVR.projectionMatrix = this.camera.projectionMatrix;
-			this.camera.add( this.cameraVR );
+			this._cameraVR = new THREE.PerspectiveCamera();
+			this._cameraVR.projectionMatrix = this._camera.projectionMatrix;
+			this._camera.add( this._cameraVR );
 
-			this.controls = new THREE.VRControls( this.cameraVR );
-			this.effect = new THREE.VREffect( this.renderer );
+			this._controls = new THREE.VRControls( this._cameraVR );
+			this._effect = new THREE.VREffect( this._renderer );
 
 			if ( WebVR.isAvailable() === true ) {
 
-				this.core.appendChild( WebVR.getButton( this.effect ) );
+				this.dom.appendChild( WebVR.getButton( this._effect ) );
 
 			}
 
-			/*
-			if ( WebVR.isLatestAvailable() === false ) {
-				this.dom.appendChild( WebVR.getMessage() );
-			}
-			*/
+			//if ( WebVR.isLatestAvailable() === false ) {
+			//	this.dom.appendChild( WebVR.getMessage() );
+			//}
 		}
 
 	}
 
+
 	setScene ( value ) {
-
-		this.scene = value;
-
+		this._scene = value;
 	}
 
 	setSize ( width, height ) {
@@ -160,143 +153,177 @@ export class AppPlayer {
 		this.width = width;
 		this.height = height;
 
-		if ( this.camera ) {
-
-			this.camera.aspect = this.width / this.height;
-			this.camera.updateProjectionMatrix();
+		if ( this._camera ) {
+			this._camera.aspect = this.width / this.height;
+			this._camera.updateProjectionMatrix();
 		}
 
-		if ( this.renderer ) {
+		if ( this._renderer ) {
 
-			this.renderer.setSize( width, height );
+			this._renderer.setSize( width, height );
+
 		}
-	}
 
-	dispatch( array, event ) {
+	};
 
-		for ( var i = 0, l = array.length; i < l; i ++ ) {
+	dispatch ( array, event ) {
 
+		for ( let i = 0, l = array.length; i < l; i ++ ) {
 			array[ i ]( event );
-
 		}
-
 	}
 
-	prevTime	: any;
-	request		: number;
 
-	animate( time ) {
+	play = () => {
+
+		document.addEventListener( 'keydown', onDocumentKeyDown );
+		document.addEventListener( 'keyup', onDocumentKeyUp );
+		document.addEventListener( 'mousedown', onDocumentMouseDown );
+		document.addEventListener( 'mouseup', onDocumentMouseUp );
+		document.addEventListener( 'mousemove', onDocumentMouseMove );
+		document.addEventListener( 'touchstart', onDocumentTouchStart );
+		document.addEventListener( 'touchend', onDocumentTouchEnd );
+		document.addEventListener( 'touchmove', onDocumentTouchMove );
+
+		this.dispatch( this._events.start, arguments );
 
 		this.request = requestAnimationFrame( this.animate );
+		this.prevTime = performance.now();
 
-		try {
+	};
 
-			this.dispatch( this.events.update, { time: time, delta: time - this.prevTime } );
+	stop = () => {
 
-		} catch ( e ) {
+		document.removeEventListener( 'keydown', onDocumentKeyDown );
+		document.removeEventListener( 'keyup', onDocumentKeyUp );
+		document.removeEventListener( 'mousedown', onDocumentMouseDown );
+		document.removeEventListener( 'mouseup', onDocumentMouseUp );
+		document.removeEventListener( 'mousemove', onDocumentMouseMove );
+		document.removeEventListener( 'touchstart', onDocumentTouchStart );
+		document.removeEventListener( 'touchend', onDocumentTouchEnd );
+		document.removeEventListener( 'touchmove', onDocumentTouchMove );
 
-			console.error( ( e.message || e ), ( e.stack || "" ) );
+		this.dispatch( this._events.stop, arguments );
+
+		cancelAnimationFrame( this._request );
+
+	};
+
+	dispose = () => {
+
+		while ( this.dom.children.length ) {
+
+			this.dom.removeChild( this.dom.firstChild );
+
 		}
 
-		if ( this.isVR === true ) {
+		this._renderer.dispose();
 
-			this.camera.updateMatrixWorld();
+		this._camera = undefined;
+		this._scene = undefined;
+		this._renderer = undefined;
 
-			this.controls.update();
-			this.effect.render( this.scene, this.cameraVR );
+	};
 
-		} else {
-
-			this.renderer.render( this.scene, this.camera );
-		}
-
-		this.prevTime = time;
-	}
-
-	play () {
-
-		document.addEventListener( 'keydown'	, this.onDocumentKeyDown 	);
-		document.addEventListener( 'keyup'		, this.onDocumentKeyUp 		);
-		document.addEventListener( 'mousedown'	, this.onDocumentMouseDown 	);
-		document.addEventListener( 'mouseup'	, this.onDocumentMouseUp 	);
-		document.addEventListener( 'mousemove'	, this.onDocumentMouseMove 	);
-		document.addEventListener( 'touchstart'	, this.onDocumentTouchStart );
-		document.addEventListener( 'touchend'	, this.onDocumentTouchEnd 	);
-		document.addEventListener( 'touchmove'	, this.onDocumentTouchMove 	);
-
-		this.dispatch( this.events.start, arguments );
-
-		this.request 	= requestAnimationFrame( this.animate );
-		this.prevTime 	= performance.now();
-	}
-
-	stop () {
-
-		document.removeEventListener( 'keydown'		, this.onDocumentKeyDown 	);
-		document.removeEventListener( 'keyup'		, this.onDocumentKeyUp 		);
-		document.removeEventListener( 'mousedown'	, this.onDocumentMouseDown 	);
-		document.removeEventListener( 'mouseup'		, this.onDocumentMouseUp 	);
-		document.removeEventListener( 'mousemove'	, this.onDocumentMouseMove 	);
-		document.removeEventListener( 'touchstart'	, this.onDocumentTouchStart );
-		document.removeEventListener( 'touchend'	, this.onDocumentTouchEnd 	);
-		document.removeEventListener( 'touchmove'	, this.onDocumentTouchMove 	);
-
-		this.dispatch( this.events.stop, arguments );
-
-		cancelAnimationFrame( this.request );
-	}
-
-	dispose () {
-
-		while ( this.core.children.length ) {
-			if( this.core.firstChild )this.core.removeChild( this.core.firstChild );
-		}
-
-		this.renderer.dispose();
-		this.camera 	= undefined;
-		this.scene 		= undefined;
-		this.renderer 	= undefined;
-	}
-
-	//
-
-	onDocumentKeyDown( event:any ) {
+	onDocumentKeyDown( event ) {
 
 		this.dispatch( this.events.keydown, event );
+
 	}
 
-	onDocumentKeyUp( event:any ) {
+	onDocumentKeyUp( event ) {
 
 		this.dispatch( this.events.keyup, event );
+
 	}
 
-	onDocumentMouseDown( event:any ) {
+	onDocumentMouseDown( event ) {
 
 		this.dispatch( this.events.mousedown, event );
+
 	}
 
-	onDocumentMouseUp( event:any ) {
+	onDocumentMouseUp( event ) {
 
 		this.dispatch( this.events.mouseup, event );
+
 	}
 
 	onDocumentMouseMove( event ) {
 
 		this.dispatch( this.events.mousemove, event );
+
 	}
 
 	onDocumentTouchStart( event ) {
 
 		this.dispatch( this.events.touchstart, event );
+
 	}
 
 	onDocumentTouchEnd( event ) {
 
 		this.dispatch( this.events.touchend, event );
+
 	}
 
 	onDocumentTouchMove( event ) {
 
 		this.dispatch( this.events.touchmove, event );
+
+	}
+
+	constructor () {
+
+		let loader = new THREE.ObjectLoader();
+		let camera, scene, renderer;
+
+		let controls, effect, cameraVR, isVR;
+
+		let events : any = {};
+
+		this.dom = document.createElement( 'div' );
+
+		this.width = 500;
+		this.height = 500;
+
+
+
+		let prevTime, request;
+
+		let animate = ( time ) => {
+
+			request = requestAnimationFrame( animate );
+
+			try {
+
+				this.dispatch( events.update, { time: time, delta: time - prevTime } );
+
+			} catch ( e ) {
+
+				console.error( ( e.message || e ), ( e.stack || "" ) );
+
+			}
+
+			if ( isVR === true ) {
+
+				camera.updateMatrixWorld();
+
+				controls.update();
+				effect.render( scene, cameraVR );
+
+			} else {
+
+				renderer.render( scene, camera );
+
+			}
+
+			prevTime = time;
+
+		}
+
+		//
+
+
 	}
 }

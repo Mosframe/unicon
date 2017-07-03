@@ -21,6 +21,7 @@ import { RemoveObjectCommand    }   from '../editor/commands/remove-object-comma
 
 // global
 let global = new Global();
+window['global'] = global;
 
 // editor
 let editor = new Editor();

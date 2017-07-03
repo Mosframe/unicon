@@ -10,4 +10,11 @@
  */
 export class Global {
 
+    x : number;
+    s : string;
+
+    log ( text:string ) {
+        console.log(text);
+    }
+
 }

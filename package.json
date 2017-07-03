@@ -45,6 +45,8 @@
     "express": "^4.15.2",
     "file": "^0.2.2",
     "jsonlint": "^1.6.2",
+    "monaco-editor": "^0.8.3",
+    "monaco-typescript": "^2.2.0",
     "mongojs": "^2.4.0",
     "operator-overloading": "^0.5.1",
     "path": "^0.12.7",
