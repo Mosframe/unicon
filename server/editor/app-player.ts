@@ -70,7 +70,7 @@ export class AppPlayer {
 
 			let object = this._scene.getObjectByProperty( 'uuid', uuid, true );
 			if ( object === undefined ) {
-				console.warn( 'APP.Player: Script without object.', uuid );
+				console.warn( 'AppPlayer: Script without object.', uuid );
 				continue;
 			}
 
@@ -78,6 +78,8 @@ export class AppPlayer {
 			for ( let i = 0; i < scripts.length; i ++ ) {
 
 				let script = scripts[ i ];
+
+				// [ Bind functions to object ]
 				let functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, this._renderer, this._scene, this._camera );
 
 				for ( let name in functions ) {
@@ -85,7 +87,7 @@ export class AppPlayer {
 					if ( functions[ name ] === undefined ) continue;
 					if ( this._events[ name ] === undefined ) {
 
-						console.warn( 'APP.Player: Event type not supported (', name, ')' );
+						console.warn( 'AppPlayer: Event type not supported (', name, ')' );
 						continue;
 					}
 					this._events[ name ].push( functions[ name ].bind( object ) );
@@ -143,13 +145,13 @@ export class AppPlayer {
 
 	play = () => {
 
-		document.addEventListener( 'keydown'	, this._onDocumentKeyDown 	);
+		document.addEventListener( 'keydown'	, this._onDocumentKeyDown 		);
 		document.addEventListener( 'keyup'		, this._onDocumentKeyUp 		);
 		document.addEventListener( 'mousedown'	, this._onDocumentMouseDown 	);
-		document.addEventListener( 'mouseup'	, this._onDocumentMouseUp 	);
+		document.addEventListener( 'mouseup'	, this._onDocumentMouseUp 		);
 		document.addEventListener( 'mousemove'	, this._onDocumentMouseMove 	);
 		document.addEventListener( 'touchstart'	, this._onDocumentTouchStart 	);
-		document.addEventListener( 'touchend'	, this._onDocumentTouchEnd 	);
+		document.addEventListener( 'touchend'	, this._onDocumentTouchEnd 		);
 		document.addEventListener( 'touchmove'	, this._onDocumentTouchMove 	);
 
 		this._dispatch( this._events.start, arguments );
@@ -159,13 +161,13 @@ export class AppPlayer {
 
 	stop = () => {
 
-		document.removeEventListener( 'keydown'		, this._onDocumentKeyDown 	);
+		document.removeEventListener( 'keydown'		, this._onDocumentKeyDown 		);
 		document.removeEventListener( 'keyup'		, this._onDocumentKeyUp 		);
 		document.removeEventListener( 'mousedown'	, this._onDocumentMouseDown 	);
-		document.removeEventListener( 'mouseup'		, this._onDocumentMouseUp 	);
+		document.removeEventListener( 'mouseup'		, this._onDocumentMouseUp 		);
 		document.removeEventListener( 'mousemove'	, this._onDocumentMouseMove 	);
 		document.removeEventListener( 'touchstart'	, this._onDocumentTouchStart 	);
-		document.removeEventListener( 'touchend'	, this._onDocumentTouchEnd 	);
+		document.removeEventListener( 'touchend'	, this._onDocumentTouchEnd 		);
 		document.removeEventListener( 'touchmove'	, this._onDocumentTouchMove 	);
 
 		this._dispatch( this._events.stop, arguments );
@@ -223,7 +225,6 @@ export class AppPlayer {
 	private _animate = ( time ) => {
 
 		this._request = requestAnimationFrame( this._animate );
-
 		try {
 			this._dispatch( this._events.update, { time: time, delta: time - this._prevTime } );
 		} catch ( e ) {
@@ -233,18 +234,15 @@ export class AppPlayer {
 		if ( this._isVR === true ) {
 
 			this._camera.updateMatrixWorld();
-
 			this._controls.update();
 			this._effect.render( this._scene, this._cameraVR );
 
 		} else {
 
 			this._renderer.render( this._scene, this._camera );
-
 		}
 
 		this._prevTime = time;
-
 	}
 
 

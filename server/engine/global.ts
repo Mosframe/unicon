@@ -14,7 +14,7 @@ export class Global {
     s : string;
 
     log ( text:string ) {
-        console.log(text);
+        console.log("Global : "+text);
     }
 
 }
